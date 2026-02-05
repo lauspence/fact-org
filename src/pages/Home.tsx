@@ -13,9 +13,17 @@ const iconMap: Record<string, ReactElement> = {
 const Home = () => {
   return (
     <div>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white py-32 px-4">
-        <div className="container mx-auto text-center max-w-4xl">
+      {/* Hero Section with Background Image */}
+      <section 
+        className="relative bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white py-32 px-4"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(5, 150, 105, 0.85), rgba(13, 148, 136, 0.85)), url(https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundBlendMode: 'multiply'
+        }}
+      >
+        <div className="container mx-auto text-center max-w-4xl relative z-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
             Farming and Community Training Limited
           </h1>
@@ -87,6 +95,144 @@ const Home = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Image Feature Section - Knowledge & Training */}
+      <section className="py-20 px-4 bg-white">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Text Content */}
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+                Transforming Agriculture Through Knowledge
+              </h2>
+              <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                We combine traditional wisdom with modern technology to deliver practical, 
+                sustainable solutions that empower farming communities across Kenya.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-8">
+                From hands-on training to cutting-edge analytical services, we're committed 
+                to building a thriving agricultural sector for future generations.
+              </p>
+              <Link
+                to="/about"
+                className="inline-block bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-all"
+              >
+                Learn More About Us
+              </Link>
+            </div>
+
+            {/* Image */}
+            <div className="relative">
+              <img 
+                src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&q=80" 
+                alt="Agricultural Training Session"
+                className="rounded-xl shadow-2xl w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Image Feature Section - Modern Farming */}
+      <section className="py-20 px-4 bg-gray-50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Image (Left side) */}
+            <div className="relative order-2 md:order-1">
+              <img 
+                src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=800&q=80" 
+                alt="Modern Farming Technology"
+                className="rounded-xl shadow-2xl w-full h-auto object-cover"
+              />
+            </div>
+
+            {/* Text Content (Right side) */}
+            <div className="order-1 md:order-2">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+                Embracing Modern Agricultural Technology
+              </h2>
+              <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                Access cutting-edge tools, smart technology, and quality inputs that enhance 
+                productivity and profitability for farmers of all scales.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-8">
+                Our comprehensive range of agricultural inputs includes precision farming tools, 
+                certified seeds, and expert guidance on implementation.
+              </p>
+              <Link
+                to="/agricultural-inputs"
+                className="inline-block bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-all"
+              >
+                Explore Our Products
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats with Background Image */}
+      <section 
+        className="relative py-20 px-4 text-white"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(5, 150, 105, 0.9), rgba(13, 148, 136, 0.9)), url(https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+          backgroundBlendMode: 'multiply'
+        }}
+      >
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            Our Impact in Numbers
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="text-5xl font-bold mb-2">500+</div>
+              <p className="text-emerald-100">Farmers Trained</p>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl font-bold mb-2">50+</div>
+              <p className="text-emerald-100">Training Programs</p>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl font-bold mb-2">100+</div>
+              <p className="text-emerald-100">Partnerships</p>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl font-bold mb-2">10+</div>
+              <p className="text-emerald-100">Counties Reached</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-20 px-4 bg-white">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
+            Ready to Transform Your Farm?
+          </h2>
+          <p className="text-gray-700 text-lg mb-8 max-w-2xl mx-auto">
+            Join hundreds of farmers who have improved their yields, incomes, and sustainability 
+            through our training and services.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/knowledge-training"
+              className="inline-block bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-700 transition-all shadow-lg"
+            >
+              Explore Training Programs
+            </Link>
+            <Link
+              to="/contact"
+              className="inline-block bg-gray-200 text-gray-900 px-8 py-4 rounded-lg font-semibold hover:bg-gray-300 transition-all"
+            >
+              Contact Us Today
+            </Link>
           </div>
         </div>
       </section>
