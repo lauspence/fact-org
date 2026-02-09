@@ -22,7 +22,7 @@ const Home = () => {
       />
 
       <div>
-        {/* Hero Section with Local Background Image */}
+        {/* Hero Section - No lazy loading (above fold) */}
         <section 
           className="relative bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white py-32 px-4"
           style={{
@@ -98,7 +98,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Training Section */}
+        {/* Training Section - WITH LAZY LOADING */}
         <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -122,11 +122,13 @@ const Home = () => {
                 </Link>
               </div>
 
-              {/* Training Image */}
               <div className="relative">
                 <img 
                   src="/images/training.jpg" 
                   alt="Agricultural training session with Kenyan farmers"
+                  width="1200"
+                  height="800"
+                  loading="lazy"
                   className="rounded-xl shadow-2xl w-full h-auto object-cover"
                 />
               </div>
@@ -134,7 +136,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Work in Action - Photo Grid */}
+        {/* Work in Action - WITH LAZY LOADING */}
         <section className="py-20 px-4 bg-gray-50">
           <div className="container mx-auto max-w-7xl">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900">
@@ -145,11 +147,13 @@ const Home = () => {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Image Card 1 */}
               <div className="relative overflow-hidden rounded-xl shadow-lg group">
                 <img 
                   src="/images/community1.jpg"
                   alt="F.a.C.T community training session"
+                  width="800"
+                  height="600"
+                  loading="lazy"
                   className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
@@ -163,11 +167,13 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Image Card 2 */}
               <div className="relative overflow-hidden rounded-xl shadow-lg group">
                 <img 
                   src="/images/farming1.jpg"
                   alt="Sustainable farming practices in Kenya"
+                  width="800"
+                  height="600"
+                  loading="lazy"
                   className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
@@ -181,11 +187,13 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Image Card 3 */}
               <div className="relative overflow-hidden rounded-xl shadow-lg group">
                 <img 
                   src="/images/harvest1.jpg"
                   alt="Kenyan farmers with quality harvest"
+                  width="800"
+                  height="600"
+                  loading="lazy"
                   className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
@@ -202,15 +210,17 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Modern Farming Section */}
+        {/* Modern Farming Section - WITH LAZY LOADING */}
         <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              {/* Technology Image */}
               <div className="relative order-2 md:order-1">
                 <img 
                   src="/images/technology.jpg" 
                   alt="Modern agricultural technology in Kenya"
+                  width="1200"
+                  height="800"
+                  loading="lazy"
                   className="rounded-xl shadow-2xl w-full h-auto object-cover"
                 />
               </div>
@@ -238,15 +248,17 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Youth & Innovation Section */}
+        {/* Youth & Innovation - WITH LAZY LOADING */}
         <section className="py-20 px-4 bg-gray-50">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Youth Engagement */}
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img 
                   src="/images/youth.jpg"
                   alt="Youth in agriculture program Kenya"
+                  width="800"
+                  height="600"
+                  loading="lazy"
                   className="w-full h-96 object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-emerald-900/50 to-transparent flex items-end">
@@ -265,11 +277,13 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Innovation & Technology */}
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img 
                   src="/images/innovation.jpg"
                   alt="Smart farming solutions Kenya"
+                  width="800"
+                  height="600"
+                  loading="lazy"
                   className="w-full h-96 object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-teal-900/90 via-teal-900/50 to-transparent flex items-end">
@@ -291,7 +305,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Stats Section with Background Image */}
+        {/* Stats Section - Background image (lazy loaded via CSS) */}
         <section 
           className="relative py-20 px-4 text-white"
           style={{
@@ -328,11 +342,14 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Full-Width Community Banner */}
+        {/* Community Banner - WITH LAZY LOADING */}
         <section className="relative h-96 overflow-hidden">
           <img 
             src="/images/community-banner.jpg"
             alt="F.a.C.T farming community working together in Kenya"
+            width="1920"
+            height="600"
+            loading="lazy"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
