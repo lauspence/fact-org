@@ -308,13 +308,6 @@ const Home = () => {
         {/* Stats Section - Background image (lazy loaded via CSS) */}
         <section 
           className="relative py-20 px-4 text-white"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(5, 150, 105, 0.9), rgba(13, 148, 136, 0.9)), url(/images/stats-bg.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundAttachment: 'fixed',
-            backgroundBlendMode: 'multiply'
-          }}
         >
           <div className="container mx-auto max-w-6xl relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
