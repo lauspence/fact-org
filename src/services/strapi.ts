@@ -63,11 +63,22 @@ const formatStrapiData = (data: StrapiData | StrapiData[] | null): FormattedData
       .map(item => {
         const result = { ...item } as FormattedData;
 
+        // Helper function to format URL (handles both local and Cloudinary)
+        const formatUrl = (url: string): string => {
+          if (!url) return '';
+          // If URL already starts with http/https, return as-is (Cloudinary)
+          if (url.startsWith('http://') || url.startsWith('https://')) {
+            return url;
+          }
+          // Otherwise, prepend API_URL (local uploads)
+          return `${API_URL}${url}`;
+        };
+
         // Strapi 5: Image is a direct object
         if (item.image && typeof item.image === 'object') {
           const imageData = item.image as { url?: string };
           if (imageData.url) {
-            result.image = `${API_URL}${imageData.url}`;
+            result.image = formatUrl(imageData.url);
           }
         }
 
@@ -77,7 +88,7 @@ const formatStrapiData = (data: StrapiData | StrapiData[] | null): FormattedData
             .filter((img: { url?: string }) => img?.url)
             .map((img: { id: number; url: string; name: string; width: number; height: number }) => ({
               id: img.id,
-              url: `${API_URL}${img.url}`,
+              url: formatUrl(img.url),
               name: img.name,
               width: img.width,
               height: img.height
@@ -88,7 +99,7 @@ const formatStrapiData = (data: StrapiData | StrapiData[] | null): FormattedData
         if (item.coverImage && typeof item.coverImage === 'object') {
           const coverData = item.coverImage as { url?: string };
           if (coverData.url) {
-            result.coverImage = `${API_URL}${coverData.url}`;
+            result.coverImage = formatUrl(coverData.url);
           }
         }
 
@@ -96,7 +107,7 @@ const formatStrapiData = (data: StrapiData | StrapiData[] | null): FormattedData
         if (item.file && typeof item.file === 'object') {
           const fileData = item.file as { url?: string };
           if (fileData.url) {
-            result.file = `${API_URL}${fileData.url}`;
+            result.file = formatUrl(fileData.url);
           }
         }
 
