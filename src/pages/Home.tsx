@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FaGraduationCap, FaTractor, FaHandshake, FaMicroscope } from 'react-icons/fa';
+import { FaGraduationCap, FaTractor, FaHandshake, FaMicroscope, FaUsers, FaLeaf, FaSeedling } from 'react-icons/fa';
 import { services } from '../data/services';
 import type { ReactElement } from 'react';
 import SEO from '../components/common/SEO';
@@ -18,15 +18,15 @@ const Home = () => {
         title="Home"
         description="F.a.C.T LTD - Empowering farming communities through sustainable agriculture, innovative training, and comprehensive support services across Kenya. Expert agricultural training, quality inputs, and advisory services."
         keywords="farming Kenya, agricultural training, agribusiness Kenya, farm inputs, soil testing Kenya, agricultural services, climate-smart agriculture, farm technology Kenya"
-        image="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80"
+        image="/images/hero-bg.jpg"
       />
 
       <div>
-        {/* Hero Section with Background Image */}
+        {/* Hero Section with Local Background Image */}
         <section 
           className="relative bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white py-32 px-4"
           style={{
-            backgroundImage: 'linear-gradient(rgba(5, 150, 105, 0.85), rgba(13, 148, 136, 0.85)), url(https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&q=80)',
+            backgroundImage: 'linear-gradient(rgba(5, 150, 105, 0.85), rgba(13, 148, 136, 0.85)), url(/images/hero-bg.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundBlendMode: 'multiply'
@@ -65,24 +65,16 @@ const Home = () => {
                   key={service.id}
                   className="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-2 border border-gray-100"
                 >
-                  {/* Card Content */}
                   <div className="p-6 flex flex-col flex-grow">
-                    {/* Icon */}
                     <div className="flex justify-center mb-5">
                       {iconMap[service.icon]}
                     </div>
-                    
-                    {/* Title */}
                     <h3 className="text-xl font-bold mb-3 text-center text-gray-900">
                       {service.title}
                     </h3>
-                    
-                    {/* Description */}
                     <p className="text-gray-600 text-sm mb-5 text-center leading-relaxed flex-grow">
                       {service.description}
                     </p>
-                    
-                    {/* Features List */}
                     <ul className="mb-6 space-y-2 text-left">
                       {service.features.map((feature, index) => (
                         <li key={index} className="text-sm text-gray-700 flex items-start">
@@ -92,8 +84,6 @@ const Home = () => {
                       ))}
                     </ul>
                   </div>
-                  
-                  {/* Button at bottom */}
                   <div className="p-6 pt-0">
                     <Link
                       to={service.link}
@@ -108,11 +98,10 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Image Feature Section - Knowledge & Training */}
+        {/* Training Section */}
         <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              {/* Text Content */}
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                   Transforming Agriculture Through Knowledge
@@ -133,11 +122,11 @@ const Home = () => {
                 </Link>
               </div>
 
-              {/* Image */}
+              {/* Training Image */}
               <div className="relative">
                 <img 
-                  src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&q=80" 
-                  alt="Agricultural Training Session"
+                  src="/images/training.jpg" 
+                  alt="Agricultural training session with Kenyan farmers"
                   className="rounded-xl shadow-2xl w-full h-auto object-cover"
                 />
               </div>
@@ -145,20 +134,87 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Image Feature Section - Modern Farming */}
+        {/* Work in Action - Photo Grid */}
         <section className="py-20 px-4 bg-gray-50">
+          <div className="container mx-auto max-w-7xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900">
+              Our Work in Action
+            </h2>
+            <p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+              Supporting Kenyan farmers with training, technology, and sustainable practices.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Image Card 1 */}
+              <div className="relative overflow-hidden rounded-xl shadow-lg group">
+                <img 
+                  src="/images/community1.jpg"
+                  alt="F.a.C.T community training session"
+                  className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                  <div className="flex items-center text-white">
+                    <FaUsers className="text-2xl mr-3" />
+                    <div>
+                      <h3 className="font-bold text-lg">Community Empowerment</h3>
+                      <p className="text-sm text-gray-200">Training farmers across Kenya</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Image Card 2 */}
+              <div className="relative overflow-hidden rounded-xl shadow-lg group">
+                <img 
+                  src="/images/farming1.jpg"
+                  alt="Sustainable farming practices in Kenya"
+                  className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                  <div className="flex items-center text-white">
+                    <FaLeaf className="text-2xl mr-3" />
+                    <div>
+                      <h3 className="font-bold text-lg">Sustainable Practices</h3>
+                      <p className="text-sm text-gray-200">Climate-smart agriculture</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Image Card 3 */}
+              <div className="relative overflow-hidden rounded-xl shadow-lg group">
+                <img 
+                  src="/images/harvest1.jpg"
+                  alt="Kenyan farmers with quality harvest"
+                  className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                  <div className="flex items-center text-white">
+                    <FaSeedling className="text-2xl mr-3" />
+                    <div>
+                      <h3 className="font-bold text-lg">Quality Yields</h3>
+                      <p className="text-sm text-gray-200">Improved crop production</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Modern Farming Section */}
+        <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              {/* Image (Left side) */}
+              {/* Technology Image */}
               <div className="relative order-2 md:order-1">
                 <img 
-                  src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=800&q=80" 
-                  alt="Modern Farming Technology"
+                  src="/images/technology.jpg" 
+                  alt="Modern agricultural technology in Kenya"
                   className="rounded-xl shadow-2xl w-full h-auto object-cover"
                 />
               </div>
 
-              {/* Text Content (Right side) */}
               <div className="order-1 md:order-2">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                   Embracing Modern Agricultural Technology
@@ -182,11 +238,64 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Stats with Background Image */}
+        {/* Youth & Innovation Section */}
+        <section className="py-20 px-4 bg-gray-50">
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Youth Engagement */}
+              <div className="relative rounded-xl overflow-hidden shadow-xl">
+                <img 
+                  src="/images/youth.jpg"
+                  alt="Youth in agriculture program Kenya"
+                  className="w-full h-96 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-emerald-900/50 to-transparent flex items-end">
+                  <div className="p-8 text-white">
+                    <h3 className="text-2xl font-bold mb-3">Youth in Agriculture</h3>
+                    <p className="text-emerald-100 mb-4">
+                      Empowering the next generation of farmers with modern skills and entrepreneurial mindset.
+                    </p>
+                    <Link 
+                      to="/enterprise-building"
+                      className="inline-block bg-yellow-400 text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-all"
+                    >
+                      Learn More
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              {/* Innovation & Technology */}
+              <div className="relative rounded-xl overflow-hidden shadow-xl">
+                <img 
+                  src="/images/innovation.jpg"
+                  alt="Smart farming solutions Kenya"
+                  className="w-full h-96 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-teal-900/90 via-teal-900/50 to-transparent flex items-end">
+                  <div className="p-8 text-white">
+                    <h3 className="text-2xl font-bold mb-3">Smart Farming Solutions</h3>
+                    <p className="text-teal-100 mb-4">
+                      Integrating technology and data-driven insights for better farm management and productivity.
+                    </p>
+                    <Link 
+                      to="/analytical-services"
+                      className="inline-block bg-yellow-400 text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-all"
+                    >
+                      Discover Services
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Section with Background Image */}
         <section 
           className="relative py-20 px-4 text-white"
           style={{
-            backgroundImage: 'linear-gradient(rgba(5, 150, 105, 0.9), rgba(13, 148, 136, 0.9)), url(https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1920&q=80)',
+            backgroundImage: 'linear-gradient(rgba(5, 150, 105, 0.9), rgba(13, 148, 136, 0.9)), url(/images/stats-bg.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundAttachment: 'fixed',
@@ -215,6 +324,25 @@ const Home = () => {
                 <div className="text-5xl font-bold mb-2">10+</div>
                 <p className="text-emerald-100">Counties Reached</p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Full-Width Community Banner */}
+        <section className="relative h-96 overflow-hidden">
+          <img 
+            src="/images/community-banner.jpg"
+            alt="F.a.C.T farming community working together in Kenya"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <div className="text-center text-white px-4">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                Building Resilient Farming Communities
+              </h2>
+              <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">
+                Together, we're creating sustainable livelihoods and food security across Kenya
+              </p>
             </div>
           </div>
         </section>
