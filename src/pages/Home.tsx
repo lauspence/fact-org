@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
-import { FaGraduationCap, FaTractor, FaHandshake, FaMicroscope, FaUsers, FaLeaf, FaSeedling } from 'react-icons/fa';
+import { FaGraduationCap, FaTractor, FaHandshake, FaMicroscope, FaUsers, FaLeaf, FaSeedling, FaArrowRight } from 'react-icons/fa';
 import { services } from '../data/services';
 import type { ReactElement } from 'react';
 import SEO from '../components/common/SEO';
 
 const iconMap: Record<string, ReactElement> = {
-  FaGraduationCap: <FaGraduationCap className="w-16 h-16 text-emerald-600" />,
-  FaTractor: <FaTractor className="w-16 h-16 text-emerald-600" />,
-  FaHandshake: <FaHandshake className="w-16 h-16 text-emerald-600" />,
-  FaMicroscope: <FaMicroscope className="w-16 h-16 text-emerald-600" />,
+  FaGraduationCap: <FaGraduationCap className="w-12 h-12 text-emerald-600" />,
+  FaTractor: <FaTractor className="w-12 h-12 text-emerald-600" />,
+  FaHandshake: <FaHandshake className="w-12 h-12 text-emerald-600" />,
+  FaMicroscope: <FaMicroscope className="w-12 h-12 text-emerald-600" />,
 };
 
 const Home = () => {
@@ -22,51 +22,64 @@ const Home = () => {
       />
 
       <div>
-        {/* Hero Section - No lazy loading (above fold) */}
-        <section 
-          className="relative bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white py-32 px-4"
-          style={{
-            backgroundImage: 'linear-gradient(rgba(5, 150, 105, 0.85), rgba(13, 148, 136, 0.85)), url(/images/hero-bg.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundBlendMode: 'multiply'
-          }}
-        >
-          <div className="container mx-auto text-center max-w-4xl relative z-10">
+        {/* Hero Section - Modern Clean Design */}
+        <section className="relative bg-gradient-to-br from-emerald-600 to-emerald-800 text-white py-28 px-4 overflow-hidden">
+          {/* Background Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+              backgroundSize: '32px 32px'
+            }}></div>
+          </div>
+          
+          <div className="container mx-auto text-center max-w-5xl relative z-10">
+            <div className="inline-block bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-white/20">
+              🌱 Empowering Kenya's Agricultural Future
+            </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Farming and Community Training Limited
+              Farming and Community<br />Training Limited
             </h1>
-            <p className="text-lg md:text-xl lg:text-2xl mb-10 text-emerald-50 leading-relaxed">
-              Empowering communities through sustainable agriculture, innovative training, 
-              and comprehensive support services.
+            <p className="text-lg md:text-xl mb-10 text-emerald-50 leading-relaxed max-w-3xl mx-auto">
+              Transforming agriculture through sustainable practices, expert training, 
+              and innovative solutions for modern farmers.
             </p>
-            <Link
-              to="/contact"
-              className="inline-block bg-yellow-400 text-gray-900 px-10 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-            >
-              Get Started
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center gap-2 bg-white text-emerald-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-emerald-50 transition-all shadow-lg hover:shadow-xl"
+              >
+                Get Started <FaArrowRight className="text-sm" />
+              </Link>
+              <Link
+                to="/about"
+                className="inline-flex items-center justify-center gap-2 bg-emerald-700/50 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-emerald-700 transition-all border border-white/20"
+              >
+                Learn More
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* Services Section */}
-        <section className="py-20 px-4 bg-gray-50">
+        {/* Services Section - Card Grid */}
+        <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-7xl">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 text-gray-900">
-              Our Core Services
-            </h2>
-            <p className="text-center text-gray-600 mb-16 text-base md:text-lg max-w-3xl mx-auto">
-              Comprehensive solutions tailored to farmers, entrepreneurs, and agricultural professionals.
-            </p>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+                Our Core Services
+              </h2>
+              <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                Comprehensive solutions tailored to farmers, entrepreneurs, and agricultural professionals.
+              </p>
+            </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {services.map((service) => (
                 <div
                   key={service.id}
-                  className="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-2 border border-gray-100"
+                  className="bg-white rounded-2xl border border-gray-200 hover:border-emerald-200 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group"
                 >
                   <div className="p-6 flex flex-col flex-grow">
-                    <div className="flex justify-center mb-5">
+                    <div className="flex justify-center mb-5 transform group-hover:scale-110 transition-transform">
                       {iconMap[service.icon]}
                     </div>
                     <h3 className="text-xl font-bold mb-3 text-center text-gray-900">
@@ -75,10 +88,10 @@ const Home = () => {
                     <p className="text-gray-600 text-sm mb-5 text-center leading-relaxed flex-grow">
                       {service.description}
                     </p>
-                    <ul className="mb-6 space-y-2 text-left">
+                    <ul className="mb-6 space-y-2.5 text-left">
                       {service.features.map((feature, index) => (
                         <li key={index} className="text-sm text-gray-700 flex items-start">
-                          <span className="text-emerald-600 mr-2 font-bold text-lg">•</span>
+                          <span className="text-emerald-600 mr-2 text-base">✓</span>
                           <span>{feature}</span>
                         </li>
                       ))}
@@ -87,9 +100,9 @@ const Home = () => {
                   <div className="p-6 pt-0">
                     <Link
                       to={service.link}
-                      className="block w-full text-center bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition-all font-semibold shadow hover:shadow-lg"
+                      className="flex items-center justify-center gap-2 w-full text-center bg-gray-900 text-white py-3 rounded-lg hover:bg-emerald-600 transition-all font-semibold"
                     >
-                      Learn More
+                      Learn More <FaArrowRight className="text-xs" />
                     </Link>
                   </div>
                 </div>
@@ -98,111 +111,120 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Training Section - WITH LAZY LOADING */}
-        <section className="py-20 px-4 bg-white">
+        {/* Training Section - Two Column Layout */}
+        <section className="py-20 px-4 bg-gray-50">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
+                <div className="inline-block bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
+                  Our Approach
+                </div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                   Transforming Agriculture Through Knowledge
                 </h2>
-                <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                <p className="text-gray-600 text-lg leading-relaxed mb-6">
                   We combine traditional wisdom with modern technology to deliver practical, 
                   sustainable solutions that empower farming communities across Kenya.
                 </p>
-                <p className="text-gray-700 leading-relaxed mb-8">
+                <p className="text-gray-600 leading-relaxed mb-8">
                   From hands-on training to cutting-edge analytical services, we're committed 
                   to building a thriving agricultural sector for future generations.
                 </p>
                 <Link
                   to="/about"
-                  className="inline-block bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-all"
+                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition-all"
                 >
-                  Learn More About Us
+                  Learn More About Us <FaArrowRight className="text-xs" />
                 </Link>
               </div>
 
               <div className="relative">
+                <div className="absolute -inset-4 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl opacity-20 blur-2xl"></div>
                 <img 
                   src="/images/training.jpg" 
                   alt="Agricultural training session with Kenyan farmers"
                   width="1200"
                   height="800"
                   loading="lazy"
-                  className="rounded-xl shadow-2xl w-full h-auto object-cover"
+                  className="relative rounded-2xl shadow-2xl w-full h-auto object-cover border-4 border-white"
                 />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Work in Action - WITH LAZY LOADING */}
-        <section className="py-20 px-4 bg-gray-50">
+        {/* Work in Action - Image Cards */}
+        <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-7xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900">
-              Our Work in Action
-            </h2>
-            <p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-              Supporting Kenyan farmers with training, technology, and sustainable practices.
-            </p>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
+                Our Work in Action
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Supporting Kenyan farmers with training, technology, and sustainable practices.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="relative overflow-hidden rounded-xl shadow-lg group">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-96">
                 <img 
                   src="/images/community1.jpg"
                   alt="F.a.C.T community training session"
                   width="800"
                   height="600"
                   loading="lazy"
-                  className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                  <div className="flex items-center text-white">
-                    <FaUsers className="text-2xl mr-3" />
-                    <div>
-                      <h3 className="font-bold text-lg">Community Empowerment</h3>
-                      <p className="text-sm text-gray-200">Training farmers across Kenya</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
+                  <div className="text-white">
+                    <div className="flex items-center mb-2">
+                      <FaUsers className="text-xl mr-2" />
+                      <span className="text-sm font-semibold uppercase tracking-wider">Community</span>
                     </div>
+                    <h3 className="font-bold text-xl mb-1">Community Empowerment</h3>
+                    <p className="text-sm text-gray-300">Training farmers across Kenya</p>
                   </div>
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-xl shadow-lg group">
+              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-96">
                 <img 
                   src="/images/farming1.jpg"
                   alt="Sustainable farming practices in Kenya"
                   width="800"
                   height="600"
                   loading="lazy"
-                  className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                  <div className="flex items-center text-white">
-                    <FaLeaf className="text-2xl mr-3" />
-                    <div>
-                      <h3 className="font-bold text-lg">Sustainable Practices</h3>
-                      <p className="text-sm text-gray-200">Climate-smart agriculture</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
+                  <div className="text-white">
+                    <div className="flex items-center mb-2">
+                      <FaLeaf className="text-xl mr-2" />
+                      <span className="text-sm font-semibold uppercase tracking-wider">Sustainability</span>
                     </div>
+                    <h3 className="font-bold text-xl mb-1">Sustainable Practices</h3>
+                    <p className="text-sm text-gray-300">Climate-smart agriculture</p>
                   </div>
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-xl shadow-lg group">
+              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-96">
                 <img 
                   src="/images/harvest1.jpg"
                   alt="Kenyan farmers with quality harvest"
                   width="800"
                   height="600"
                   loading="lazy"
-                  className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-300"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                  <div className="flex items-center text-white">
-                    <FaSeedling className="text-2xl mr-3" />
-                    <div>
-                      <h3 className="font-bold text-lg">Quality Yields</h3>
-                      <p className="text-sm text-gray-200">Improved crop production</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
+                  <div className="text-white">
+                    <div className="flex items-center mb-2">
+                      <FaSeedling className="text-xl mr-2" />
+                      <span className="text-sm font-semibold uppercase tracking-wider">Results</span>
                     </div>
+                    <h3 className="font-bold text-xl mb-1">Quality Yields</h3>
+                    <p className="text-sm text-gray-300">Improved crop production</p>
                   </div>
                 </div>
               </div>
@@ -210,93 +232,103 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Modern Farming Section - WITH LAZY LOADING */}
-        <section className="py-20 px-4 bg-white">
+        {/* Modern Farming Section */}
+        <section className="py-20 px-4 bg-gray-50">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="relative order-2 md:order-1">
+                <div className="absolute -inset-4 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-2xl opacity-20 blur-2xl"></div>
                 <img 
                   src="/images/technology.jpg" 
                   alt="Modern agricultural technology in Kenya"
                   width="1200"
                   height="800"
                   loading="lazy"
-                  className="rounded-xl shadow-2xl w-full h-auto object-cover"
+                  className="relative rounded-2xl shadow-2xl w-full h-auto object-cover border-4 border-white"
                 />
               </div>
 
               <div className="order-1 md:order-2">
+                <div className="inline-block bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
+                  Innovation
+                </div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
                   Embracing Modern Agricultural Technology
                 </h2>
-                <p className="text-gray-700 text-lg leading-relaxed mb-6">
+                <p className="text-gray-600 text-lg leading-relaxed mb-6">
                   Access cutting-edge tools, smart technology, and quality inputs that enhance 
                   productivity and profitability for farmers of all scales.
                 </p>
-                <p className="text-gray-700 leading-relaxed mb-8">
+                <p className="text-gray-600 leading-relaxed mb-8">
                   Our comprehensive range of agricultural inputs includes precision farming tools, 
                   certified seeds, and expert guidance on implementation.
                 </p>
                 <Link
                   to="/agricultural-inputs"
-                  className="inline-block bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-all"
+                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition-all"
                 >
-                  Explore Our Products
+                  Explore Our Products <FaArrowRight className="text-xs" />
                 </Link>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Youth & Innovation - WITH LAZY LOADING */}
-        <section className="py-20 px-4 bg-gray-50">
+        {/* Youth & Innovation - Side by Side Cards */}
+        <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="relative rounded-xl overflow-hidden shadow-xl">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl group h-[500px]">
                 <img 
                   src="/images/youth.jpg"
                   alt="Youth in agriculture program Kenya"
                   width="800"
                   height="600"
                   loading="lazy"
-                  className="w-full h-96 object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/90 via-emerald-900/50 to-transparent flex items-end">
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/95 via-emerald-900/60 to-transparent flex items-end">
                   <div className="p-8 text-white">
-                    <h3 className="text-2xl font-bold mb-3">Youth in Agriculture</h3>
-                    <p className="text-emerald-100 mb-4">
+                    <div className="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                      Youth Empowerment
+                    </div>
+                    <h3 className="text-3xl font-bold mb-3">Youth in Agriculture</h3>
+                    <p className="text-emerald-50 mb-6 text-lg">
                       Empowering the next generation of farmers with modern skills and entrepreneurial mindset.
                     </p>
                     <Link 
                       to="/enterprise-building"
-                      className="inline-block bg-yellow-400 text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-all"
+                      className="inline-flex items-center gap-2 bg-white text-emerald-900 px-6 py-3 rounded-lg font-semibold hover:bg-emerald-50 transition-all"
                     >
-                      Learn More
+                      Learn More <FaArrowRight className="text-xs" />
                     </Link>
                   </div>
                 </div>
               </div>
 
-              <div className="relative rounded-xl overflow-hidden shadow-xl">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl group h-[500px]">
                 <img 
                   src="/images/innovation.jpg"
                   alt="Smart farming solutions Kenya"
                   width="800"
                   height="600"
                   loading="lazy"
-                  className="w-full h-96 object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-teal-900/90 via-teal-900/50 to-transparent flex items-end">
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/60 to-transparent flex items-end">
                   <div className="p-8 text-white">
-                    <h3 className="text-2xl font-bold mb-3">Smart Farming Solutions</h3>
-                    <p className="text-teal-100 mb-4">
+                    <div className="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                      Smart Solutions
+                    </div>
+                    <h3 className="text-3xl font-bold mb-3">Smart Farming Solutions</h3>
+                    <p className="text-gray-100 mb-6 text-lg">
                       Integrating technology and data-driven insights for better farm management and productivity.
                     </p>
                     <Link 
                       to="/analytical-services"
-                      className="inline-block bg-yellow-400 text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition-all"
+                      className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all"
                     >
-                      Discover Services
+                      Discover Services <FaArrowRight className="text-xs" />
                     </Link>
                   </div>
                 </div>
@@ -305,38 +337,36 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Stats Section - Background image (lazy loaded via CSS) */}
-        <section 
-          className="relative py-20 px-4 text-white"
-        >
-          <div className="container mx-auto max-w-6xl relative z-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+        {/* Stats Section - Clean Design */}
+        <section className="py-20 px-4 bg-emerald-600">
+          <div className="container mx-auto max-w-6xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-white">
               Our Impact in Numbers
             </h2>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
-                <div className="text-5xl font-bold mb-2">500+</div>
-                <p className="text-emerald-100">Farmers Trained</p>
+                <div className="text-5xl md:text-6xl font-bold mb-2 text-white">500+</div>
+                <p className="text-emerald-100 text-sm md:text-base font-medium">Farmers Trained</p>
               </div>
               <div className="text-center">
-                <div className="text-5xl font-bold mb-2">50+</div>
-                <p className="text-emerald-100">Training Programs</p>
+                <div className="text-5xl md:text-6xl font-bold mb-2 text-white">50+</div>
+                <p className="text-emerald-100 text-sm md:text-base font-medium">Training Programs</p>
               </div>
               <div className="text-center">
-                <div className="text-5xl font-bold mb-2">100+</div>
-                <p className="text-emerald-100">Partnerships</p>
+                <div className="text-5xl md:text-6xl font-bold mb-2 text-white">100+</div>
+                <p className="text-emerald-100 text-sm md:text-base font-medium">Partnerships</p>
               </div>
               <div className="text-center">
-                <div className="text-5xl font-bold mb-2">10+</div>
-                <p className="text-emerald-100">Counties Reached</p>
+                <div className="text-5xl md:text-6xl font-bold mb-2 text-white">10+</div>
+                <p className="text-emerald-100 text-sm md:text-base font-medium">Counties Reached</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Community Banner - WITH LAZY LOADING */}
-        <section className="relative h-96 overflow-hidden">
+        {/* Community Banner */}
+        <section className="relative h-[500px] overflow-hidden">
           <img 
             src="/images/community-banner.jpg"
             alt="F.a.C.T farming community working together in Kenya"
@@ -345,38 +375,38 @@ const Home = () => {
             loading="lazy"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <div className="text-center text-white px-4">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-gray-900/80 flex items-center justify-center">
+            <div className="text-center text-white px-4 max-w-4xl">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Building Resilient Farming Communities
               </h2>
-              <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">
+              <p className="text-xl md:text-2xl text-gray-200">
                 Together, we're creating sustainable livelihoods and food security across Kenya
               </p>
             </div>
           </div>
         </section>
 
-        {/* Call to Action */}
-        <section className="py-20 px-4 bg-white">
+        {/* Call to Action - Final */}
+        <section className="py-24 px-4 bg-white">
           <div className="container mx-auto max-w-4xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">
               Ready to Transform Your Farm?
             </h2>
-            <p className="text-gray-700 text-lg mb-8 max-w-2xl mx-auto">
+            <p className="text-gray-600 text-lg mb-10 max-w-2xl mx-auto">
               Join hundreds of farmers who have improved their yields, incomes, and sustainability 
               through our training and services.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/knowledge-training"
-                className="inline-block bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-700 transition-all shadow-lg"
+                className="inline-flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-700 transition-all shadow-lg"
               >
-                Explore Training Programs
+                Explore Training Programs <FaArrowRight />
               </Link>
               <Link
                 to="/contact"
-                className="inline-block bg-gray-200 text-gray-900 px-8 py-4 rounded-lg font-semibold hover:bg-gray-300 transition-all"
+                className="inline-flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-900 px-8 py-4 rounded-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all"
               >
                 Contact Us Today
               </Link>
