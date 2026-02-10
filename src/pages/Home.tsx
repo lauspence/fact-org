@@ -18,7 +18,7 @@ const Home = () => {
         title="Home"
         description="F.a.C.T LTD - Empowering farming communities through sustainable agriculture, innovative training, and comprehensive support services across Kenya. Expert agricultural training, quality inputs, and advisory services."
         keywords="farming Kenya, agricultural training, agribusiness Kenya, farm inputs, soil testing Kenya, agricultural services, climate-smart agriculture, farm technology Kenya"
-        image="/images/hero-bg.jpg"
+        image="/images/hero-bg-1024.webp"
       />
 
       <div>
@@ -26,14 +26,17 @@ const Home = () => {
         <section className="relative text-white py-20 md:py-32 px-4 overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0 z-0">
-            <img 
-              src="/images/hero-bg.jpg" 
-              alt="Kenyan farmers working in agricultural field"
-              className="w-full h-full object-cover"
-            />
+            <picture>
+              <source media="(max-width: 640px)" srcSet="/images/hero-bg-640.webp" />
+              <source media="(max-width: 1024px)" srcSet="/images/hero-bg-1024.webp" />
+              <img 
+                src="/images/hero-bg-1920.webp" 
+                alt="Kenyan farmers working in agricultural field"
+                className="w-full h-full object-cover"
+              />
+            </picture>
             {/* Dark overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/60 via-emerald-800/50 to-emerald-900/60"></div>
-
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/60 via-emerald-800/50 to-emerald-900/60"></div>
           </div>
 
           {/* Subtle Pattern Overlay */}
@@ -151,14 +154,17 @@ const Home = () => {
               </div>
 
               <div className="relative">
-                <img 
-                  src="/images/training.jpg" 
-                  alt="Agricultural training session with Kenyan farmers"
-                  width="600"
-                  height="400"
-                  loading="lazy"
-                  className="rounded-2xl shadow-xl w-full h-auto object-cover"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/images/training-640.webp" />
+                  <img 
+                    src="/images/training-1024.webp" 
+                    alt="Agricultural training session with Kenyan farmers"
+                    width="600"
+                    height="400"
+                    loading="lazy"
+                    className="rounded-2xl shadow-xl w-full h-auto object-cover"
+                  />
+                </picture>
               </div>
             </div>
           </div>
@@ -178,14 +184,17 @@ const Home = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
-                <img 
-                  src="/images/community1.jpg"
-                  alt="F.a.C.T community training session"
-                  width="600"
-                  height="400"
-                  loading="lazy"
-                  className="w-full h-full object-cover will-change-transform"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/images/community1-640.webp" />
+                  <img 
+                    src="/images/community1-1024.webp"
+                    alt="F.a.C.T community training session"
+                    width="600"
+                    height="400"
+                    loading="lazy"
+                    className="w-full h-full object-cover will-change-transform"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
                   <div className="text-white">
                     <div className="flex items-center mb-2">
@@ -199,14 +208,17 @@ const Home = () => {
               </div>
 
               <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
-                <img 
-                  src="/images/farming1.jpg"
-                  alt="Sustainable farming practices in Kenya"
-                  width="600"
-                  height="400"
-                  loading="lazy"
-                  className="w-full h-full object-cover will-change-transform"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/images/farming1-640.webp" />
+                  <img 
+                    src="/images/farming1-1024.webp"
+                    alt="Sustainable farming practices in Kenya"
+                    width="600"
+                    height="400"
+                    loading="lazy"
+                    className="w-full h-full object-cover will-change-transform"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
                   <div className="text-white">
                     <div className="flex items-center mb-2">
@@ -220,14 +232,17 @@ const Home = () => {
               </div>
 
               <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
-                <img 
-                  src="/images/harvest1.jpg"
-                  alt="Kenyan farmers with quality harvest"
-                  width="600"
-                  height="400"
-                  loading="lazy"
-                  className="w-full h-full object-cover will-change-transform"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/images/harvest1-640.webp" />
+                  <img 
+                    src="/images/harvest1-1024.webp"
+                    alt="Kenyan farmers with quality harvest"
+                    width="600"
+                    height="400"
+                    loading="lazy"
+                    className="w-full h-full object-cover will-change-transform"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
                   <div className="text-white">
                     <div className="flex items-center mb-2">
@@ -248,14 +263,17 @@ const Home = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="relative order-2 md:order-1">
-                <img 
-                  src="/images/technology.jpg" 
-                  alt="Modern agricultural technology in Kenya"
-                  width="600"
-                  height="400"
-                  loading="lazy"
-                  className="rounded-2xl shadow-xl w-full h-auto object-cover"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/images/technology-640.webp" />
+                  <img 
+                    src="/images/technology-1024.webp" 
+                    alt="Modern agricultural technology in Kenya"
+                    width="600"
+                    height="400"
+                    loading="lazy"
+                    className="rounded-2xl shadow-xl w-full h-auto object-cover"
+                  />
+                </picture>
               </div>
 
               <div className="order-1 md:order-2">
@@ -289,14 +307,17 @@ const Home = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="relative rounded-2xl overflow-hidden shadow-xl group h-[450px]">
-                <img 
-                  src="/images/youth.jpg"
-                  alt="Youth in agriculture program Kenya"
-                  width="600"
-                  height="450"
-                  loading="lazy"
-                  className="w-full h-full object-cover will-change-transform"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/images/youth-640.webp" />
+                  <img 
+                    src="/images/youth-1024.webp"
+                    alt="Youth in agriculture program Kenya"
+                    width="600"
+                    height="450"
+                    loading="lazy"
+                    className="w-full h-full object-cover will-change-transform"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/95 via-emerald-900/60 to-transparent flex items-end">
                   <div className="p-8 text-white">
                     <div className="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold mb-3">
@@ -317,14 +338,17 @@ const Home = () => {
               </div>
 
               <div className="relative rounded-2xl overflow-hidden shadow-xl group h-[450px]">
-                <img 
-                  src="/images/innovation.jpg"
-                  alt="Smart farming solutions Kenya"
-                  width="600"
-                  height="450"
-                  loading="lazy"
-                  className="w-full h-full object-cover will-change-transform"
-                />
+                <picture>
+                  <source media="(max-width: 640px)" srcSet="/images/innovation-640.webp" />
+                  <img 
+                    src="/images/innovation-1024.webp"
+                    alt="Smart farming solutions Kenya"
+                    width="600"
+                    height="450"
+                    loading="lazy"
+                    className="w-full h-full object-cover will-change-transform"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/60 to-transparent flex items-end">
                   <div className="p-8 text-white">
                     <div className="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold mb-3">
@@ -377,14 +401,18 @@ const Home = () => {
 
         {/* Community Banner */}
         <section className="relative h-96 overflow-hidden">
-          <img 
-            src="/images/community-banner.jpg"
-            alt="F.a.C.T farming community working together in Kenya"
-            width="1200"
-            height="400"
-            loading="lazy"
-            className="w-full h-full object-cover"
-          />
+          <picture>
+            <source media="(max-width: 640px)" srcSet="/images/community-banner-640.webp" />
+            <source media="(max-width: 1024px)" srcSet="/images/community-banner-1024.webp" />
+            <img 
+              src="/images/community-banner-1920.webp"
+              alt="F.a.C.T farming community working together in Kenya"
+              width="1200"
+              height="400"
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
+          </picture>
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-gray-900/80 flex items-center justify-center">
             <div className="text-center text-white px-4 max-w-4xl">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
