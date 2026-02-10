@@ -22,10 +22,22 @@ const Home = () => {
       />
 
       <div>
-        {/* Hero Section - Modern Clean Design */}
-        <section className="relative bg-gradient-to-br from-emerald-600 to-emerald-800 text-white py-28 px-4 overflow-hidden">
-          {/* Background Pattern - Simplified */}
-          <div className="absolute inset-0 opacity-5">
+        {/* Hero Section - With Background Image */}
+        <section className="relative text-white py-20 md:py-32 px-4 overflow-hidden">
+          {/* Background Image with Overlay */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="/images/hero-bg.jpg" 
+              alt="Kenyan farmers working in agricultural field"
+              className="w-full h-full object-cover"
+            />
+            {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/60 via-emerald-800/50 to-emerald-900/60"></div>
+
+          </div>
+
+          {/* Subtle Pattern Overlay */}
+          <div className="absolute inset-0 z-[1] opacity-10">
             <div className="absolute inset-0" style={{
               backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
               backgroundSize: '40px 40px'
@@ -33,26 +45,26 @@ const Home = () => {
           </div>
           
           <div className="container mx-auto text-center max-w-5xl relative z-10">
-            <div className="inline-block bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-white/20">
-              🌱 Empowering Kenya's Agricultural Future
+            <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-white/30 shadow-lg">
+                Empowering Kenya's Agricultural Future
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
               Farming and Community<br />Training Limited
             </h1>
-            <p className="text-lg md:text-xl mb-10 text-emerald-50 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl mb-10 text-white leading-relaxed max-w-3xl mx-auto drop-shadow-md">
               Transforming agriculture through sustainable practices, expert training, 
               and innovative solutions for modern farmers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-white text-emerald-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-emerald-50 transition-colors shadow-lg"
+                className="inline-flex items-center justify-center gap-2 bg-white text-emerald-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-emerald-50 transition-all shadow-xl hover:shadow-2xl hover:scale-105"
               >
                 Get Started <FaArrowRight className="text-sm" />
               </Link>
               <Link
                 to="/about"
-                className="inline-flex items-center justify-center gap-2 bg-emerald-700/50 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-emerald-700 transition-colors border border-white/20"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/20 transition-all border-2 border-white/30 shadow-lg"
               >
                 Learn More
               </Link>
@@ -139,7 +151,6 @@ const Home = () => {
               </div>
 
               <div className="relative">
-                {/* Removed blur effect for performance */}
                 <img 
                   src="/images/training.jpg" 
                   alt="Agricultural training session with Kenyan farmers"
@@ -237,7 +248,6 @@ const Home = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="relative order-2 md:order-1">
-                {/* Removed blur effect for performance */}
                 <img 
                   src="/images/technology.jpg" 
                   alt="Modern agricultural technology in Kenya"
