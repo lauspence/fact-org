@@ -185,12 +185,13 @@ export const publicationsApi = {
 };
 
 // Market Products API
+// Market Products API
 export const productsApi = {
   getAll: async (category: string | null = null): Promise<FormattedData[]> => {
     try {
-      const filters = category ? `&filters[category][$eq]=${category}` : '';
+      const filters = category ? `&filters[category][$containsi]=${category}` : '';
       const response = await apiClient.get(
-        `/market-products?populate=*&filters[inStock][$eq]=true${filters}`
+        `/market-products?populate=*${filters}` // ← Removed inStock filter
       );
       return formatStrapiData(response.data.data) as FormattedData[];
     } catch (error) {
@@ -202,7 +203,7 @@ export const productsApi = {
   getFeatured: async (): Promise<FormattedData[]> => {
     try {
       const response = await apiClient.get(
-        `/market-products?populate=*&filters[featured][$eq]=true&filters[inStock][$eq]=true&pagination[limit]=6`
+        `/market-products?populate=*&filters[featured][$eq]=true&pagination[limit]=6` // ← Removed inStock filter
       );
       return formatStrapiData(response.data.data) as FormattedData[];
     } catch (error) {

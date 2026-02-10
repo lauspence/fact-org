@@ -8,7 +8,8 @@ import EnterpriseBuilding from './pages/EnterpriseBuilding';
 import AnalyticalServices from './pages/AnalyticalServices';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
-import Marketplace from './pages/Marketplace'; // Add this
+import Marketplace from './pages/Marketplace';
+import ProductDetail from './pages/ProductDetail'; 
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
           <Route path="agricultural-inputs" element={<AgriculturalInputs />} />
           <Route path="enterprise-building" element={<EnterpriseBuilding />} />
           <Route path="analytical-services" element={<AnalyticalServices />} />
-          <Route path="marketplace" element={<Marketplace />} /> {/* Add this */}
+          <Route path="marketplace" element={<Marketplace />} /> 
+          <Route path="/marketplace/:id" element={<ProductDetail />} /> 
           <Route path="gallery" element={<Gallery />} />
           <Route path="contact" element={<Contact />} />
         </Route>
