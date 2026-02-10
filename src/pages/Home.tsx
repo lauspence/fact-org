@@ -24,11 +24,11 @@ const Home = () => {
       <div>
         {/* Hero Section - Modern Clean Design */}
         <section className="relative bg-gradient-to-br from-emerald-600 to-emerald-800 text-white py-28 px-4 overflow-hidden">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 opacity-10">
+          {/* Background Pattern - Simplified */}
+          <div className="absolute inset-0 opacity-5">
             <div className="absolute inset-0" style={{
               backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-              backgroundSize: '32px 32px'
+              backgroundSize: '40px 40px'
             }}></div>
           </div>
           
@@ -46,13 +46,13 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-white text-emerald-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-emerald-50 transition-all shadow-lg hover:shadow-xl"
+                className="inline-flex items-center justify-center gap-2 bg-white text-emerald-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-emerald-50 transition-colors shadow-lg"
               >
                 Get Started <FaArrowRight className="text-sm" />
               </Link>
               <Link
                 to="/about"
-                className="inline-flex items-center justify-center gap-2 bg-emerald-700/50 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-emerald-700 transition-all border border-white/20"
+                className="inline-flex items-center justify-center gap-2 bg-emerald-700/50 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-emerald-700 transition-colors border border-white/20"
               >
                 Learn More
               </Link>
@@ -76,10 +76,10 @@ const Home = () => {
               {services.map((service) => (
                 <div
                   key={service.id}
-                  className="bg-white rounded-2xl border border-gray-200 hover:border-emerald-200 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group"
+                  className="bg-white rounded-2xl border border-gray-200 hover:border-emerald-200 hover:shadow-xl transition-all duration-200 overflow-hidden flex flex-col group"
                 >
                   <div className="p-6 flex flex-col flex-grow">
-                    <div className="flex justify-center mb-5 transform group-hover:scale-110 transition-transform">
+                    <div className="flex justify-center mb-5 group-hover:scale-105 transition-transform duration-200">
                       {iconMap[service.icon]}
                     </div>
                     <h3 className="text-xl font-bold mb-3 text-center text-gray-900">
@@ -100,7 +100,7 @@ const Home = () => {
                   <div className="p-6 pt-0">
                     <Link
                       to={service.link}
-                      className="flex items-center justify-center gap-2 w-full text-center bg-gray-900 text-white py-3 rounded-lg hover:bg-emerald-600 transition-all font-semibold"
+                      className="flex items-center justify-center gap-2 w-full text-center bg-gray-900 text-white py-3 rounded-lg hover:bg-emerald-600 transition-colors font-semibold"
                     >
                       Learn More <FaArrowRight className="text-xs" />
                     </Link>
@@ -132,21 +132,21 @@ const Home = () => {
                 </p>
                 <Link
                   to="/about"
-                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition-all"
+                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition-colors"
                 >
                   Learn More About Us <FaArrowRight className="text-xs" />
                 </Link>
               </div>
 
               <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-2xl opacity-20 blur-2xl"></div>
+                {/* Removed blur effect for performance */}
                 <img 
                   src="/images/training.jpg" 
                   alt="Agricultural training session with Kenyan farmers"
-                  width="1200"
-                  height="800"
+                  width="600"
+                  height="400"
                   loading="lazy"
-                  className="relative rounded-2xl shadow-2xl w-full h-auto object-cover border-4 border-white"
+                  className="rounded-2xl shadow-xl w-full h-auto object-cover"
                 />
               </div>
             </div>
@@ -166,14 +166,14 @@ const Home = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-96">
+              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
                 <img 
                   src="/images/community1.jpg"
                   alt="F.a.C.T community training session"
-                  width="800"
-                  height="600"
+                  width="600"
+                  height="400"
                   loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover will-change-transform"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
                   <div className="text-white">
@@ -187,14 +187,14 @@ const Home = () => {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-96">
+              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
                 <img 
                   src="/images/farming1.jpg"
                   alt="Sustainable farming practices in Kenya"
-                  width="800"
-                  height="600"
+                  width="600"
+                  height="400"
                   loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover will-change-transform"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
                   <div className="text-white">
@@ -208,14 +208,14 @@ const Home = () => {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-96">
+              <div className="relative overflow-hidden rounded-2xl shadow-lg group h-80">
                 <img 
                   src="/images/harvest1.jpg"
                   alt="Kenyan farmers with quality harvest"
-                  width="800"
-                  height="600"
+                  width="600"
+                  height="400"
                   loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover will-change-transform"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent flex items-end p-6">
                   <div className="text-white">
@@ -237,14 +237,14 @@ const Home = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="relative order-2 md:order-1">
-                <div className="absolute -inset-4 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-2xl opacity-20 blur-2xl"></div>
+                {/* Removed blur effect for performance */}
                 <img 
                   src="/images/technology.jpg" 
                   alt="Modern agricultural technology in Kenya"
-                  width="1200"
-                  height="800"
+                  width="600"
+                  height="400"
                   loading="lazy"
-                  className="relative rounded-2xl shadow-2xl w-full h-auto object-cover border-4 border-white"
+                  className="rounded-2xl shadow-xl w-full h-auto object-cover"
                 />
               </div>
 
@@ -265,7 +265,7 @@ const Home = () => {
                 </p>
                 <Link
                   to="/agricultural-inputs"
-                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition-all"
+                  className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-600 transition-colors"
                 >
                   Explore Our Products <FaArrowRight className="text-xs" />
                 </Link>
@@ -278,27 +278,27 @@ const Home = () => {
         <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="relative rounded-2xl overflow-hidden shadow-xl group h-[500px]">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl group h-[450px]">
                 <img 
                   src="/images/youth.jpg"
                   alt="Youth in agriculture program Kenya"
-                  width="800"
-                  height="600"
+                  width="600"
+                  height="450"
                   loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover will-change-transform"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/95 via-emerald-900/60 to-transparent flex items-end">
                   <div className="p-8 text-white">
                     <div className="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold mb-3">
                       Youth Empowerment
                     </div>
-                    <h3 className="text-3xl font-bold mb-3">Youth in Agriculture</h3>
-                    <p className="text-emerald-50 mb-6 text-lg">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-3">Youth in Agriculture</h3>
+                    <p className="text-emerald-50 mb-6">
                       Empowering the next generation of farmers with modern skills and entrepreneurial mindset.
                     </p>
                     <Link 
                       to="/enterprise-building"
-                      className="inline-flex items-center gap-2 bg-white text-emerald-900 px-6 py-3 rounded-lg font-semibold hover:bg-emerald-50 transition-all"
+                      className="inline-flex items-center gap-2 bg-white text-emerald-900 px-6 py-3 rounded-lg font-semibold hover:bg-emerald-50 transition-colors"
                     >
                       Learn More <FaArrowRight className="text-xs" />
                     </Link>
@@ -306,27 +306,27 @@ const Home = () => {
                 </div>
               </div>
 
-              <div className="relative rounded-2xl overflow-hidden shadow-xl group h-[500px]">
+              <div className="relative rounded-2xl overflow-hidden shadow-xl group h-[450px]">
                 <img 
                   src="/images/innovation.jpg"
                   alt="Smart farming solutions Kenya"
-                  width="800"
-                  height="600"
+                  width="600"
+                  height="450"
                   loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover will-change-transform"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/60 to-transparent flex items-end">
                   <div className="p-8 text-white">
                     <div className="inline-block bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold mb-3">
                       Smart Solutions
                     </div>
-                    <h3 className="text-3xl font-bold mb-3">Smart Farming Solutions</h3>
-                    <p className="text-gray-100 mb-6 text-lg">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-3">Smart Farming Solutions</h3>
+                    <p className="text-gray-100 mb-6">
                       Integrating technology and data-driven insights for better farm management and productivity.
                     </p>
                     <Link 
                       to="/analytical-services"
-                      className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all"
+                      className="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
                     >
                       Discover Services <FaArrowRight className="text-xs" />
                     </Link>
@@ -366,21 +366,21 @@ const Home = () => {
         </section>
 
         {/* Community Banner */}
-        <section className="relative h-[500px] overflow-hidden">
+        <section className="relative h-96 overflow-hidden">
           <img 
             src="/images/community-banner.jpg"
             alt="F.a.C.T farming community working together in Kenya"
-            width="1920"
-            height="600"
+            width="1200"
+            height="400"
             loading="lazy"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900/80 via-gray-900/60 to-gray-900/80 flex items-center justify-center">
             <div className="text-center text-white px-4 max-w-4xl">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Building Resilient Farming Communities
               </h2>
-              <p className="text-xl md:text-2xl text-gray-200">
+              <p className="text-lg md:text-xl text-gray-200">
                 Together, we're creating sustainable livelihoods and food security across Kenya
               </p>
             </div>
@@ -400,13 +400,13 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/knowledge-training"
-                className="inline-flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-700 transition-all shadow-lg"
+                className="inline-flex items-center justify-center gap-2 bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg"
               >
                 Explore Training Programs <FaArrowRight />
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-900 px-8 py-4 rounded-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all"
+                className="inline-flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-900 px-8 py-4 rounded-lg font-semibold hover:border-gray-400 hover:bg-gray-50 transition-colors"
               >
                 Contact Us Today
               </Link>

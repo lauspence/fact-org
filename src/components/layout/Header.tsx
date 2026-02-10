@@ -1,11 +1,23 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaBars, FaTimes, FaFacebook, FaTwitter, FaLinkedin, FaInstagram, FaPhone, FaEnvelope, FaChevronDown, FaShoppingCart } from 'react-icons/fa';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const scrollThreshold = 100; // Adjust this value to control when transition happens
+      setScrolled(scrollPosition > scrollThreshold);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const navLinks = [
     { path: '/about', label: 'About Us' },
@@ -28,8 +40,8 @@ const Header = () => {
 
   return (
     <>
-      {/* Top Bar - Sleek & Minimal */}
-      <div className="bg-gray-900 text-gray-300 py-2.5 px-4 border-b border-gray-800">
+      {/* Top Bar - Subtle Green Accent */}
+      <div className="bg-gradient-to-r from-gray-900 via-emerald-950 to-gray-900 text-gray-300 py-2.5 px-4 border-b border-emerald-900/30">
         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center text-xs">
           {/* Social Icons */}
           <div className="flex space-x-5 mb-2 md:mb-0">
@@ -61,40 +73,56 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Main Header - Clean & Modern */}
-      <header className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-200">
+      {/* Main Header - Transitions from Emerald to White on Scroll */}
+      <header 
+        className={`shadow-sm sticky top-0 z-50 border-b-2 transition-all duration-300 ${
+          scrolled 
+            ? 'bg-white border-emerald-500/20' 
+            : 'bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600 border-emerald-400'
+        }`}
+      >
         <div className="container mx-auto px-4 lg:px-6">
           <div className="flex justify-between items-center py-4">
-            {/* Logo - Refined */}
-            <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+            {/* Logo - Color changes based on scroll */}
+            <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity group">
               <div className="flex flex-col">
-                <span className="text-2xl lg:text-3xl font-bold text-gray-900">
-                  Fa<span className="text-emerald-600">C</span>T Ltd
+                <span className={`text-2xl lg:text-3xl font-bold transition-colors duration-300 ${
+                  scrolled ? 'text-gray-900' : 'text-white'
+                }`}>
+                  Fa<span className={`group-hover:text-emerald-400 transition-colors ${
+                    scrolled ? 'text-emerald-600' : 'text-emerald-100'
+                  }`}>C</span>T Ltd
                 </span>
-                <span className="text-[10px] tracking-widest text-gray-500 uppercase font-semibold">
+                <span className={`text-[10px] tracking-widest uppercase font-semibold transition-colors duration-300 ${
+                  scrolled ? 'text-gray-500' : 'text-emerald-100'
+                }`}>
                   Technology for Progress
                 </span>
               </div>
             </Link>
 
-            {/* Desktop Navigation - Minimalist */}
+            {/* Desktop Navigation - Colors adapt to background */}
             <nav className="hidden lg:flex items-center space-x-1">
               {navLinks.map((link) => (
                 <div key={link.path} className="relative group">
                   {link.dropdown ? (
                     <>
                       <button
-                        className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 hover:text-emerald-600 transition-colors rounded-lg hover:bg-gray-50"
+                        className={`flex items-center px-4 py-2 text-sm font-medium transition-colors rounded-lg ${
+                          scrolled
+                            ? 'text-gray-700 hover:text-emerald-600 hover:bg-emerald-50/50'
+                            : 'text-white hover:text-emerald-100 hover:bg-white/10'
+                        }`}
                         onMouseEnter={() => setActiveDropdown(link.path)}
                       >
                         {link.label}
                         <FaChevronDown className="ml-1.5 text-xs" />
                       </button>
                       
-                      {/* Dropdown Menu - Modern Card Style */}
+                      {/* Dropdown Menu */}
                       {activeDropdown === link.path && (
                         <div 
-                          className="absolute top-full left-0 mt-1 w-64 bg-white shadow-xl rounded-lg overflow-hidden border border-gray-100"
+                          className="absolute top-full left-0 mt-1 w-64 bg-white shadow-xl rounded-lg overflow-hidden border-t-2 border-emerald-500 border-x border-b border-gray-100"
                           onMouseLeave={() => setActiveDropdown(null)}
                         >
                           <div className="py-2">
@@ -105,7 +133,7 @@ const Header = () => {
                                 className={`block px-4 py-3 text-sm transition-colors ${
                                   isActive(item.path) 
                                     ? 'bg-emerald-50 text-emerald-700 font-semibold border-l-3 border-emerald-600' 
-                                    : 'text-gray-700 hover:bg-gray-50 hover:text-emerald-600'
+                                    : 'text-gray-700 hover:bg-emerald-50/30 hover:text-emerald-600'
                                 }`}
                               >
                                 {item.label}
@@ -118,10 +146,14 @@ const Header = () => {
                   ) : (
                     <Link
                       to={link.path}
-                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg ${
+                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors rounded-lg ${
                         isActive(link.path)
-                          ? 'bg-emerald-600 text-white shadow-sm'
-                          : 'text-gray-700 hover:text-emerald-600 hover:bg-gray-50'
+                          ? scrolled
+                            ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30'
+                            : 'bg-white text-emerald-600 shadow-sm'
+                          : scrolled
+                            ? 'text-gray-700 hover:text-emerald-600 hover:bg-emerald-50/50'
+                            : 'text-white hover:text-emerald-100 hover:bg-white/10'
                       }`}
                     >
                       {link.icon && <link.icon className="text-base" />}
@@ -132,9 +164,11 @@ const Header = () => {
               ))}
             </nav>
 
-            {/* Mobile Menu Button - Clean */}
+            {/* Mobile Menu Button */}
             <button
-              className="lg:hidden text-2xl text-gray-700 hover:text-emerald-600 transition-colors"
+              className={`lg:hidden text-2xl transition-colors ${
+                scrolled ? 'text-gray-700 hover:text-emerald-600' : 'text-white hover:text-emerald-100'
+              }`}
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
@@ -142,14 +176,18 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Mobile Navigation - Refined */}
+          {/* Mobile Navigation */}
           {isOpen && (
-            <nav className="lg:hidden pb-4 space-y-1 border-t border-gray-100 pt-4">
+            <nav className={`lg:hidden pb-4 space-y-1 border-t-2 pt-4 ${
+              scrolled ? 'border-emerald-500/20' : 'border-white/20'
+            }`}>
               {navLinks.map((link) => (
                 <div key={link.path}>
                   {link.dropdown ? (
                     <>
-                      <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      <div className={`px-4 py-2 text-xs font-bold uppercase tracking-wider ${
+                        scrolled ? 'text-emerald-700' : 'text-emerald-100'
+                      }`}>
                         {link.label}
                       </div>
                       {link.dropdown.map((item) => (
@@ -158,8 +196,12 @@ const Header = () => {
                           to={item.path}
                           className={`block py-3 pl-8 pr-4 text-sm font-medium transition-colors rounded-lg mx-2 ${
                             isActive(item.path)
-                              ? 'bg-emerald-600 text-white'
-                              : 'text-gray-700 hover:bg-gray-50 hover:text-emerald-600'
+                              ? scrolled
+                                ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20'
+                                : 'bg-white text-emerald-600 shadow-sm'
+                              : scrolled
+                                ? 'text-gray-700 hover:bg-emerald-50/50 hover:text-emerald-600'
+                                : 'text-white hover:bg-white/10'
                           }`}
                           onClick={() => setIsOpen(false)}
                         >
@@ -172,8 +214,12 @@ const Header = () => {
                       to={link.path}
                       className={`flex items-center gap-2 py-3 px-4 text-sm font-medium transition-colors rounded-lg mx-2 ${
                         isActive(link.path)
-                          ? 'bg-emerald-600 text-white'
-                          : 'text-gray-700 hover:bg-gray-50 hover:text-emerald-600'
+                          ? scrolled
+                            ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20'
+                            : 'bg-white text-emerald-600 shadow-sm'
+                          : scrolled
+                            ? 'text-gray-700 hover:bg-emerald-50/50 hover:text-emerald-600'
+                            : 'text-white hover:bg-white/10'
                       }`}
                       onClick={() => setIsOpen(false)}
                     >
