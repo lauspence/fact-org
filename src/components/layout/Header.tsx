@@ -96,7 +96,7 @@ const Header = () => {
                 <span className={`text-[10px] tracking-widest uppercase font-semibold transition-colors duration-300 ${
                   scrolled ? 'text-gray-500' : 'text-emerald-100'
                 }`}>
-                  Technology for Progress
+                  Knowledge for Progress 
                 </span>
               </div>
             </Link>

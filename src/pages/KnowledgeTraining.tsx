@@ -2,6 +2,7 @@ import { FaBook, FaVideo, FaChalkboardTeacher, FaCheckCircle } from 'react-icons
 import { Link } from 'react-router-dom';
 import SEO from '../components/common/SEO';
 
+
 const KnowledgeTraining = () => {
   const courseCategories = [
     {
@@ -10,17 +11,20 @@ const KnowledgeTraining = () => {
         "Livestock production",
         "Dairy cattle management",
         "Chicken production",
-        "Pig production"
+        "Pig production",
+        "Fish production",
+        "Bee keeping"
       ]
     },
     {
       title: "Horticultural Crops",
       courses: [
-        "General fruits and vegetables farming",
-        "Banana production",
-        "Passion fruit production",
-        "Strawberry production",
-        "Avocado production"
+        "Fruits production (avocado, banana, mango, passion, etc)",
+        "Vegetable farming (exotic and African leafy vegetables)",
+        "Greenhouse tomato farming",
+        "Exotic fruits (apples, berries, dragon fruit, lychee)",
+        "Herbs and spices",
+        "Medicinal plants"
       ]
     },
     {
@@ -38,10 +42,12 @@ const KnowledgeTraining = () => {
         "Business planning",
         "Value chain analysis",
         "Product development",
-        "Market analysis"
+        "Market analysis",
+        "Agro-tourism"
       ]
     }
   ];
+
 
   const trainingFormats = [
     {
@@ -58,8 +64,14 @@ const KnowledgeTraining = () => {
       title: "Video Demonstrations",
       description: "Step-by-step visual guides and expert demos.",
       icon: <FaVideo className="w-12 h-12 text-gray-700" />
+    },
+    {
+      title: "Hands-on Demonstration",
+      description: "Practical field demonstrations for selected topics.",
+      icon: <FaCheckCircle className="w-12 h-12 text-gray-700" />
     }
   ];
+
 
   return (
     <>
@@ -68,6 +80,7 @@ const KnowledgeTraining = () => {
         description="Comprehensive agricultural training programs in livestock, horticulture, greenhouse systems, and agribusiness development. Practical courses for farmers, youth, and entrepreneurs in Kenya."
         keywords="agricultural training Kenya, livestock production, greenhouse farming, agribusiness training, farming courses Kenya"
       />
+
 
       <div className="bg-gray-50">
         {/* Hero Section */}
@@ -82,12 +95,14 @@ const KnowledgeTraining = () => {
           </div>
         </section>
 
+
         {/* Training Courses */}
         <section className="py-20 px-4">
           <div className="container mx-auto max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16 text-gray-900">
               Our Training Programs
             </h2>
+
 
             <div className="grid md:grid-cols-2 gap-8">
               {courseCategories.map((category, index) => (
@@ -107,6 +122,7 @@ const KnowledgeTraining = () => {
               ))}
             </div>
 
+
             {/* Custom Training Callout */}
             <div className="bg-gray-100 border-l-4 border-gray-800 p-6 rounded-lg mt-12 max-w-4xl mx-auto">
               <p className="text-gray-800 text-lg">
@@ -119,6 +135,7 @@ const KnowledgeTraining = () => {
           </div>
         </section>
 
+
         {/* Training Delivery */}
         <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
@@ -129,7 +146,8 @@ const KnowledgeTraining = () => {
               Flexible delivery methods to suit your learning style
             </p>
 
-            <div className="grid md:grid-cols-3 gap-10">
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
               {trainingFormats.map((format, index) => (
                 <div key={index} className="text-center p-6 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all">
                   <div className="flex justify-center mb-4">{format.icon}</div>
@@ -141,6 +159,7 @@ const KnowledgeTraining = () => {
           </div>
         </section>
 
+
         {/* CTA Section */}
         <section className="py-20 px-4 bg-gray-900 text-white">
           <div className="container mx-auto max-w-4xl text-center">
@@ -148,7 +167,7 @@ const KnowledgeTraining = () => {
               Ready to Get Started?
             </h2>
             <p className="text-xl mb-10 text-gray-300">
-              Join our training programs and enhance your agricultural skills
+              Join our training programs and enhance your farming and agribusiness skills
             </p>
             <Link
               to="/contact"
@@ -162,5 +181,6 @@ const KnowledgeTraining = () => {
     </>
   );
 };
+
 
 export default KnowledgeTraining;

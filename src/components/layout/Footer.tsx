@@ -12,7 +12,7 @@ const Footer = () => {
             <p className="text-emerald-50 leading-relaxed mb-2 md:mb-4 text-sm md:text-base">
               Farming and Community Training Limited - Empowering communities through sustainable agriculture.
             </p>
-            <p className="text-xs md:text-sm text-emerald-200">Technology for Progress</p>
+            <p className="text-xs md:text-sm text-emerald-200">Knowledge for Progress</p>
           </div>
 
           {/* Quick Links - Horizontal on Mobile */}

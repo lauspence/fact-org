@@ -2,6 +2,7 @@ import { FaFlask, FaTint, FaLeaf, FaClipboardCheck, FaArrowRight } from 'react-i
 import { Link } from 'react-router-dom';
 import SEO from '../components/common/SEO';
 
+
 const AnalyticalServices = () => {
   const services = [
     {
@@ -42,6 +43,7 @@ const AnalyticalServices = () => {
     }
   ];
 
+
   const advisoryServices = [
     "Crop Nutrition Management",
     "Integrated Pest Management",
@@ -53,12 +55,14 @@ const AnalyticalServices = () => {
     "Problem Solving"
   ];
 
+
   const process = [
     { step: "1", title: "Sample Collection", desc: "Follow guidelines or request pickup" },
     { step: "2", title: "Lab Analysis", desc: "Certified testing methods" },
     { step: "3", title: "Results Report", desc: "Detailed interpretations" },
     { step: "4", title: "Advisory", desc: "Expert recommendations" }
   ];
+
 
   return (
     <>
@@ -67,6 +71,7 @@ const AnalyticalServices = () => {
         description="Professional laboratory analysis and expert advisory services for soil testing, water quality, and pesticide residue analysis in Kenya."
         keywords="soil testing Kenya, water quality testing, pesticide residue analysis, agricultural laboratory, farm advisory services"
       />
+
 
       <div className="bg-white">
         {/* Hero Section - Clean */}
@@ -83,6 +88,7 @@ const AnalyticalServices = () => {
             </p>
           </div>
         </section>
+
 
         {/* Laboratory Services - Simplified Cards */}
         <section className="py-20 px-4 bg-gray-50">
@@ -110,6 +116,7 @@ const AnalyticalServices = () => {
           </div>
         </section>
 
+
         {/* Process - Streamlined */}
         <section className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-5xl">
@@ -121,6 +128,7 @@ const AnalyticalServices = () => {
                 Simple process from sample to solution
               </p>
             </div>
+
 
             <div className="grid md:grid-cols-4 gap-6">
               {process.map((item, index) => (
@@ -136,6 +144,7 @@ const AnalyticalServices = () => {
           </div>
         </section>
 
+
         {/* Advisory Services - Compact Grid */}
         <section className="py-20 px-4 bg-gray-50">
           <div className="container mx-auto max-w-5xl">
@@ -144,10 +153,14 @@ const AnalyticalServices = () => {
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
                 Advisory Support
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-gray-600 max-w-2xl mx-auto mb-3">
                 Expert recommendations and ongoing support for your farm
               </p>
+              <div className="inline-block bg-amber-100 text-amber-700 px-4 py-1.5 rounded-full text-sm font-semibold">
+                Coming Soon
+              </div>
             </div>
+
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {advisoryServices.map((service, index) => (
@@ -158,6 +171,7 @@ const AnalyticalServices = () => {
             </div>
           </div>
         </section>
+
 
         {/* CTA - Minimal */}
         <section className="py-20 px-4 bg-white border-t border-gray-200">
@@ -180,5 +194,6 @@ const AnalyticalServices = () => {
     </>
   );
 };
+
 
 export default AnalyticalServices;

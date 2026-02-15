@@ -115,11 +115,10 @@ const Home = () => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight drop-shadow-lg">
               Farming and Community
               <br />
-              Training Limited
+              Technologies Limited
             </h1>
             <p className="text-lg md:text-xl mb-10 text-white leading-relaxed max-w-3xl mx-auto drop-shadow-md">
-              Transforming agriculture through sustainable practices, expert training, and innovative solutions for modern
-              farmers.
+              Transforming agriculture through sustainable practices, expert training, and innovative solutions for modern agribusiness.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
@@ -197,8 +196,7 @@ const Home = () => {
                   Transforming Agriculture Through Knowledge
                 </h2>
                 <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                  We combine traditional wisdom with modern technology to deliver practical, sustainable solutions that
-                  empower farming communities across Kenya.
+                  Our approach to training is practical, learner-centered, and results-driven. We blend expert instruction with real-world case studies, hands-on demonstrations, and interactive discussions to ensure knowledge translates into action. By tailoring programs to diverse agricultural contexts, we empower farmers, entrepreneurs, and professionals with skills that enhance productivity, sustainability, and long-term business success.
                 </p>
                 <p className="text-gray-600 leading-relaxed mb-8">
                   From hands-on training to cutting-edge analytical services, we&apos;re committed to building a thriving

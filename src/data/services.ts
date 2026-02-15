@@ -1,12 +1,13 @@
 import type { Service } from '../types/service';
 
+
 export const services: Service[] = [
   {
     id: 1,
     title: "Knowledge & Training",
     description: "Comprehensive training programs for youth, farmers, and agribusiness entrepreneurs covering value addition, business planning, and climate-smart agriculture.",
     icon: "FaGraduationCap",
-    features: ["Training Programs", "Information Resources", "Video Demonstrations"],
+    features: ["Training Programs", "Information Resources", "Video Demonstrations", "Hands-on demonstration (selected)", "Agro-tourism"],
     link: "/knowledge-training"
   },
   {
@@ -14,7 +15,7 @@ export const services: Service[] = [
     title: "Agricultural Inputs",
     description: "Smart technology solutions, farm tools, and quality planting materials to enhance agricultural productivity.",
     icon: "FaTractor",
-    features: ["Smart Technology", "Farm Tools", "Planting Materials"],
+    features: ["Smart Technology", "Farm Tools", "Planting Materials", "Plant nutrition products", "Pest control solutions", "Water and irrigation products"],
     link: "/agricultural-inputs"
   },
   {
@@ -28,9 +29,9 @@ export const services: Service[] = [
   {
     id: 4,
     title: "Analytical & Advisory",
-    description: "Professional soil, water, and pesticide analysis with expert advisory services.",
+    description: "Analytical and expert advisory services to support crops and livestock production, and marketing.",
     icon: "FaMicroscope",
-    features: ["Soil Analysis", "Water Testing", "Advisory Support"],
+    features: ["Soil analysis", "Water quality testing", "Feed quality analysis", "Chemical residues monitoring", "Advisory Support"],
     link: "/analytical-services"
   }
 ];
