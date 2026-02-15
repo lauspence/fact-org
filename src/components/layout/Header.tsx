@@ -2,11 +2,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { FaBars, FaTimes, FaFacebook, FaTwitter, FaLinkedin, FaInstagram, FaPhone, FaEnvelope, FaChevronDown, FaShoppingCart } from 'react-icons/fa';
 
+
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,9 +17,11 @@ const Header = () => {
       setScrolled(scrollPosition > scrollThreshold);
     };
 
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
 
   const navLinks = [
     { path: '/about', label: 'About Us' },
@@ -32,11 +36,14 @@ const Header = () => {
       ]
     },
     { path: '/marketplace', label: 'Marketplace', icon: FaShoppingCart },
+    { path: '/articles', label: 'Articles' },
     { path: '/gallery', label: 'Gallery' },
     { path: '/contact', label: 'Contact Us' },
   ];
 
+
   const isActive = (path: string) => location.pathname === path;
+
 
   return (
     <>
@@ -59,6 +66,7 @@ const Header = () => {
             </a>
           </div>
 
+
           {/* Contact Info */}
           <div className="flex flex-col md:flex-row items-center space-y-1 md:space-y-0 md:space-x-6">
             <a href="tel:+254759509615" className="flex items-center hover:text-emerald-400 transition-colors">
@@ -72,6 +80,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+
 
       {/* Main Header - Transitions from Emerald to White on Scroll */}
       <header 
@@ -100,6 +109,7 @@ const Header = () => {
                 </span>
               </div>
             </Link>
+
 
             {/* Desktop Navigation - Colors adapt to background */}
             <nav className="hidden lg:flex items-center space-x-1">
@@ -164,6 +174,7 @@ const Header = () => {
               ))}
             </nav>
 
+
             {/* Mobile Menu Button */}
             <button
               className={`lg:hidden text-2xl transition-colors ${
@@ -175,6 +186,7 @@ const Header = () => {
               {isOpen ? <FaTimes /> : <FaBars />}
             </button>
           </div>
+
 
           {/* Mobile Navigation */}
           {isOpen && (
@@ -236,5 +248,6 @@ const Header = () => {
     </>
   );
 };
+
 
 export default Header;

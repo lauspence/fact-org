@@ -249,10 +249,12 @@ export const coursesApi = {
   }
 };
 
+export const articlesApi = publicationsApi;
 // Export all APIs
 export default {
   gallery: galleryApi,
   publications: publicationsApi,
+  articles: publicationsApi,
   products: productsApi,
   courses: coursesApi,
 };

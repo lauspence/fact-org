@@ -9,7 +9,10 @@ import AnalyticalServices from './pages/AnalyticalServices';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Marketplace from './pages/Marketplace';
-import ProductDetail from './pages/ProductDetail'; 
+import ProductDetail from './pages/ProductDetail';
+import Articles from './pages/Articles';
+import ArticleDetail from './pages/ArticleDetail';
+
 
 function App() {
   return (
@@ -23,7 +26,9 @@ function App() {
           <Route path="enterprise-building" element={<EnterpriseBuilding />} />
           <Route path="analytical-services" element={<AnalyticalServices />} />
           <Route path="marketplace" element={<Marketplace />} /> 
-          <Route path="/marketplace/:id" element={<ProductDetail />} /> 
+          <Route path="marketplace/:id" element={<ProductDetail />} />
+          <Route path="articles" element={<Articles />} />
+          <Route path="articles/:slug" element={<ArticleDetail />} />
           <Route path="gallery" element={<Gallery />} />
           <Route path="contact" element={<Contact />} />
         </Route>
@@ -31,5 +36,6 @@ function App() {
     </BrowserRouter>
   );
 }
+
 
 export default App;
