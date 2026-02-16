@@ -98,9 +98,7 @@ const Header = () => {
                 <span className={`text-2xl lg:text-3xl font-bold transition-colors duration-300 ${
                   scrolled ? 'text-gray-900' : 'text-white'
                 }`}>
-                  Fa<span className={`group-hover:text-emerald-400 transition-colors ${
-                    scrolled ? 'text-emerald-600' : 'text-emerald-100'
-                  }`}>C</span>T Ltd
+                  Fa<span className={`group-hover:text-emerald-400 transition-colors `}>C</span>T Ltd
                 </span>
                 <span className={`text-[10px] tracking-widest uppercase font-semibold transition-colors duration-300 ${
                   scrolled ? 'text-gray-500' : 'text-emerald-100'

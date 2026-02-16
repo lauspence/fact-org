@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { FaImage, FaVideo } from 'react-icons/fa';
+import { useEffect, useMemo, useState } from 'react';
+import { FaImage, FaSearch, FaTimes, FaVideo, FaPlay, FaChevronDown } from 'react-icons/fa';
 import { galleryApi } from '../services/strapi';
 
 interface Photo {
@@ -12,14 +12,34 @@ interface Photo {
   featured?: boolean;
 }
 
+interface Video {
+  id: number;
+  title: string;
+  link: string;
+  category: string;
+  description?: string;
+  featured?: boolean;
+  thumbnail?: string;
+}
+
 const Gallery = () => {
   const [activeTab, setActiveTab] = useState<'photos' | 'videos'>('photos');
+
+  // Photos state
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const categories = [
+  // Filters
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedVideoCategory, setSelectedVideoCategory] = useState('All');
+  const [query, setQuery] = useState('');
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+
+  // Lightbox
+  const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
+
+  const photoCategories = [
     'All',
     'Training Events',
     'Farm Harvests',
@@ -28,12 +48,72 @@ const Gallery = () => {
     'Success Stories'
   ];
 
-  // Placeholder videos - can be moved to Strapi later if needed
-  const videos = [
-    { id: 1, title: "Climate-Smart Agriculture", link: "#" },
-    { id: 2, title: "Value Addition Training", link: "#" },
-    { id: 3, title: "Smart Irrigation Demo", link: "#" },
+  const videoCategories = [
+    'All',
+    'Climate-Smart Agriculture',
+    'Training & Workshops',
+    'Smart Technology',
+    'Irrigation & Water',
+    'Value Addition'
   ];
+
+  // Placeholder videos (categorized) - can be moved to Strapi later
+  const videos: Video[] = [
+    {
+      id: 1,
+      title: 'Climate-Smart Agriculture',
+      link: '#',
+      category: 'Climate-Smart Agriculture',
+      description: 'Practical approaches to climate resilience on the farm.',
+      thumbnail:
+        'https://images.unsplash.com/photo-1592982537447-6b17a4b1a8a7?auto=format&fit=crop&w=1200&q=60'
+    },
+    {
+      id: 2,
+      title: 'Value Addition Training',
+      link: '#',
+      category: 'Value Addition',
+      description: 'Processing and packaging to increase farm income.',
+      thumbnail:
+        'https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&w=1200&q=60'
+    },
+    {
+      id: 3,
+      title: 'Smart Irrigation Demo',
+      link: '#',
+      category: 'Irrigation & Water',
+      description: 'Efficient irrigation methods and basic system demos.',
+      thumbnail:
+        'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=60'
+    },
+    {
+      id: 4,
+      title: 'Farm Data & Sensors Overview',
+      link: '#',
+      category: 'Smart Technology',
+      description: 'Intro to sensors, data loggers, and farm monitoring.',
+      thumbnail:
+        'https://images.unsplash.com/photo-1581091870622-3d4b3a6f1b58?auto=format&fit=crop&w=1200&q=60'
+    },
+    {
+      id: 5,
+      title: 'Practical Farmer Training Session',
+      link: '#',
+      category: 'Training & Workshops',
+      description: 'Highlights from hands-on training with farmers.',
+      thumbnail:
+        'https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=1200&q=60'
+    }
+  ];
+
+  // Reset filters when switching tabs (prevents confusing empty states)
+  useEffect(() => {
+    setQuery('');
+    if (activeTab === 'photos') setSelectedCategory('All');
+    if (activeTab === 'videos') setSelectedVideoCategory('All');
+    setLightboxPhoto(null);
+    setShowCategoryDropdown(false);
+  }, [activeTab]);
 
   useEffect(() => {
     if (activeTab === 'photos') {
@@ -42,237 +122,367 @@ const Gallery = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, selectedCategory]);
 
-const fetchPhotos = async () => {
-  try {
-    setLoading(true);
-    setError(null);
-    const data = await galleryApi.getAll(selectedCategory === 'All' ? null : selectedCategory);
-    setPhotos((data as unknown as Photo[]) || []);
-  } catch (err) {
-    console.error('Error fetching gallery:', err);
-    setError('Failed to load gallery. Please check if Strapi is running.');
-  } finally {
-    setLoading(false);
-  }
-};
+  const fetchPhotos = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await galleryApi.getAll(selectedCategory === 'All' ? null : selectedCategory);
+      setPhotos((data as unknown as Photo[]) || []);
+    } catch (err) {
+      console.error('Error fetching gallery:', err);
+      setError('Failed to load gallery. Please check if Strapi is running.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredPhotos = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return photos;
+    return photos.filter((p) => {
+      const hay = `${p.title} ${p.description ?? ''} ${p.category}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }, [photos, query]);
+
+  const filteredVideos = useMemo(() => {
+    const byCategory =
+      selectedVideoCategory === 'All'
+        ? videos
+        : videos.filter((v) => v.category === selectedVideoCategory);
+
+    const q = query.trim().toLowerCase();
+    if (!q) return byCategory;
+
+    return byCategory.filter((v) => {
+      const hay = `${v.title} ${v.description ?? ''} ${v.category}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }, [videos, selectedVideoCategory, query]);
+
+  const activeCategories = activeTab === 'photos' ? photoCategories : videoCategories;
+  const activeSelectedCategory = activeTab === 'photos' ? selectedCategory : selectedVideoCategory;
+
+  const setActiveSelectedCategory = (cat: string) => {
+    if (activeTab === 'photos') setSelectedCategory(cat);
+    else setSelectedVideoCategory(cat);
+    setShowCategoryDropdown(false);
+  };
+
+  const formatEventDate = (value?: string) => {
+    if (!value) return null;
+    try {
+      return new Date(value).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch {
+      return null;
+    }
+  };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-emerald-600 to-teal-700 text-white py-20 px-4">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">Gallery</h1>
-          <p className="text-xl text-emerald-50">
-            Explore our work in action - training sessions, farm visits, and success stories.
-          </p>
-        </div>
-      </section>
-
-      {/* Tabs */}
-      <section className="py-8 px-4 bg-white border-b">
+    <div className="bg-gray-50 min-h-screen pb-16">
+      {/* Header & Tabs */}
+      <section className="bg-white border-b border-gray-200 pt-8 md:pt-12 pb-6 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="flex justify-center mb-8 space-x-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 md:mb-3">Gallery</h1>
+          <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 max-w-2xl">
+            Explore our work in action — training sessions, farm visits, demonstrations, and success stories.
+          </p>
+
+          <div className="flex gap-3 md:gap-4">
             <button
               onClick={() => setActiveTab('photos')}
-              className={`flex items-center px-8 py-3 rounded-lg font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-md font-medium transition-colors text-sm md:text-base ${
                 activeTab === 'photos'
-                  ? 'bg-emerald-600 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <FaImage className="mr-2" />
-              Photos
+              <FaImage className="text-sm md:text-base" /> 
+              <span>Photos</span>
             </button>
+
             <button
               onClick={() => setActiveTab('videos')}
-              className={`flex items-center px-8 py-3 rounded-lg font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-md font-medium transition-colors text-sm md:text-base ${
                 activeTab === 'videos'
-                  ? 'bg-emerald-600 text-white shadow-lg'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <FaVideo className="mr-2" />
-              Videos
+              <FaVideo className="text-sm md:text-base" /> 
+              <span>Videos</span>
             </button>
           </div>
-
-          {/* Category Filter - Only show for photos tab */}
-          {activeTab === 'photos' && (
-            <div className="flex flex-wrap justify-center gap-3">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-5 py-2 rounded-full font-semibold transition-all text-sm ${
-                    selectedCategory === category
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Content Section */}
-      <section className="py-16 px-4">
+      {/* Filters & Search */}
+      <section className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur-md border-b border-gray-200 py-3 md:py-4 px-4">
         <div className="container mx-auto max-w-6xl">
-          
-          {/* Photos Grid */}
-          {activeTab === 'photos' && (
-            <>
-              {loading ? (
-                <div className="flex items-center justify-center py-20">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-emerald-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600 text-lg">Loading photos...</p>
-                  </div>
-                </div>
-              ) : error ? (
-                <div className="text-center py-20">
-                  <div className="text-red-500 text-5xl mb-4">⚠️</div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Gallery</h3>
-                  <p className="text-gray-600 mb-6">{error}</p>
-                  <button 
-                    onClick={fetchPhotos}
-                    className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-all"
-                  >
-                    Try Again
-                  </button>
-                </div>
-              ) : photos.length === 0 ? (
-                <div className="text-center py-20">
-                  <FaImage className="w-20 h-20 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No Photos Yet</h3>
-                  <p className="text-gray-600 text-lg">
-                    {selectedCategory === 'All' 
-                      ? 'Photos will be added soon. Check back later!'
-                      : `No photos found in "${selectedCategory}" category.`}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div className="text-center mb-8">
-                    <p className="text-gray-600">
-                      Showing <span className="font-bold text-emerald-600">{photos.length}</span> {photos.length === 1 ? 'photo' : 'photos'}
-                    </p>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {photos.map((photo) => (
-                      <div 
-                        key={photo.id} 
-                        className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-all duration-300 group"
-                      >
-                        <div className="relative aspect-video overflow-hidden bg-gray-200">
-                          <img 
-                            src={photo.image}
-                            alt={photo.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                            onError={(e) => {
-                              e.currentTarget.src = 'https://via.placeholder.com/400x300?text=Image+Not+Found';
-                            }}
-                          />
-                          {/* Category Badge */}
-                          <div className="absolute top-3 right-3">
-                            <span className="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-lg">
-                              {photo.category}
-                            </span>
-                          </div>
-                          {/* Featured Badge */}
-                          {photo.featured && (
-                            <div className="absolute top-3 left-3">
-                              <span className="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                                ⭐ Featured
-                              </span>
-                            </div>
-                          )}
-                          {/* Hover Overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        </div>
-                        
-                        <div className="p-5">
-                          <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
-                            {photo.title}
-                          </h3>
-                          {photo.description && (
-                            <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                              {photo.description}
-                            </p>
-                          )}
-                          {photo.eventDate && (
-                            <div className="flex items-center text-gray-500 text-xs mt-2">
-                              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                              </svg>
-                              {new Date(photo.eventDate).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </>
-          )}
+          <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:justify-between md:items-center">
+            
+            {/* Categories - Desktop: Horizontal Pills, Mobile: Dropdown */}
+            <div className="w-full md:w-auto">
+              {/* Mobile Dropdown */}
+              <div className="md:hidden relative">
+                <button
+                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                  className="w-full flex items-center justify-between px-4 py-2.5 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="text-gray-500">Category:</span>
+                    <span className="text-emerald-700 font-semibold">{activeSelectedCategory}</span>
+                  </span>
+                  <FaChevronDown className={`text-gray-400 transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
+                </button>
 
-          {/* Videos Grid */}
-          {activeTab === 'videos' && (
-            <>
-              {videos.length === 0 ? (
-                <div className="text-center py-20">
-                  <FaVideo className="w-20 h-20 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">No Videos Yet</h3>
-                  <p className="text-gray-600 text-lg">
-                    Videos will be added soon. Check back later!
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {videos.map((video) => (
+                {showCategoryDropdown && (
+                  <>
+                    {/* Backdrop */}
                     <div 
-                      key={video.id} 
-                      className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-2xl transition-all group"
-                    >
-                      <div className="aspect-video bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center relative overflow-hidden">
-                        <FaVideo className="w-16 h-16 text-emerald-600 group-hover:scale-110 transition-transform" />
-                        <div className="absolute inset-0 bg-emerald-600 opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                      </div>
-                      <div className="p-5">
-                        <h3 className="font-bold text-lg text-gray-900 mb-3">{video.title}</h3>
-                        <a 
-                          href={video.link} 
-                          className="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-semibold transition-colors"
+                      className="fixed inset-0 z-10"
+                      onClick={() => setShowCategoryDropdown(false)}
+                    />
+                    
+                    {/* Dropdown Menu */}
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-64 overflow-y-auto">
+                      {activeCategories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => setActiveSelectedCategory(category)}
+                          className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors border-b border-gray-100 last:border-b-0 ${
+                            activeSelectedCategory === category
+                              ? 'bg-emerald-50 text-emerald-700'
+                              : 'text-gray-700 hover:bg-gray-50'
+                          }`}
                         >
-                          <span>Watch Video</span>
-                          <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </a>
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Desktop Pills */}
+              <div className="hidden md:flex gap-2 flex-wrap">
+                {activeCategories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setActiveSelectedCategory(category)}
+                    className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                      activeSelectedCategory === category
+                        ? 'bg-emerald-50 border-emerald-600 text-emerald-700'
+                        : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Search */}
+            <div className="relative w-full md:w-72 flex-shrink-0">
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={`Search ${activeTab}...`}
+                className="w-full pl-9 pr-9 py-2.5 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              />
+              {query && (
+                <button
+                  onClick={() => setQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <FaTimes className="text-sm" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Content Area */}
+      <section className="container mx-auto max-w-6xl px-4 mt-6 md:mt-8">
+        {/* Photos Tab */}
+        {activeTab === 'photos' && (
+          <>
+            {loading ? (
+              <div className="text-center py-16 md:py-20 text-gray-500">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mb-3"></div>
+                <p>Loading photos...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-16 md:py-20">
+                <p className="text-red-500 mb-4">{error}</p>
+                <button
+                  onClick={fetchPhotos}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+                >
+                  Try Again
+                </button>
+              </div>
+            ) : filteredPhotos.length === 0 ? (
+              <div className="text-center py-16 md:py-20">
+                <div className="text-gray-400 text-5xl mb-4">📷</div>
+                <p className="text-gray-500 text-lg">No photos found.</p>
+                <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search query.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {filteredPhotos.map((photo) => (
+                  <div
+                    key={photo.id}
+                    onClick={() => setLightboxPhoto(photo)}
+                    className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+                  >
+                    <div className="aspect-video bg-gray-100 relative">
+                      <img
+                        src={photo.image}
+                        alt={photo.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://via.placeholder.com/600x400?text=No+Image';
+                        }}
+                      />
+                    </div>
+                    <div className="p-4">
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
+                          {photo.category}
+                        </span>
+                        {photo.featured && (
+                          <span className="text-xs font-semibold text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">{photo.title}</h3>
+                      {photo.description && (
+                        <p className="text-xs md:text-sm text-gray-600 line-clamp-2">{photo.description}</p>
+                      )}
+                      {photo.eventDate && (
+                        <p className="text-xs text-gray-400 mt-3">{formatEventDate(photo.eventDate)}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Videos Tab */}
+        {activeTab === 'videos' && (
+          <>
+            {filteredVideos.length === 0 ? (
+              <div className="text-center py-16 md:py-20">
+                <div className="text-gray-400 text-5xl mb-4">🎥</div>
+                <p className="text-gray-500 text-lg">No videos found.</p>
+                <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search query.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                {filteredVideos.map((video) => (
+                  <a
+                    key={video.id}
+                    href={video.link}
+                    className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow block group"
+                  >
+                    <div className="aspect-video bg-gray-900 relative flex items-center justify-center">
+                      <img
+                        src={video.thumbnail || 'https://via.placeholder.com/600x400?text=Video'}
+                        alt={video.title}
+                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                        loading="lazy"
+                      />
+                      <div className="absolute flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white rounded-full shadow-lg group-hover:scale-110 transition-transform">
+                        <FaPlay className="text-emerald-600 ml-1 text-sm md:text-base" />
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Placeholder message for videos */}
-              <div className="mt-12 text-center">
-                <p className="text-gray-500 italic">
-                  More videos will be added soon. Check back regularly!
-                </p>
+                    <div className="p-4">
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
+                          {video.category}
+                        </span>
+                        {video.featured && (
+                          <span className="text-xs font-semibold text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">{video.title}</h3>
+                      {video.description && (
+                        <p className="text-xs md:text-sm text-gray-600 line-clamp-2">{video.description}</p>
+                      )}
+                    </div>
+                  </a>
+                ))}
               </div>
-            </>
-          )}
-        </div>
+            )}
+          </>
+        )}
       </section>
+
+      {/* Lightbox Modal */}
+      {lightboxPhoto && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 flex flex-col"
+          onClick={() => setLightboxPhoto(null)}
+        >
+          <div className="flex justify-end p-3 md:p-4">
+            <button
+              onClick={() => setLightboxPhoto(null)}
+              className="text-white hover:text-gray-300 p-2 rounded-full hover:bg-white/10 transition-colors"
+              aria-label="Close"
+            >
+              <FaTimes className="text-xl md:text-2xl" />
+            </button>
+          </div>
+          
+          <div className="flex-1 overflow-auto flex items-center justify-center p-3 md:p-4">
+            <div 
+              className="max-w-5xl w-full bg-white rounded-lg overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={lightboxPhoto.image}
+                alt={lightboxPhoto.title}
+                className="w-full max-h-[60vh] md:max-h-[70vh] object-contain bg-gray-100"
+              />
+              <div className="p-4 md:p-6">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
+                    {lightboxPhoto.category}
+                  </span>
+                  {lightboxPhoto.featured && (
+                    <span className="text-xs font-semibold text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
+                      Featured
+                    </span>
+                  )}
+                  {lightboxPhoto.eventDate && (
+                    <span className="text-xs text-gray-500 px-2 py-1">
+                      {formatEventDate(lightboxPhoto.eventDate)}
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{lightboxPhoto.title}</h3>
+                {lightboxPhoto.description && (
+                  <p className="text-sm md:text-base text-gray-600">{lightboxPhoto.description}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

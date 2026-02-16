@@ -1,178 +1,237 @@
-import { FaEye, FaBullseye, FaUsers, FaHandshake, FaLeaf, FaAward } from 'react-icons/fa';
+import { FaEye, FaBullseye } from 'react-icons/fa';
 import SEO from '../components/common/SEO';
 
 const About = () => {
   const values = [
     {
-      icon: <FaHandshake className="w-12 h-12 text-emerald-600" />,
-      title: "Collaboration",
-      description: "Building strong partnerships with communities, institutions, and stakeholders."
+      title: 'Honesty',
+      description: 'We uphold the truth at all times in all our dealings and communications.'
     },
     {
-      icon: <FaLeaf className="w-12 h-12 text-emerald-600" />,
-      title: "Sustainability",
-      description: "Promoting environmentally responsible and economically viable agricultural practices."
+      title: 'Innovation',
+      description: "We look out for the most efficient ways to meet our clients' needs and drive agricultural transformation."
     },
     {
-      icon: <FaAward className="w-12 h-12 text-emerald-600" />,
-      title: "Excellence",
-      description: "Delivering high-quality training, services, and solutions that create real impact."
+      title: 'Professionalism',
+      description: 'We conduct our work to expected professional standards, delivering excellence in every engagement.'
     },
     {
-      icon: <FaUsers className="w-12 h-12 text-emerald-600" />,
-      title: "Empowerment",
-      description: "Equipping communities with knowledge and tools to achieve self-sufficiency."
+      title: 'Confidentiality',
+      description: 'We keep confidential any information entrusted to us by clients, ensuring trust and privacy.'
+    },
+    {
+      title: 'Fairness',
+      description: 'We are fair in dealing with our clients and practice equity in all our interactions.'
     }
   ];
 
-  const team = [
-    { name: "Leadership Team", role: "Strategic direction and oversight" },
-    { name: "Training Experts", role: "Curriculum development and delivery" },
-    { name: "Agricultural Specialists", role: "Technical advisory and field support" },
-    { name: "Business Advisors", role: "Enterprise development and partnerships" }
+  const impactAreas = [
+    {
+      title: 'Small & Large Scale Producers',
+      description: 'Supporting agricultural producers of all scales with technical expertise.'
+    },
+    {
+      title: 'Farm Input Suppliers',
+      description: 'Empowering suppliers with knowledge and quality standards.'
+    },
+    {
+      title: 'Processors & Investors',
+      description: 'Guiding agribusiness investors and processors toward sustainable growth.'
+    }
+  ];
+
+  const sdgContributions = [
+    { number: '1 & 2', text: 'Reducing poverty and hunger' },
+    { number: '3 & 5', text: 'Promoting good health and gender equality' },
+    { number: '8 & 9', text: 'Creating employment and industrial growth' },
+    { number: '13-15', text: 'Climate action and environmental well-being' }
   ];
 
   return (
     <>
-      <SEO 
+      <SEO
         title="About Us"
-        description="F.a.C.T LTD is a leading agricultural development organization empowering farmers, youth, and entrepreneurs across Kenya through training, advisory services, and sustainable solutions."
-        keywords="F.a.C.T LTD, agricultural development Kenya, farming training organization, agricultural advisory services"
+        description="Farm and Community Technologies Limited (F.a.C.T Ltd) is a Kenyan company providing technical expertise and specialist knowledge to stakeholders in agricultural production, agribusiness, and food security sectors since 2007."
+        keywords="F.a.C.T Ltd, Farm and Community Technologies, agricultural services Kenya, agribusiness consulting, farm training Kenya, agricultural technical services"
       />
 
-      <div className="bg-gray-50">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-emerald-600 to-teal-700 text-white py-20 px-4">
-          <div className="container mx-auto max-w-4xl text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">About F.a.C.T LTD</h1>
-            <p className="text-xl text-emerald-50">
-              Transforming communities through agricultural knowledge, innovation, and sustainable practices.
+      <div className="bg-white">
+        {/* Hero with Background Image */}
+        <section className="relative bg-gray-900 text-white py-20 md:py-32 px-4 overflow-hidden">
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: "url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1920&q=80')"
+            }}
+          />
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/90 via-emerald-800/85 to-teal-900/90" />
+          
+          {/* Content */}
+          <div className="container mx-auto max-w-4xl relative z-10">
+            <p className="text-sm font-semibold text-emerald-300 mb-3">Since 2007 • Transforming Agriculture</p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">About F.a.C.T Ltd</h1>
+            <p className="text-xl md:text-2xl text-emerald-50 font-light mb-3">
+              Farm and Community Technologies Limited
+            </p>
+            <p className="text-base md:text-lg text-emerald-100 max-w-3xl leading-relaxed">
+              Providing technical expertise and specialist knowledge to stakeholders in agricultural production, agribusiness, and food security sectors across Kenya and beyond.
             </p>
           </div>
         </section>
 
         {/* Who We Are */}
-        <section className="py-20 px-4">
-          <div className="container mx-auto max-w-6xl">
-            <div className="bg-white rounded-xl shadow-lg p-8 md:p-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Who We Are</h2>
-              <p className="text-gray-700 text-lg leading-relaxed mb-6">
-                Farming and Community Training Limited (F.a.C.T LTD) is a leading agricultural development 
-                organization dedicated to empowering farmers, youth, entrepreneurs, and communities across Kenya 
-                and beyond. Since our establishment, we have been at the forefront of bridging the gap between 
-                traditional farming practices and modern agricultural technology.
+        <section className="py-14 md:py-16 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Who We Are</h2>
+
+            <div className="mt-6 space-y-5 text-gray-700 leading-relaxed">
+              <p>
+                <strong>Farm and Community Technologies Limited (F.a.C.T Ltd)</strong> is a Kenyan company incorporated in{' '}
+                <strong>November 2007</strong> to provide technical expertise and specialist knowledge and services targeted at
+                stakeholders in agricultural production, agribusiness and food security sectors in Kenya and beyond.
               </p>
-              <p className="text-gray-700 text-lg leading-relaxed mb-6">
-                We serve as a comprehensive platform for agricultural training, advisory services, and sustainable 
-                solutions. Our approach combines practical knowledge, innovative technology, and community engagement 
-                to create lasting impact in the agricultural sector.
+              <p>
+                Since then, we have continued to significantly impact the livelihoods of many small and large scale agricultural
+                producers, farm input suppliers, processors, as well as investors in agribusiness through our diverse range of
+                products and services.
               </p>
-              <p className="text-gray-700 text-lg leading-relaxed">
-                Through our four core focus areas—Knowledge & Training, Agricultural Inputs, Enterprise Building, 
-                and Analytical Services—we provide end-to-end support for individuals and organizations looking to 
-                thrive in agriculture.
+              <p>
+                At F.a.C.T we believe that <strong>agri-enterprise is the way to wealth</strong> and a sure strategy to uplift the
+                economy of African countries. We know that agriculture has evolved, and is still changing, from the subsistence
+                activity it was decades ago to a highly dynamic business with the highest potential for profit and possibility of
+                empowering communities across Africa to achieve high quality lives.
+              </p>
+              <p>
+                Agri-enterprise contributes directly to at least <strong>12 of the 17 Sustainable Development Goals</strong> set by
+                the UN members on reducing poverty and hunger (1, 2), promoting good health and gender equality (3, 5), creating
+                employment and industrial growth (8, 9), Climate Action and the well being of life below water and on land (13, 14,
+                15).
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Impact */}
+        <section className="py-14 md:py-16 px-4 bg-gray-50">
+          <div className="container mx-auto max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Our Impact</h2>
+            <p className="text-gray-600 mt-3">
+              We recognise the importance of the agricultural sector to millions of people, and this keeps us motivated in driving
+              change and impact.
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              {impactAreas.map((area, index) => (
+                <div key={index} className="bg-white border border-gray-200 rounded-lg p-5">
+                  <h3 className="font-bold text-gray-900 mb-2">{area.title}</h3>
+                  <p className="text-sm text-gray-600">{area.description}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Who we serve */}
+            <div className="mt-8 bg-white border border-emerald-200 rounded-lg p-6 border-l-4 border-l-emerald-600">
+              <h3 className="text-xl font-bold text-gray-900">Who We Serve</h3>
+              <p className="text-gray-700 mt-3 leading-relaxed">
+                In addition to working with full-time agro-entrepreneurs, we are delighted to work with <strong>youth</strong> as
+                well as <strong>professionals from diverse backgrounds</strong> (law, engineering, medical, politics, business,
+                etc) newly venturing into agribusiness.
+              </p>
+              <p className="text-gray-700 mt-4 leading-relaxed">
+                The purpose of our existence is to support people, either as <strong>individuals, groups or organisations</strong>{' '}
+                to succeed in their undertakings in agriculture and agribusiness. Whatever your need may be, if you are a practising
+                or an aspiring agro-entrepreneur, we are available to help out.
               </p>
             </div>
           </div>
         </section>
 
         {/* Vision & Mission */}
-        <section className="py-20 px-4 bg-white">
-          <div className="container mx-auto max-w-6xl">
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Vision */}
-              <div className="bg-white rounded-xl shadow-lg p-8 border-t-4 border-emerald-600">
-                <div className="flex items-center mb-4">
-                  <FaEye className="w-10 h-10 text-emerald-600 mr-4" />
-                  <h3 className="text-2xl font-bold text-gray-900">Our Vision</h3>
+        <section className="py-14 md:py-16 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="bg-gradient-to-br from-emerald-50 to-white border border-emerald-200 rounded-lg p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-emerald-100 p-3 rounded-lg">
+                    <FaEye className="w-5 h-5 text-emerald-700" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">Our Vision</h3>
                 </div>
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  To be the leading catalyst for agricultural transformation and community development across 
-                  Africa through knowledge, technology, and sustainable practices that ensure food security 
-                  and economic prosperity.
+                <p className="text-gray-700 leading-relaxed">
+                  To be a leading provider of knowledge resources and technical services to agro-entrepreneurs.
                 </p>
               </div>
 
-              {/* Mission */}
-              <div className="bg-white rounded-xl shadow-lg p-8 border-t-4 border-teal-600">
-                <div className="flex items-center mb-4">
-                  <FaBullseye className="w-10 h-10 text-teal-600 mr-4" />
-                  <h3 className="text-2xl font-bold text-gray-900">Our Mission</h3>
+              <div className="bg-gradient-to-br from-teal-50 to-white border border-teal-200 rounded-lg p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-teal-100 p-3 rounded-lg">
+                    <FaBullseye className="w-5 h-5 text-teal-700" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">Our Mission</h3>
                 </div>
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  Empowering farmers, youth, and entrepreneurs with practical training, quality inputs, expert 
-                  advisory services, and business support needed to build thriving agricultural enterprises and 
-                  sustainable communities.
+                <p className="text-gray-700 leading-relaxed">
+                  To provide quality knowledge and training, promote innovation, competitiveness, sustained growth and profitability
+                  of agro-enterprises.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Core Values */}
-        <section className="py-20 px-4">
-          <div className="container mx-auto max-w-6xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900">
-              Our Core Values
-            </h2>
-            <p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-              The principles that guide everything we do at F.a.C.T LTD.
-            </p>
+        {/* Values */}
+        <section className="py-14 md:py-16 px-4 bg-gray-50">
+          <div className="container mx-auto max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Our Core Values</h2>
+            <p className="text-gray-600 mt-3">The principles that guide everything we do at F.a.C.T Ltd.</p>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {values.map((value, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition-all text-center">
-                  <div className="flex justify-center mb-4">{value.icon}</div>
-                  <h3 className="text-xl font-bold mb-3 text-gray-900">{value.title}</h3>
-                  <p className="text-gray-600">{value.description}</p>
+                <div key={index} className="bg-white border border-gray-200 rounded-lg p-5 hover:border-emerald-300 transition-colors">
+                  <h3 className="font-bold text-gray-900 mb-2">{value.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">{value.description}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Our Team */}
-        <section className="py-20 px-4 bg-white">
-          <div className="container mx-auto max-w-6xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-gray-900">
-              Our Team
-            </h2>
-            <p className="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-              Experienced professionals dedicated to agricultural excellence and community development.
+        {/* SDG */}
+        <section className="py-14 md:py-16 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Sustainable Development</h2>
+            <p className="text-gray-600 mt-3">
+              Agri-enterprise contributes directly to at least 12 of the 17 UN Sustainable Development Goals.
             </p>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {team.map((member, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-md p-6 border-l-4 border-emerald-600 hover:shadow-lg transition-all">
-                  <h3 className="text-xl font-bold mb-2 text-gray-900">{member.name}</h3>
-                  <p className="text-gray-600">{member.role}</p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {sdgContributions.map((sdg, index) => (
+                <div key={index} className="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-bold text-lg text-emerald-700">SDG {sdg.number}</div>
+                    <div className="text-xs text-emerald-600 font-medium">UN Goals</div>
+                  </div>
+                  <p className="text-sm text-gray-700">{sdg.text}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Why Choose Us - Stats */}
-        <section className="py-20 px-4 bg-gray-900 text-white">
-          <div className="container mx-auto max-w-6xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Why Choose F.a.C.T LTD?
-            </h2>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="text-5xl font-bold mb-2 text-emerald-400">500+</div>
-                <p className="text-gray-300 text-lg">Farmers Trained</p>
-              </div>
-              <div className="text-center">
-                <div className="text-5xl font-bold mb-2 text-emerald-400">50+</div>
-                <p className="text-gray-300 text-lg">Training Programs</p>
-              </div>
-              <div className="text-center">
-                <div className="text-5xl font-bold mb-2 text-emerald-400">100+</div>
-                <p className="text-gray-300 text-lg">Partnerships</p>
-              </div>
-            </div>
+        {/* CTA */}
+        <section className="py-14 md:py-16 px-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
+          <div className="container mx-auto max-w-4xl text-center">
+            <h2 className="text-2xl md:text-3xl font-bold">Ready to Transform Your Agribusiness?</h2>
+            <p className="text-emerald-50 mt-4 max-w-2xl mx-auto text-lg">
+              Whatever your need may be, if you are a practising or an aspiring agro-entrepreneur, we are available to help out.
+            </p>
+            <a
+              href="/contact"
+              className="inline-flex items-center justify-center mt-6 bg-white text-emerald-700 px-8 py-3 rounded-lg font-bold hover:bg-emerald-50 transition-colors shadow-lg"
+            >
+              Contact Us Today
+            </a>
           </div>
         </section>
       </div>

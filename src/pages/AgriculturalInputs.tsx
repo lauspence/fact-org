@@ -1,14 +1,11 @@
-import { FaMicrochip, FaTools, FaSeedling, FaLeaf, FaShieldAlt, FaTint, FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import SEO from '../components/common/SEO';
-
 
 const AgriculturalInputs = () => {
   const categories = [
     {
       title: "Smart Technology",
       description: "Innovative IoT solutions and tools for modern farming efficiency.",
-      icon: <FaMicrochip className="w-10 h-10 text-emerald-600" />,
       items: [
         "Soil Moisture Sensors",
         "Weather Stations",
@@ -19,7 +16,6 @@ const AgriculturalInputs = () => {
     {
       title: "Farm Tools & Equipment",
       description: "Quality equipment and machinery for enhanced productivity.",
-      icon: <FaTools className="w-10 h-10 text-emerald-600" />,
       items: [
         "Hand Tools (Hoes, spades, pruning shears)",
         "Mechanized Equipment (Tillers, harvesters)",
@@ -30,7 +26,6 @@ const AgriculturalInputs = () => {
     {
       title: "Planting Materials",
       description: "High-quality seedlings and certified propagation materials.",
-      icon: <FaSeedling className="w-10 h-10 text-emerald-600" />,
       items: [
         "Certified Seeds (High-yield varieties)",
         "Grafted Fruit Seedlings",
@@ -41,7 +36,6 @@ const AgriculturalInputs = () => {
     {
       title: "Plant Nutrition Products",
       description: "Comprehensive nutrition solutions for optimal plant growth and health.",
-      icon: <FaLeaf className="w-10 h-10 text-emerald-600" />,
       items: [
         "Fertilisers",
         "Plant hormones",
@@ -53,7 +47,6 @@ const AgriculturalInputs = () => {
     {
       title: "Pest Control Solutions",
       description: "Advanced and eco-friendly pest management technologies.",
-      icon: <FaShieldAlt className="w-10 h-10 text-emerald-600" />,
       items: [
         "Biopesticides",
         "AI aided pest detection",
@@ -66,7 +59,6 @@ const AgriculturalInputs = () => {
     {
       title: "Irrigation Products and Services",
       description: "Complete water management solutions for efficient irrigation.",
-      icon: <FaTint className="w-10 h-10 text-emerald-600" />,
       items: [
         "Drip irrigation installation",
         "Hydrogels",
@@ -77,6 +69,23 @@ const AgriculturalInputs = () => {
     }
   ];
 
+  const features = [
+    {
+      emoji: "✓",
+      title: "Quality Assured",
+      description: "Certified and tested products"
+    },
+    {
+      emoji: "💡",
+      title: "Expert Guidance",
+      description: "Installation support and advisory services"
+    },
+    {
+      emoji: "🚚",
+      title: "Complete Service",
+      description: "Installation support, and post sales services"
+    }
+  ];
 
   return (
     <>
@@ -86,10 +95,9 @@ const AgriculturalInputs = () => {
         keywords="agricultural inputs Kenya, farm equipment Kenya, certified seeds, smart farming technology, irrigation equipment, farm tools Kenya, plant nutrition, pest control, fertilizers Kenya"
       />
 
-
       <div className="bg-white">
         {/* Hero Section */}
-        <section className="bg-white border-b-2 border-gray-200 py-16 px-4">
+        <section className="bg-white border-b border-gray-200 py-16 px-4">
           <div className="container mx-auto max-w-4xl text-center">
             <div className="inline-block bg-emerald-100 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
               Quality Inputs
@@ -103,34 +111,32 @@ const AgriculturalInputs = () => {
           </div>
         </section>
 
-
         {/* Categories - Clean Cards */}
-        <section className="py-20 px-4 bg-gray-50">
+        <section className="py-16 md:py-20 px-4 bg-gray-50">
           <div className="container mx-auto max-w-7xl">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {categories.map((category, index) => (
-                <div key={index} className="bg-white rounded-2xl border border-gray-200 p-8 hover:border-emerald-200 hover:shadow-lg transition-all">
-                  <div className="mb-6">
-                    {category.icon}
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 text-gray-900">{category.title}</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">{category.description}</p>
+                <div 
+                  key={index} 
+                  className="bg-white rounded-xl border border-gray-200 p-6 md:p-8 hover:border-emerald-300 hover:shadow-lg transition-all"
+                >
+                  <h3 className="text-xl md:text-2xl font-bold mb-3 text-gray-900">{category.title}</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed text-sm md:text-base">{category.description}</p>
                   
-                  <ul className="space-y-2.5">
+                  <ul className="space-y-2.5 mb-6">
                     {category.items.map((item, idx) => (
                       <li key={idx} className="flex items-start text-sm text-gray-700">
-                        <span className="text-emerald-600 mr-2 mt-0.5">✓</span>
+                        <span className="text-emerald-600 mr-2 mt-0.5 font-bold">•</span>
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
 
-
                   <Link
                     to="/marketplace"
-                    className="inline-flex items-center gap-2 mt-6 text-emerald-600 font-semibold hover:text-emerald-700 transition-colors text-sm"
+                    className="inline-block text-emerald-600 font-semibold hover:text-emerald-700 hover:underline transition-colors text-sm"
                   >
-                    View Products <FaArrowRight className="text-xs" />
+                    View Products →
                   </Link>
                 </div>
               ))}
@@ -138,67 +144,70 @@ const AgriculturalInputs = () => {
           </div>
         </section>
 
-
         {/* Features */}
-        <section className="py-20 px-4 bg-white">
+        <section className="py-16 md:py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
                 Why Choose Our Inputs?
               </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                We provide comprehensive support from selection to installation and beyond
+              </p>
             </div>
 
-
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">✓</span>
+              {features.map((feature, index) => (
+                <div key={index} className="text-center">
+                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl">{feature.emoji}</span>
+                  </div>
+                  <h3 className="font-bold mb-2 text-gray-900 text-lg">{feature.title}</h3>
+                  <p className="text-gray-600 text-sm">{feature.description}</p>
                 </div>
-                <h3 className="font-bold mb-2 text-gray-900">Quality Assured</h3>
-                <p className="text-gray-600 text-sm">Certified and tested products</p>
-              </div>
-
-
-              <div className="text-center">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">💡</span>
-                </div>
-                <h3 className="font-bold mb-2 text-gray-900">Expert Guidance</h3>
-                <p className="text-gray-600 text-sm">Installation support and advisory services</p>
-              </div>
-
-
-              <div className="text-center">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🚚</span>
-                </div>
-                <h3 className="font-bold mb-2 text-gray-900">Complete Service</h3>
-                <p className="text-gray-600 text-sm">Delivery, installation support, and post sales services</p>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
+        {/* Additional Info Section */}
+        <section className="py-16 px-4 bg-gray-50">
+          <div className="container mx-auto max-w-4xl">
+            <div className="bg-white border border-emerald-200 rounded-xl p-6 md:p-8 border-l-4 border-l-emerald-600">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Complete Agricultural Solutions
+              </h3>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                Beyond providing quality inputs, we offer comprehensive support including technical advisory, installation services, 
+                and ongoing consultation to ensure you get the most out of your investment.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                Our team of agricultural experts is ready to help you select the right products for your specific needs, 
+                climate conditions, and farming goals. We believe in building long-term partnerships with our clients.
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* CTA */}
-        <section className="py-20 px-4 bg-emerald-600 text-white">
+        <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
           <div className="container mx-auto max-w-3xl text-center">
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Ready to Order?
             </h2>
-            <p className="text-lg text-emerald-100 mb-8">
+            <p className="text-lg md:text-xl text-emerald-100 mb-8">
               Contact us for pricing, availability, and delivery options
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 bg-white text-emerald-600 px-8 py-4 rounded-lg font-semibold hover:bg-emerald-50 transition-colors shadow-lg"
+                className="inline-block bg-white text-emerald-700 px-8 py-3 rounded-lg font-bold hover:bg-emerald-50 transition-colors shadow-lg"
               >
-                Contact Us <FaArrowRight />
+                Contact Us →
               </Link>
               <Link
                 to="/marketplace"
-                className="inline-flex items-center justify-center gap-2 bg-emerald-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-800 transition-colors border border-white/20"
+                className="inline-block bg-emerald-700 text-white px-8 py-3 rounded-lg font-bold hover:bg-emerald-800 transition-colors border-2 border-white/30"
               >
                 Browse Marketplace
               </Link>
@@ -209,6 +218,5 @@ const AgriculturalInputs = () => {
     </>
   );
 };
-
 
 export default AgriculturalInputs;
