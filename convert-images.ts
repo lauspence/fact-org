@@ -23,7 +23,19 @@ const imageConfig: ImageConfig = {
   'harvest1.jpg': [640, 1024],
   'youth.jpg': [640, 1024],
   'innovation.jpg': [640, 1024],
-  'community-banner.jpg': [640, 1024, 1920]
+  'community-banner.jpg': [640, 1024, 1920],
+
+  // ✅ FIX: use the real filename WITH extension in /public/images
+  // Example filename: public/images/knowledge-training.jpg
+  'knowledge - training.jpg': [640, 1024, 1920],
+};
+
+const sanitizeBaseName = (name: string) => {
+  return name
+    .trim()
+    .replace(/\s+/g, '-')       // spaces -> hyphens
+    .replace(/[^a-zA-Z0-9-_]/g, '') // remove weird chars
+    .toLowerCase();
 };
 
 async function convertImages(): Promise<void> {
@@ -34,21 +46,24 @@ async function convertImages(): Promise<void> {
 
   for (const [filename, widths] of Object.entries(imageConfig)) {
     const inputPath = path.join(imagesDir, filename);
-    
+
     try {
       await fs.access(inputPath);
     } catch {
-      console.log(`⚠️  Skipping ${filename} (not found)`);
+      console.log(`⚠️  Skipping ${filename} (not found in ${imagesDir})`);
       continue;
     }
 
-    const baseName = path.basename(filename, '.jpg');
+    const parsed = path.parse(filename);
+    const baseNameRaw = parsed.name; // works for .jpg, .jpeg, .png...
+    const baseName = sanitizeBaseName(baseNameRaw);
+
     console.log(`📱 Converting ${filename}...`);
 
-    const originalBuffer = await fs.readFile(inputPath);
-    const originalSizeBytes = originalBuffer.length;
+    // Get original size
+    const originalStats = await fs.stat(inputPath);
+    const originalSizeBytes = originalStats.size;
     const originalSizeKB = Math.round(originalSizeBytes / 1024);
-
     console.log(`   📏 Original: ${originalSizeKB}KB`);
 
     for (const width of widths) {
@@ -65,24 +80,25 @@ async function convertImages(): Promise<void> {
       }
 
       try {
-        const processedImage = await sharp(originalBuffer)
-          .resize(width)
+        const processedBuffer = await sharp(inputPath)
+          .resize({ width, withoutEnlargement: true })
           .webp({ quality })
           .toBuffer();
 
-        await fs.writeFile(outputPath, processedImage);
+        await fs.writeFile(outputPath, processedBuffer);
 
-        const savingsPercent = ((1 - processedImage.length / originalSizeBytes) * 100);
-        const savingsBytes = originalSizeBytes - processedImage.length;
+        const savingsPercent = (1 - processedBuffer.length / originalSizeBytes) * 100;
+        const savingsBytes = originalSizeBytes - processedBuffer.length;
         totalSavingsBytes += savingsBytes;
         processedCount++;
 
-        const newSizeKB = Math.round(processedImage.length / 1024);
+        const newSizeKB = Math.round(processedBuffer.length / 1024);
         console.log(`  ✅ ${outputFilename.padEnd(28)} ${newSizeKB}KB (${savingsPercent.toFixed(1)}% ↓)`);
-      } catch (_error) {
+      } catch {
         console.log(`  ❌ ${outputFilename.padEnd(28)} Failed to process`);
       }
     }
+
     console.log('');
   }
 
@@ -92,8 +108,8 @@ async function convertImages(): Promise<void> {
   // Show results
   try {
     const files = await fs.readdir(imagesDir);
-    const newWebpFiles = files.filter(f => f.match(/-\d+\.webp$/)).sort();
-    
+    const newWebpFiles = files.filter((f) => f.match(/-\d+\.webp$/)).sort();
+
     if (newWebpFiles.length > 0) {
       console.log('\n✅ New responsive WebP files:');
       for (const f of newWebpFiles.slice(0, 15)) {
