@@ -439,7 +439,7 @@ const Home = () => {
         {/* Call to Action */}
         <section className="py-12 md:py-20 lg:py-24 px-4 bg-white">
           <div className="container mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6 text-gray-900">Ready to transform your agribusiness.?</h2>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6 text-gray-900">Ready to transform your agribusiness?</h2>
             <p className="text-gray-600 text-base md:text-lg mb-8 md:mb-10 max-w-2xl mx-auto">
               Join hundreds of farmers who have improved their yields, incomes, and sustainability through our training
               and services.

@@ -39,7 +39,7 @@ const AnalyticalServiceComingSoon = () => {
             </h1>
 
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
-              We are preparing this service for launch. For urgent inquiries, please contact us
+              This service is coming soon
             </p>
 
             <div className="flex justify-center">

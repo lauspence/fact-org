@@ -76,14 +76,14 @@ const Header = () => {
               className="flex items-center hover:text-emerald-400 text-xs sm:text-sm whitespace-nowrap"
             >
               <FaPhone className="mr-2" />
-              <span className="font-medium">+254 759 509615</span>
+              <span className="font-medium">+254 706 624605</span>
             </a>
             <a
               href="mailto:info@factltd.co.ke"
               className="flex items-center hover:text-emerald-400 text-xs sm:text-sm whitespace-nowrap"
             >
               <FaEnvelope className="mr-2" />
-              <span className="font-medium">info@factltd.co.ke</span>
+              <span className="font-medium">infofact07@gmail.com</span>
             </a>
           </div>
         </div>
@@ -117,7 +117,7 @@ const Header = () => {
                       scrolled ? 'text-gray-900' : 'text-white'
                     }`}
                   >
-                    FACT
+                    FaCT
                   </span>
 
                   <span
@@ -136,7 +136,7 @@ const Header = () => {
                       scrolled ? 'text-gray-900' : 'text-white'
                     }`}
                   >
-                    FACT
+                    FaCT
                   </span>
 
                   <span

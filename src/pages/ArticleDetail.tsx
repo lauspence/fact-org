@@ -273,7 +273,7 @@ const ArticleDetail = () => {
         <section className="py-16 px-4 bg-white border-t border-gray-200">
           <div className="container mx-auto max-w-3xl text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
-              Ready to transform your agribusiness.?
+              Ready to transform your agribusiness?
             </h2>
             <p className="text-gray-600 mb-8">
               Explore our training programs and services
