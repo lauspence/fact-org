@@ -21,6 +21,7 @@ const KnowledgeTraining = () => {
         "Fruits production (avocado, banana, mango, passion, etc)",
         "Vegetable farming (exotic and African leafy vegetables)",
         "Greenhouse tomato farming",
+        "Greenhouse tomato farming",
         "Exotic fruits (apples, berries, dragon fruit, lychee)",
         "Herbs and spices",
         "Medicinal plants"
@@ -93,9 +94,10 @@ const KnowledgeTraining = () => {
         image="/images/knowledge---training-1920.webp"
       />
 
-      <div className="bg-gray-50/90 min-h-screen">
+      <div className="bg-gray-50 min-h-screen">
         {/* Hero Section */}
         <section className="relative border-b border-emerald-100/60 py-16 sm:py-20 px-4 overflow-hidden">
+          {/* Background image */}
           <div className="absolute inset-0">
             <picture>
               <source
@@ -117,38 +119,47 @@ const KnowledgeTraining = () => {
               />
             </picture>
 
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/80 via-emerald-900/60 to-gray-900/80" />
+            {/* ✅ One strong overlay for readability (no white card needed) */}
+            <div className="absolute inset-0 bg-gradient-to-b from-gray-950/75 via-emerald-950/55 to-gray-950/80" />
           </div>
 
+          {/* Content sits directly on the image */}
           <div className="container mx-auto max-w-6xl relative z-10">
             <div className="mx-auto max-w-3xl text-center">
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-6 border border-white/25 shadow-sm">
-                <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              {/* badge */}
+              <div className="inline-flex items-center gap-2 bg-emerald-600/90 text-white px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-6 shadow-md">
+                <span className="inline-block h-2 w-2 rounded-full bg-emerald-200 animate-pulse" />
                 Empowering Growth
               </div>
 
-              <div className="bg-white/12 backdrop-blur-xl border border-white/20 rounded-3xl p-6 sm:p-8 md:p-10 shadow-[0_18px_45px_rgba(0,0,0,0.45)]">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-white tracking-tight">
-                  Knowledge &amp; Training
-                </h1>
-                <p className="text-sm sm:text-base md:text-lg text-emerald-50/90 leading-relaxed max-w-2xl mx-auto">
-                  Empowering communities through comprehensive agricultural training and knowledge resources.
-                </p>
+              {/* ✅ No white box. Just text on image */}
+              <h1
+                className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 text-white tracking-tight"
+                style={{ textShadow: '0 2px 18px rgba(0,0,0,0.55)' }}
+              >
+                Knowledge &amp; Training
+              </h1>
 
-                <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link
-                    to="/contact"
-                    className="inline-flex items-center justify-center bg-emerald-500 text-white px-6 py-3.5 sm:px-8 rounded-xl font-semibold hover:bg-emerald-600 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 text-sm sm:text-base"
-                  >
-                    Book Training →
-                  </Link>
-                  <Link
-                    to="/about"
-                    className="inline-flex items-center justify-center bg-white/12 text-white px-6 py-3.5 sm:px-8 rounded-xl font-semibold hover:bg-white/22 transition-all border border-white/25 text-sm sm:text-base"
-                  >
-                    Learn About Us
-                  </Link>
-                </div>
+              <p
+                className="text-sm sm:text-base md:text-lg text-white/90 leading-relaxed max-w-2xl mx-auto"
+                style={{ textShadow: '0 2px 14px rgba(0,0,0,0.5)' }}
+              >
+                Empowering communities through comprehensive agricultural training and knowledge resources.
+              </p>
+
+              <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center justify-center bg-emerald-500 text-white px-6 py-3.5 sm:px-8 rounded-xl font-semibold hover:bg-emerald-600 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 text-sm sm:text-base"
+                >
+                  Book Training →
+                </Link>
+                <Link
+                  to="/about"
+                  className="inline-flex items-center justify-center bg-white/10 text-white px-6 py-3.5 sm:px-8 rounded-xl font-semibold hover:bg-white/20 transition-all border border-white/20 text-sm sm:text-base"
+                >
+                  Learn About Us
+                </Link>
               </div>
             </div>
           </div>
@@ -170,7 +181,7 @@ const KnowledgeTraining = () => {
               {courseCategories.map((category, index) => (
                 <div
                   key={index}
-                  className="bg-white/90 backdrop-blur-sm rounded-2xl border border-emerald-50/60 p-6 sm:p-8 shadow-sm hover:shadow-2xl hover:border-emerald-200/80 hover:-translate-y-1 transition-all duration-300"
+                  className="bg-white rounded-2xl border border-emerald-100 p-6 sm:p-8 shadow-sm hover:shadow-xl hover:border-emerald-200 hover:-translate-y-1 transition-all duration-300"
                 >
                   <div className="flex items-start gap-3 mb-6 sm:mb-8">
                     <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shadow-inner mt-0.5">
@@ -183,10 +194,7 @@ const KnowledgeTraining = () => {
 
                   <ul className="space-y-2 sm:space-y-3">
                     {category.courses.map((course, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-start text-gray-700 text-sm sm:text-base"
-                      >
+                      <li key={idx} className="flex items-start text-gray-700 text-sm sm:text-base">
                         <FaCheckCircle className="text-emerald-600 mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
                         <span className="leading-relaxed">{course}</span>
                       </li>
@@ -259,7 +267,7 @@ const KnowledgeTraining = () => {
               {trainingFormats.map((format, index) => (
                 <div
                   key={index}
-                  className="text-center p-6 rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-emerald-50/40 border border-emerald-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-emerald-200 transition-all duration-300 group"
+                  className="text-center p-6 rounded-2xl bg-white border border-emerald-100 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-emerald-200 transition-all duration-300 group"
                 >
                   <div className="flex justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                     {format.icon}
@@ -287,7 +295,8 @@ const KnowledgeTraining = () => {
                 Practical, learner-centered, and focused on measurable impact.
               </p>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-8 md:p-10 border border-white/20 shadow-[0_18px_45px_rgba(0,0,0,0.45)]">
+
+            <div className="bg-emerald-900/40 rounded-3xl p-6 sm:p-8 md:p-10 border border-white/20 shadow-[0_18px_45px_rgba(0,0,0,0.35)]">
               <p className="text-base sm:text-lg leading-relaxed text-emerald-50/95">
                 Our approach to training is practical, learner-centered, and results-driven. We blend expert instruction with real-world case studies, hands-on demonstrations, and interactive discussions to ensure knowledge translates into action. By tailoring programs to diverse agricultural contexts, we empower farmers, entrepreneurs, and professionals with skills that enhance productivity, sustainability, and long-term business success.
               </p>
