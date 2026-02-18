@@ -17,7 +17,7 @@ const SEO = ({
   url = typeof window !== 'undefined' ? window.location.href : "",
   type = "website"
 }: SEOProps) => {
-  const siteName = "F.a.C.T LTD - Farming and Community Technologies Limited";
+  const siteName = "F.a.C.T LTD - Farm and Community Technologies Limited";
   const fullTitle = `${title} | ${siteName}`;
 
   useEffect(() => {

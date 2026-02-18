@@ -14,7 +14,7 @@ const Footer = () => {
             </h3>
 
             <p className="text-emerald-50 leading-relaxed mb-2 md:mb-4 text-sm md:text-base">
-              Farming and Community Technologies Limited - Transforming agriculture through sustainable practices, expert training, and innovative solutions for modern agribusiness.
+              Farm and Community Technologies Limited - Transforming agriculture through sustainable practices, expert training, and innovative solutions for modern agribusiness.
             </p>
             <p className="text-xs md:text-sm text-emerald-200">Knowledge for Progress</p>
           </div>

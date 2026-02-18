@@ -39,20 +39,13 @@ const AnalyticalServiceComingSoon = () => {
             </h1>
 
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
-              We’re preparing this service for launch. For urgent inquiries, please reach out and we’ll guide you.
+              We are preparing this service for launch. For urgent inquiries, please contact us
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg"
-              >
-                Contact Us
-              </Link>
-
+            <div className="flex justify-center">
               <Link
                 to="/analytical-services"
-                className="inline-flex items-center justify-center bg-white text-gray-900 px-8 py-4 rounded-lg font-semibold border border-gray-300 hover:border-emerald-200 hover:shadow-sm transition-all"
+                className="inline-flex items-center justify-center bg-emerald-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-emerald-700 transition-colors shadow-lg"
               >
                 Back to Analytical Services
               </Link>

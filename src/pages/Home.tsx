@@ -80,7 +80,7 @@ const Home = () => {
               Empowering Kenya's Agricultural Future
             </div>
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6 leading-tight drop-shadow-2xl">
-              Farming and Community Technologies Limited
+              Farm and Community Technologies Limited
             </h1>
             <p className="text-base md:text-xl lg:text-2xl mb-8 md:mb-10 text-emerald-50 leading-relaxed max-w-3xl mx-auto drop-shadow-lg font-light">
               Transforming agriculture through sustainable practices, expert training, and innovative solutions for modern agribusiness.

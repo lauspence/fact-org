@@ -5,7 +5,7 @@ const StructuredData = () => {
     const organizationSchema = {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Farming and Community Technologies Limited (F.a.C.T LTD)",
+      "name": "Farm and Community Technologies Limited (F.a.C.T LTD)",
       "alternateName": "F.a.C.T LTD",
       "url": typeof window !== 'undefined' ? window.location.origin : "",
       "description": "Leading agricultural development organization providing training, inputs, and advisory services to farming communities in Kenya.",
