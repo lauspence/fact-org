@@ -2,11 +2,11 @@ import { FaFlask, FaTint, FaLeaf, FaClipboardCheck, FaArrowRight } from 'react-i
 import { Link } from 'react-router-dom';
 import SEO from '../components/common/SEO';
 
-
 const AnalyticalServices = () => {
   const services = [
     {
       title: "Soil Analysis",
+      slug: "soil-analysis",
       icon: <FaFlask className="w-10 h-10 text-emerald-600" />,
       description: "Comprehensive soil testing for optimal crop nutrition and productivity.",
       tests: [
@@ -19,6 +19,7 @@ const AnalyticalServices = () => {
     },
     {
       title: "Water Testing",
+      slug: "water-testing",
       icon: <FaTint className="w-10 h-10 text-emerald-600" />,
       description: "Water quality assessment for safe irrigation and consumption.",
       tests: [
@@ -31,6 +32,7 @@ const AnalyticalServices = () => {
     },
     {
       title: "Pesticide Residue Analysis",
+      slug: "pesticide-residue-analysis",
       icon: <FaLeaf className="w-10 h-10 text-emerald-600" />,
       description: "Detection of pesticide residues for food safety and export compliance.",
       tests: [
@@ -43,7 +45,6 @@ const AnalyticalServices = () => {
     }
   ];
 
-
   const advisoryServices = [
     "Crop Nutrition Management",
     "Integrated Pest Management",
@@ -55,14 +56,12 @@ const AnalyticalServices = () => {
     "Problem Solving"
   ];
 
-
   const process = [
     { step: "1", title: "Sample Collection", desc: "Follow guidelines or request pickup" },
     { step: "2", title: "Lab Analysis", desc: "Certified testing methods" },
     { step: "3", title: "Results Report", desc: "Detailed interpretations" },
     { step: "4", title: "Advisory", desc: "Expert recommendations" }
   ];
-
 
   return (
     <>
@@ -71,7 +70,6 @@ const AnalyticalServices = () => {
         description="Professional laboratory analysis and expert advisory services for soil testing, water quality, and pesticide residue analysis in Kenya."
         keywords="soil testing Kenya, water quality testing, pesticide residue analysis, agricultural laboratory, farm advisory services"
       />
-
 
       <div className="bg-white">
         {/* Hero Section - Clean */}
@@ -89,33 +87,41 @@ const AnalyticalServices = () => {
           </div>
         </section>
 
-
         {/* Laboratory Services - Simplified Cards */}
         <section className="py-20 px-4 bg-gray-50">
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-3 gap-8">
               {services.map((service, index) => (
-                <div key={index} className="bg-white rounded-2xl border border-gray-200 p-8 hover:border-emerald-200 hover:shadow-lg transition-all">
+                <Link
+                  key={index}
+                  to={`/analytical/${service.slug}`}
+                  className="block bg-white rounded-2xl border border-gray-200 p-8 hover:border-emerald-200 hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-emerald-300"
+                >
                   <div className="mb-6">
                     {service.icon}
                   </div>
-                  <h3 className="text-2xl font-bold mb-3 text-gray-900">{service.title}</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">{service.description}</p>
-                  
-                  <ul className="space-y-3">
-                    {service.tests.map((test, idx) => (
-                      <li key={idx} className="flex items-start text-sm text-gray-700">
-                        <span className="text-emerald-600 mr-2 mt-0.5">✓</span>
-                        <span>{test}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+
+                  <h3 className="text-2xl font-bold mb-3 text-gray-900">
+                    {service.title}
+                  </h3>
+
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {service.description}
+                  </p>
+
+                  <div className="inline-flex items-center gap-2 text-emerald-700 font-semibold">
+                    Learn more <FaArrowRight className="w-4 h-4" />
+                  </div>
+
+                  {/* 
+                    ✅ Intentionally hidden for now (launch later).
+                    Tests remain in code internally, but not shown to users yet.
+                  */}
+                </Link>
               ))}
             </div>
           </div>
         </section>
-
 
         {/* Process - Streamlined */}
         <section className="py-20 px-4 bg-white">
@@ -128,7 +134,6 @@ const AnalyticalServices = () => {
                 Simple process from sample to solution
               </p>
             </div>
-
 
             <div className="grid md:grid-cols-4 gap-6">
               {process.map((item, index) => (
@@ -143,7 +148,6 @@ const AnalyticalServices = () => {
             </div>
           </div>
         </section>
-
 
         {/* Advisory Services - Compact Grid */}
         <section className="py-20 px-4 bg-gray-50">
@@ -161,7 +165,6 @@ const AnalyticalServices = () => {
               </div>
             </div>
 
-
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {advisoryServices.map((service, index) => (
                 <div key={index} className="bg-white rounded-lg p-4 border border-gray-200 hover:border-emerald-200 transition-all text-center">
@@ -171,7 +174,6 @@ const AnalyticalServices = () => {
             </div>
           </div>
         </section>
-
 
         {/* CTA - Minimal */}
         <section className="py-20 px-4 bg-white border-t border-gray-200">
@@ -194,6 +196,5 @@ const AnalyticalServices = () => {
     </>
   );
 };
-
 
 export default AnalyticalServices;

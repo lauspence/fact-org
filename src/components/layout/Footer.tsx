@@ -8,9 +8,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mb-6 md:mb-8">
           {/* About - Compact on Mobile */}
           <div>
-            <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-4 font-serif italic">F.a.C.T LTD</h3>
+            {/* ✅ Logo all white */}
+            <h3 className="text-lg md:text-2xl font-bold mb-2 md:mb-4">
+              Fa<span>C</span>T Ltd
+            </h3>
+
             <p className="text-emerald-50 leading-relaxed mb-2 md:mb-4 text-sm md:text-base">
-              Farming and Community Training Limited - Empowering communities through sustainable agriculture.
+              Farming and Community Technologies Limited - Transforming agriculture through sustainable practices, expert training, and innovative solutions for modern agribusiness.
             </p>
             <p className="text-xs md:text-sm text-emerald-200">Knowledge for Progress</p>
           </div>
@@ -46,29 +50,29 @@ const Footer = () => {
           <div>
             <h3 className="text-base md:text-xl font-bold mb-2 md:mb-4 text-yellow-400">Connect</h3>
             <div className="flex space-x-3 md:space-x-4">
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="text-emerald-100 hover:text-yellow-400 transition text-xl md:text-2xl"
                 aria-label="Facebook"
               >
                 <FaFacebook />
               </a>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="text-emerald-100 hover:text-yellow-400 transition text-xl md:text-2xl"
                 aria-label="Twitter"
               >
                 <FaTwitter />
               </a>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="text-emerald-100 hover:text-yellow-400 transition text-xl md:text-2xl"
                 aria-label="LinkedIn"
               >
                 <FaLinkedin />
               </a>
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="text-emerald-100 hover:text-yellow-400 transition text-xl md:text-2xl"
                 aria-label="Instagram"
               >
@@ -78,10 +82,10 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Copyright - Smaller on Mobile */}
+        {/* Copyright */}
         <div className="border-t border-emerald-700 pt-4 md:pt-6 text-center">
           <p className="text-emerald-200 text-xs md:text-sm">
-            © {new Date().getFullYear()} F.a.C.T LTD. All rights reserved.
+            © {new Date().getFullYear()} FaCT Ltd. All rights reserved.
           </p>
         </div>
       </div>

@@ -6,13 +6,13 @@ import KnowledgeTraining from './pages/KnowledgeTraining';
 import AgriculturalInputs from './pages/AgriculturalInputs';
 import EnterpriseBuilding from './pages/EnterpriseBuilding';
 import AnalyticalServices from './pages/AnalyticalServices';
+import AnalyticalServiceComingSoon from './pages/AnalyticalServiceComingSoon';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Marketplace from './pages/Marketplace';
 import ProductDetail from './pages/ProductDetail';
 import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
-
 
 function App() {
   return (
@@ -25,6 +25,10 @@ function App() {
           <Route path="agricultural-inputs" element={<AgriculturalInputs />} />
           <Route path="enterprise-building" element={<EnterpriseBuilding />} />
           <Route path="analytical-services" element={<AnalyticalServices />} />
+
+          {/* ✅ Category cards click → Coming Soon */}
+          <Route path="analytical/:slug" element={<AnalyticalServiceComingSoon />} />
+
           <Route path="marketplace" element={<Marketplace />} /> 
           <Route path="marketplace/:id" element={<ProductDetail />} />
           <Route path="articles" element={<Articles />} />
@@ -36,6 +40,5 @@ function App() {
     </BrowserRouter>
   );
 }
-
 
 export default App;
