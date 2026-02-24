@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { productsApi } from '../services/strapi';
+import { laravelApi } from '../services/laravel';
 import SEO from '../components/common/SEO';
 import { Link } from 'react-router-dom';
 import { FaShoppingCart, FaFilter, FaTag } from 'react-icons/fa';
@@ -19,15 +19,21 @@ type Description = string | RichTextBlock[];
 
 interface Product {
   id: number;
-  documentId?: string;
+  // documentId?: string; // ❌ Strapi only - remove if you want
   name: string;
   description?: Description;
   price?: number;
   category?: string;
-  inStock?: boolean;
   featured?: boolean;
   image?: string;
-  images?: Array<{ url: string; id: number; name: string }>;
+
+  // ✅ Laravel uses snake_case
+  in_stock?: boolean;
+
+  // ✅ Laravel controller validates images.* as strings
+  images?: string[];
+
+  // Any other fields from Laravel
   [key: string]: unknown;
 }
 
@@ -35,7 +41,7 @@ interface Product {
 const extractTextFromDescription = (description: Description | undefined): string => {
   if (!description) return '';
   if (typeof description === 'string') return description;
-  
+
   if (Array.isArray(description)) {
     return description
       .map(block => {
@@ -48,7 +54,7 @@ const extractTextFromDescription = (description: Description | undefined): strin
       })
       .join(' ');
   }
-  
+
   return '';
 };
 
@@ -62,7 +68,7 @@ const Marketplace = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = await productsApi.getAll(selectedCategory);
+        const data = await laravelApi.getProducts(selectedCategory);
         setProducts(data as Product[]);
         setError(null);
       } catch (error) {
@@ -80,9 +86,9 @@ const Marketplace = () => {
 
   return (
     <>
-      <SEO 
+      <SEO
         title="Marketplace"
-        description="Shop quality agricultural products, training courses, and publications from F.a.C.T Ltd"
+        description="Shop quality agricultural products, training courses, and publications from FaCT Ltd"
         keywords="agricultural products Kenya, farm inputs, training courses, farming publications"
       />
 
@@ -161,12 +167,12 @@ const Marketplace = () => {
                 </div>
                 <p className="text-2xl font-bold text-gray-900 mb-2">No products found</p>
                 <p className="text-base text-gray-500 mb-6 max-w-md mx-auto px-4">
-                  {selectedCategory 
-                    ? `No products in "${selectedCategory}" yet` 
+                  {selectedCategory
+                    ? `No products in "${selectedCategory}" yet`
                     : 'Check back soon or contact us'}
                 </p>
-                <Link 
-                  to="/contact" 
+                <Link
+                  to="/contact"
                   className="inline-block bg-gray-900 text-white px-6 md:px-8 py-3 rounded-lg hover:bg-gray-800 transition font-semibold text-sm md:text-base"
                 >
                   Contact Us
@@ -177,7 +183,7 @@ const Marketplace = () => {
                 {/* Results Count */}
                 <div className="mb-4 md:mb-6">
                   <p className="text-sm md:text-base text-gray-600 font-medium">
-                    {products.length} {products.length === 1 ? 'product' : 'products'} 
+                    {products.length} {products.length === 1 ? 'product' : 'products'}
                     {selectedCategory && ` in ${selectedCategory}`}
                   </p>
                 </div>
@@ -200,7 +206,7 @@ const Marketplace = () => {
                           />
                         ) : product.images && product.images.length > 0 ? (
                           <img
-                            src={product.images[0].url}
+                            src={product.images[0]} // ✅ Laravel: string[]
                             alt={product.name}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             loading="lazy"
@@ -210,7 +216,7 @@ const Marketplace = () => {
                             <FaShoppingCart className="text-4xl md:text-5xl text-gray-300" />
                           </div>
                         )}
-                        
+
                         {/* Badges - Compact on Mobile */}
                         <div className="absolute top-2 left-2 right-2 flex justify-between items-start gap-1">
                           {product.category && (
@@ -228,7 +234,7 @@ const Marketplace = () => {
                         </div>
 
                         {/* Out of Stock Overlay */}
-                        {product.inStock === false && (
+                        {product.in_stock === false && (
                           <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
                             <span className="text-white font-bold text-xs md:text-sm bg-red-600 px-3 py-1.5 rounded-lg">
                               Out of Stock
@@ -242,7 +248,7 @@ const Marketplace = () => {
                         <h3 className="text-sm md:text-base font-bold mb-2 text-gray-900 line-clamp-2 leading-snug">
                           {product.name}
                         </h3>
-                        
+
                         {/* Description - Hidden on Mobile */}
                         {product.description && (
                           <p className="hidden md:block text-gray-600 text-xs leading-relaxed mb-3 line-clamp-2">
@@ -266,7 +272,7 @@ const Marketplace = () => {
 
                         {/* CTA Button - Full Width on Mobile */}
                         <Link
-                          to={`/marketplace/${product.documentId || product.id}`}
+                          to={`/marketplace/${product.id}`} // ✅ Use Laravel ID
                           className="block w-full text-center bg-gray-900 text-white px-3 py-2 md:py-2.5 rounded-lg hover:bg-gray-800 transition text-xs md:text-sm font-semibold"
                         >
                           View Details

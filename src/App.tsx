@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';   // ✅ import hook
+
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -14,7 +16,17 @@ import ProductDetail from './pages/ProductDetail';
 import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
 
+import { laravelApi } from "./services/laravel";
+
 function App() {
+
+  // ✅ place useEffect inside component
+  useEffect(() => {
+    laravelApi.health()
+      .then(res => console.log("API OK:", res))
+      .catch(err => console.error("API ERROR:", err));
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -26,7 +38,7 @@ function App() {
           <Route path="enterprise-building" element={<EnterpriseBuilding />} />
           <Route path="analytical-services" element={<AnalyticalServices />} />
 
-          {/* ✅ Category cards click → Coming Soon */}
+          {/* Category cards click → Coming Soon */}
           <Route path="analytical/:slug" element={<AnalyticalServiceComingSoon />} />
 
           <Route path="marketplace" element={<Marketplace />} /> 

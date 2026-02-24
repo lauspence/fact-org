@@ -55,7 +55,7 @@ const Home = () => {
     <>
       <SEO
         title="Home"
-        description="F.a.C.T LTD - Empowering farming communities through sustainable agriculture, innovative training, and comprehensive support services across Kenya. Expert agricultural training, quality inputs, and advisory services."
+        description="FaCT LTD - Empowering farming communities through sustainable agriculture, innovative training, and comprehensive support services across Kenya. Expert agricultural training, quality inputs, and advisory services."
         keywords="farming Kenya, agricultural training, agribusiness Kenya, farm inputs, soil testing Kenya, agricultural services, climate-smart agriculture, farm technology Kenya"
         image="/images/hero-bg-1920.webp"
       />
@@ -206,7 +206,7 @@ const Home = () => {
               <div className="relative overflow-hidden rounded-xl md:rounded-2xl shadow-xl group h-72 md:h-96">
                 <ResponsiveWebPImage
                   baseName="community1"
-                  alt="F.a.C.T community training session"
+                  alt="FaCT community training session"
                   width={600}
                   height={400}
                   loading="lazy"
@@ -418,7 +418,7 @@ const Home = () => {
         <section className="relative h-72 md:h-96 lg:h-[500px] overflow-hidden">
           <ResponsiveWebPImage
             baseName="community-banner"
-            alt="F.a.C.T farming community working together in Kenya"
+            alt="FaCT farming community working together in Kenya"
             width={1200}
             height={400}
             loading="lazy"

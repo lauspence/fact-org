@@ -51,8 +51,8 @@ const About = () => {
     <>
       <SEO
         title="About Us"
-        description="Farm and Community Technologies Limited (F.a.C.T Ltd) is a Kenyan company providing technical expertise and specialist knowledge to stakeholders in agricultural production, agribusiness, and food security sectors since 2007."
-        keywords="F.a.C.T Ltd, Farm and Community Technologies, agricultural services Kenya, agribusiness consulting, farm training Kenya, agricultural technical services"
+        description="Farm and Community Technologies Limited (FaCT Ltd) is a Kenyan company providing technical expertise and specialist knowledge to stakeholders in agricultural production, agribusiness, and food security sectors since 2007."
+        keywords="FaCT Ltd, Farm and Community Technologies, agricultural services Kenya, agribusiness consulting, farm training Kenya, agricultural technical services"
       />
 
       <div className="bg-white">
@@ -71,7 +71,7 @@ const About = () => {
           {/* Content */}
           <div className="container mx-auto max-w-4xl relative z-10">
             <p className="text-sm font-semibold text-emerald-300 mb-3">Since 2007 • Transforming Agriculture</p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">About F.a.C.T Ltd</h1>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">About FaCT Ltd</h1>
             <p className="text-xl md:text-2xl text-emerald-50 font-light mb-3">
               Farm and Community Technologies Limited
             </p>
@@ -88,7 +88,7 @@ const About = () => {
 
             <div className="mt-6 space-y-5 text-gray-700 leading-relaxed">
               <p>
-                <strong>Farm and Community Technologies Limited (F.a.C.T Ltd)</strong> is a Kenyan company incorporated in{' '}
+                <strong>Farm and Community Technologies Limited (FaCT Ltd)</strong> is a Kenyan company incorporated in{' '}
                 <strong>November 2007</strong> to provide technical expertise and specialist knowledge and services targeted at
                 stakeholders in agricultural production, agribusiness and food security sectors in Kenya and beyond.
               </p>
@@ -98,7 +98,7 @@ const About = () => {
                 products and services.
               </p>
               <p>
-                At F.a.C.T we believe that <strong>agri-enterprise is the way to wealth</strong> and a sure strategy to uplift the
+                At FaCT we believe that <strong>agri-enterprise is the way to wealth</strong> and a sure strategy to uplift the
                 economy of African countries. We know that agriculture has evolved, and is still changing, from the subsistence
                 activity it was decades ago to a highly dynamic business with the highest potential for profit and possibility of
                 empowering communities across Africa to achieve high quality lives.
@@ -184,7 +184,7 @@ const About = () => {
         <section className="py-14 md:py-16 px-4 bg-gray-50">
           <div className="container mx-auto max-w-4xl">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Our Core Values</h2>
-            <p className="text-gray-600 mt-3">The principles that guide everything we do at F.a.C.T Ltd.</p>
+            <p className="text-gray-600 mt-3">The principles that guide everything we do at FaCT Ltd.</p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {values.map((value, index) => (

@@ -17,7 +17,7 @@ const SEO = ({
   url = typeof window !== 'undefined' ? window.location.href : "",
   type = "website"
 }: SEOProps) => {
-  const siteName = "F.a.C.T LTD - Farm and Community Technologies Limited";
+  const siteName = "FaCT LTD - Farm and Community Technologies Limited";
   const fullTitle = `${title} | ${siteName}`;
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const SEO = ({
 
     // Additional SEO
     setMetaTag('robots', 'index, follow');
-    setMetaTag('author', 'F.a.C.T LTD');
+    setMetaTag('author', 'FaCT LTD');
     
     // Canonical link
     let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;

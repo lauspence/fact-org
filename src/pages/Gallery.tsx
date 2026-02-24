@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FaImage, FaSearch, FaTimes, FaVideo, FaPlay, FaChevronDown } from 'react-icons/fa';
-import { galleryApi } from '../services/strapi';
+import { laravelApi } from '../services/laravel';
+
+type PhotoCategory = 'Training Events' | 'Workshops' | 'Field Visits' | 'Farm Harvests';
 
 interface Photo {
   id: number;
   title: string;
-  description?: string;
-  image: string;
-  category: string;
-  eventDate?: string;
+  description?: string | null;
+  image: string; // normalized by laravelApi to full URL if needed
+  category: PhotoCategory;
+  event_date?: string | null;
   featured?: boolean;
 }
 
@@ -31,7 +33,7 @@ const Gallery = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Filters
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState<'All' | PhotoCategory>('All');
   const [selectedVideoCategory, setSelectedVideoCategory] = useState('All');
   const [query, setQuery] = useState('');
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -39,13 +41,12 @@ const Gallery = () => {
   // Lightbox
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
 
-  const photoCategories = [
+  const photoCategories: Array<'All' | PhotoCategory> = [
     'All',
     'Training Events',
     'Farm Harvests',
     'Workshops',
     'Field Visits',
-    'Success Stories'
   ];
 
   const videoCategories = [
@@ -57,7 +58,7 @@ const Gallery = () => {
     'Value Addition'
   ];
 
-  // Placeholder videos (categorized) - can be moved to Strapi later
+  // Placeholder videos (categorized) - can be moved to API later
   const videos: Video[] = [
     {
       id: 1,
@@ -106,7 +107,7 @@ const Gallery = () => {
     }
   ];
 
-  // Reset filters when switching tabs (prevents confusing empty states)
+  // Reset filters when switching tabs
   useEffect(() => {
     setQuery('');
     if (activeTab === 'photos') setSelectedCategory('All');
@@ -126,11 +127,18 @@ const Gallery = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await galleryApi.getAll(selectedCategory === 'All' ? null : selectedCategory);
+
+      const categoryParam =
+        selectedCategory === 'All' ? undefined : selectedCategory;
+
+      const data = await laravelApi.getGalleryImages({
+        category: categoryParam,
+      });
+
       setPhotos((data as unknown as Photo[]) || []);
     } catch (err) {
       console.error('Error fetching gallery:', err);
-      setError('Failed to load gallery. Please check if Strapi is running.');
+      setError('Failed to load gallery. Please check if the API is running.');
     } finally {
       setLoading(false);
     }
@@ -164,12 +172,12 @@ const Gallery = () => {
   const activeSelectedCategory = activeTab === 'photos' ? selectedCategory : selectedVideoCategory;
 
   const setActiveSelectedCategory = (cat: string) => {
-    if (activeTab === 'photos') setSelectedCategory(cat);
+    if (activeTab === 'photos') setSelectedCategory(cat as 'All' | PhotoCategory);
     else setSelectedVideoCategory(cat);
     setShowCategoryDropdown(false);
   };
 
-  const formatEventDate = (value?: string) => {
+  const formatEventDate = (value?: string | null) => {
     if (!value) return null;
     try {
       return new Date(value).toLocaleDateString('en-US', {
@@ -201,7 +209,7 @@ const Gallery = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <FaImage className="text-sm md:text-base" /> 
+              <FaImage className="text-sm md:text-base" />
               <span>Photos</span>
             </button>
 
@@ -213,7 +221,7 @@ const Gallery = () => {
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
-              <FaVideo className="text-sm md:text-base" /> 
+              <FaVideo className="text-sm md:text-base" />
               <span>Videos</span>
             </button>
           </div>
@@ -224,8 +232,8 @@ const Gallery = () => {
       <section className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur-md border-b border-gray-200 py-3 md:py-4 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:justify-between md:items-center">
-            
-            {/* Categories - Desktop: Horizontal Pills, Mobile: Dropdown */}
+
+            {/* Categories */}
             <div className="w-full md:w-auto">
               {/* Mobile Dropdown */}
               <div className="md:hidden relative">
@@ -242,13 +250,11 @@ const Gallery = () => {
 
                 {showCategoryDropdown && (
                   <>
-                    {/* Backdrop */}
-                    <div 
+                    <div
                       className="fixed inset-0 z-10"
                       onClick={() => setShowCategoryDropdown(false)}
                     />
-                    
-                    {/* Dropdown Menu */}
+
                     <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-64 overflow-y-auto">
                       {activeCategories.map((category) => (
                         <button
@@ -369,8 +375,8 @@ const Gallery = () => {
                       {photo.description && (
                         <p className="text-xs md:text-sm text-gray-600 line-clamp-2">{photo.description}</p>
                       )}
-                      {photo.eventDate && (
-                        <p className="text-xs text-gray-400 mt-3">{formatEventDate(photo.eventDate)}</p>
+                      {photo.event_date && (
+                        <p className="text-xs text-gray-400 mt-3">{formatEventDate(photo.event_date)}</p>
                       )}
                     </div>
                   </div>
@@ -434,7 +440,7 @@ const Gallery = () => {
 
       {/* Lightbox Modal */}
       {lightboxPhoto && (
-        <div 
+        <div
           className="fixed inset-0 z-50 bg-black/90 flex flex-col"
           onClick={() => setLightboxPhoto(null)}
         >
@@ -447,9 +453,9 @@ const Gallery = () => {
               <FaTimes className="text-xl md:text-2xl" />
             </button>
           </div>
-          
+
           <div className="flex-1 overflow-auto flex items-center justify-center p-3 md:p-4">
-            <div 
+            <div
               className="max-w-5xl w-full bg-white rounded-lg overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
@@ -468,9 +474,9 @@ const Gallery = () => {
                       Featured
                     </span>
                   )}
-                  {lightboxPhoto.eventDate && (
+                  {lightboxPhoto.event_date && (
                     <span className="text-xs text-gray-500 px-2 py-1">
-                      {formatEventDate(lightboxPhoto.eventDate)}
+                      {formatEventDate(lightboxPhoto.event_date)}
                     </span>
                   )}
                 </div>

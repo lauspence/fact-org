@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { productsApi } from '../services/strapi';
+import { laravelApi } from '../services/laravel';
 import SEO from '../components/common/SEO';
 import { FaArrowLeft, FaShoppingCart, FaTag, FaBox, FaCheckCircle } from 'react-icons/fa';
 
@@ -20,18 +20,25 @@ type Specifications = string | RichTextBlock[];
 
 interface Product {
   id: number;
-  documentId?: string;
   name: string;
+
   description?: Description;
   specifications?: Specifications;
+
   price?: number;
   category?: string;
-  inStock?: boolean;
+
   featured?: boolean;
-  stockQuantity?: number;
   unit?: string;
+
+  // ✅ Laravel snake_case fields
+  in_stock?: boolean;
+  stock_quantity?: number;
+
+  // Images from Laravel
   image?: string;
-  images?: Array<{ url: string; id: number; name: string }>;
+  images?: string[];
+
   [key: string]: unknown;
 }
 
@@ -39,26 +46,25 @@ interface Product {
 const extractText = (content: Description | Specifications | undefined): string => {
   if (!content) return '';
   if (typeof content === 'string') return content;
-  
+
   if (Array.isArray(content)) {
     return content
       .map(block => {
         if (block?.children && Array.isArray(block.children)) {
-          return block.children
-            .map((child) => child?.text || '')
-            .join('');
+          return block.children.map((child) => child?.text || '').join('');
         }
         return '';
       })
       .join('\n');
   }
-  
+
   return '';
 };
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,19 +73,20 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       if (!id) return;
-      
+
       try {
         setLoading(true);
-        const data = await productsApi.getById(id);
-        setProduct(data as Product);
-        
+
+        // ✅ Laravel public endpoint: GET /api/market-products/{id}
+        const response = await laravelApi.getProductById(id);
+        setProduct(response as Product);
+
         // Set initial selected image
-        if (data.image) {
-          setSelectedImage(data.image as string);
-        } else if (data.images && Array.isArray(data.images) && data.images.length > 0) {
-          setSelectedImage(data.images[0].url);
-        }
-        
+        const first =
+          (response?.image as string | undefined) ||
+          (Array.isArray(response?.images) && response.images.length > 0 ? response.images[0] : '');
+
+        setSelectedImage(first || '');
         setError(null);
       } catch (err) {
         console.error('Error fetching product:', err);
@@ -121,17 +128,20 @@ const ProductDetail = () => {
     );
   }
 
-  const allImages = [
+  // ✅ Laravel images: string[]
+  const allImages: string[] = [
     ...(product.image ? [product.image] : []),
-    ...(product.images?.map(img => img.url) || [])
-  ];
+    ...(Array.isArray(product.images) ? product.images : []),
+  ].filter(Boolean);
+
+  const seoDescription = extractText(product.description).substring(0, 160);
 
   return (
     <>
-      <SEO 
+      <SEO
         title={product.name}
-        description={extractText(product.description).substring(0, 160)}
-        keywords={`${product.name}, ${product.category}, agricultural products Kenya`}
+        description={seoDescription}
+        keywords={`${product.name}, ${product.category ?? ''}, agricultural products Kenya`}
       />
 
       <div className="min-h-screen bg-gray-50">
@@ -165,13 +175,13 @@ const ProductDetail = () => {
                   ) : (
                     <FaShoppingCart className="text-8xl text-gray-300" />
                   )}
-                  
+
                   {/* Badges */}
                   <div className="absolute top-4 left-4 right-4 flex justify-between">
                     {product.category && (
                       <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg">
                         <FaTag className="text-gray-500" />
-                        {product.category.trim()}
+                        {String(product.category).trim()}
                       </div>
                     )}
                     {product.featured && (
@@ -188,12 +198,10 @@ const ProductDetail = () => {
                 <div className="grid grid-cols-4 gap-2 md:gap-3">
                   {allImages.map((image, index) => (
                     <button
-                      key={index}
+                      key={`${image}-${index}`}
                       onClick={() => setSelectedImage(image)}
                       className={`bg-white rounded-lg border-2 overflow-hidden transition ${
-                        selectedImage === image
-                          ? 'border-gray-900'
-                          : 'border-gray-200 hover:border-gray-400'
+                        selectedImage === image ? 'border-gray-900' : 'border-gray-200 hover:border-gray-400'
                       }`}
                     >
                       <div className="aspect-square">
@@ -235,7 +243,7 @@ const ProductDetail = () => {
 
                 {/* Stock Status */}
                 <div className="mb-6 pb-6 border-b border-gray-200">
-                  {product.inStock === false ? (
+                  {product.in_stock === false ? (
                     <div className="flex items-center gap-2 text-red-600">
                       <FaBox />
                       <span className="font-semibold">Out of Stock</span>
@@ -244,9 +252,9 @@ const ProductDetail = () => {
                     <div className="flex items-center gap-2 text-green-600">
                       <FaCheckCircle />
                       <span className="font-semibold">In Stock</span>
-                      {product.stockQuantity && (
+                      {typeof product.stock_quantity === 'number' && (
                         <span className="text-gray-500 ml-2">
-                          ({product.stockQuantity} available)
+                          ({product.stock_quantity} available)
                         </span>
                       )}
                     </div>
