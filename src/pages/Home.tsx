@@ -77,7 +77,7 @@ const Home = () => {
 
           <div className="container mx-auto text-center max-w-5xl relative z-10">
             <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-xs md:text-sm font-bold mb-4 md:mb-6 border border-white/30 shadow-lg">
-              Empowering Kenya's Agricultural Future
+              Empowering Kenya&apos;s Agricultural Future
             </div>
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4 md:mb-6 leading-tight drop-shadow-2xl">
               Farm and Community Technologies Limited
@@ -87,7 +87,7 @@ const Home = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
               <Link
-                to="/contact"
+                to="/knowledge-training"
                 className="inline-block bg-white text-emerald-700 px-8 md:px-10 py-3 md:py-4 rounded-xl font-bold text-base md:text-lg hover:bg-emerald-50 transition-all shadow-2xl hover:shadow-emerald-500/20"
               >
                 Get Started →
@@ -106,8 +106,12 @@ const Home = () => {
         <section className="py-12 md:py-20 px-4 bg-gradient-to-b from-white to-gray-50">
           <div className="container mx-auto max-w-7xl">
             <div className="text-center mb-10 md:mb-16">
-              <p className="text-emerald-600 font-bold text-xs md:text-sm uppercase tracking-wider mb-2 md:mb-3">What We Offer</p>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 md:mb-4 text-gray-900">Our Core Services</h2>
+              <p className="text-emerald-600 font-bold text-xs md:text-sm uppercase tracking-wider mb-2 md:mb-3">
+                What We Offer
+              </p>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 md:mb-4 text-gray-900">
+                Our Core Services
+              </h2>
               <p className="text-gray-600 text-base md:text-lg max-w-2xl mx-auto">
                 Comprehensive solutions tailored to farmers, entrepreneurs, and agricultural professionals.
               </p>
@@ -123,9 +127,12 @@ const Home = () => {
                     <h3 className="text-lg md:text-xl font-black mb-2 md:mb-3 text-gray-900 group-hover:text-emerald-600 transition-colors">
                       {service.title}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-4 md:mb-5 leading-relaxed flex-grow">
+
+                    {/* ✅ FIX: removed flex-grow from description to prevent big empty gaps */}
+                    <p className="text-gray-600 text-sm mb-4 md:mb-5 leading-relaxed">
                       {service.description}
                     </p>
+
                     <ul className="mb-5 md:mb-6 space-y-2 text-left">
                       {service.features.map((feature, idx) => (
                         <li key={idx} className="text-xs md:text-sm text-gray-700 flex items-start">
@@ -135,6 +142,7 @@ const Home = () => {
                       ))}
                     </ul>
                   </div>
+
                   <div className="p-5 md:p-6 pt-0">
                     <Link
                       to={service.link}
@@ -195,8 +203,12 @@ const Home = () => {
         <section className="py-12 md:py-20 px-4 bg-gray-50">
           <div className="container mx-auto max-w-7xl">
             <div className="text-center mb-8 md:mb-12">
-              <p className="text-emerald-600 font-bold text-xs md:text-sm uppercase tracking-wider mb-2 md:mb-3">Impact Stories</p>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 md:mb-4 text-gray-900">Our Work in Action</h2>
+              <p className="text-emerald-600 font-bold text-xs md:text-sm uppercase tracking-wider mb-2 md:mb-3">
+                Impact Stories
+              </p>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-3 md:mb-4 text-gray-900">
+                Our Work in Action
+              </h2>
               <p className="text-gray-600 max-w-2xl mx-auto text-base md:text-lg">
                 Supporting Kenyan farmers with training, technology, and sustainable practices.
               </p>
@@ -341,7 +353,7 @@ const Home = () => {
                       Empowering the next generation of farmers with modern skills and entrepreneurial mindset.
                     </p>
                     <Link
-                      to="/enterprise-building"
+                      to="/youth-in-agriculture"
                       className="inline-block bg-white text-emerald-900 px-5 md:px-6 py-2.5 md:py-3 rounded-xl font-bold text-sm md:text-base hover:bg-emerald-50 transition-all shadow-lg"
                     >
                       Learn More →
@@ -430,7 +442,7 @@ const Home = () => {
             <div className="text-center text-white px-4 max-w-4xl">
               <h2 className="text-2xl md:text-4xl lg:text-5xl font-black mb-3 md:mb-4">Building Resilient Farming Communities</h2>
               <p className="text-base md:text-xl lg:text-2xl text-gray-200 font-light">
-                Together, we're creating sustainable livelihoods and food security across Kenya
+                Together, we&apos;re creating sustainable livelihoods and food security across Kenya
               </p>
             </div>
           </div>

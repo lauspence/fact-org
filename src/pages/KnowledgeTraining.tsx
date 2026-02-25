@@ -149,7 +149,7 @@ const KnowledgeTraining = () => {
 
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
-                  to="/contact"
+                  to="/training-events"
                   className="inline-flex items-center justify-center bg-emerald-500 text-white px-6 py-3.5 sm:px-8 rounded-xl font-semibold hover:bg-emerald-600 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 text-sm sm:text-base"
                 >
                   Book Training →
@@ -314,7 +314,7 @@ const KnowledgeTraining = () => {
               Join our training programs and enhance your farming and agribusiness skills.
             </p>
             <Link
-              to="/contact"
+              to="/training-events"
               className="inline-flex items-center justify-center bg-emerald-500 text-white px-8 py-3.5 sm:px-10 sm:py-4 rounded-xl font-semibold text-base sm:text-lg hover:bg-emerald-600 transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
             >
               Enroll Now

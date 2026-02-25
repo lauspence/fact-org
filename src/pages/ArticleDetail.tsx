@@ -1,55 +1,46 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FaCalendar, FaUser, FaArrowLeft, FaSpinner, FaShareAlt, FaDownload, FaArrowRight } from 'react-icons/fa';
+import {
+  FaCalendar,
+  FaArrowLeft,
+  FaSpinner,
+  FaShareAlt,
+  FaDownload,
+  FaArrowRight,
+  FaFilePdf,
+  FaExternalLinkAlt,
+  FaTag,
+} from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import SEO from '../components/common/SEO';
-import { publicationsApi } from '../services/strapi'; // Fixed import path
+import { laravelApi, type Publication } from '../services/laravel';
 
-interface Article {
-  id: number;
-  documentId?: string;
-  title: string;
-  slug?: string;
-  excerpt?: string;
-  description?: string;
-  content?: string;
-  coverImage?: string;
-  image?: string;
-  author?: string;
-  publishedDate?: string;
-  category?: string;
-  file?: string;
-  isFree?: boolean;
-  [key: string]: unknown; // Add index signature
-}
+type Article = Publication;
 
 const ArticleDetail = () => {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug } = useParams<{ slug: string }>(); // slug or id — backend handles both
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (slug) {
-      fetchArticle();
-    }
+    if (slug) fetchArticle(slug);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
-  const fetchArticle = async () => {
+  const fetchArticle = async (idOrSlug: string) => {
     try {
       setLoading(true);
-      
-      // Fetch article by id or slug
-      const data = await publicationsApi.getById(slug!);
-      const articleData = data as unknown as Article;
-      setArticle(articleData);
-      
-      // Fetch related articles from same category
-      if (articleData.category) {
-        await fetchRelatedArticles(articleData.category);
+      const data = await laravelApi.getPublicationById(idOrSlug);
+      setArticle(data);
+
+      if (data.category) {
+        await fetchRelatedArticles(data.category, data.id);
+      } else {
+        setRelatedArticles([]);
       }
-      
+
       setError(null);
     } catch (err) {
       setError('Failed to load article. Please try again later.');
@@ -59,59 +50,83 @@ const ArticleDetail = () => {
     }
   };
 
-  const fetchRelatedArticles = async (category: string) => {
+  const fetchRelatedArticles = async (category: string, currentId: number) => {
     try {
-      const data = await publicationsApi.getAll(category);
-      // Filter out current article and limit to 3
-      const filtered = (data as unknown as Article[])
-        .filter(a => a.id !== article?.id)
+      const data = await laravelApi.getPublications({ category, per_page: 10 });
+      const related = (data ?? [])
+        .filter((p) => (p.type ?? 'article') === 'article')
+        .filter((p) => p.id !== currentId)
         .slice(0, 3);
-      setRelatedArticles(filtered);
+      setRelatedArticles(related);
     } catch (err) {
       console.error('Error fetching related articles:', err);
+      setRelatedArticles([]);
     }
   };
 
-  const formatDate = (dateString: string | undefined) => {
+  const formatDate = (p: Article) => {
+    const dateString = p.published_at ?? p.published_date ?? p.created_at ?? undefined;
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
   const handleShare = () => {
+    if (!article) return;
     if (navigator.share) {
-      navigator.share({
-        title: article?.title,
-        text: article?.excerpt || article?.description,
-        url: window.location.href,
-      }).catch(err => console.error('Error sharing:', err));
+      navigator
+        .share({
+          title: article.title,
+          text: article.description ?? '',
+          url: window.location.href,
+        })
+        .catch((err) => console.error('Error sharing:', err));
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href).catch(() => {});
     }
   };
+
+  // ✅ Cast is_free to boolean safely (API may return 0/1 or true/false)
+  const isFree = article?.is_free === true || (article?.is_free as unknown as number) === 1;
+
+  const pdfUrl = useMemo(() => {
+    if (!article) return null;
+    if ((article.type ?? 'article') !== 'pdf') return null;
+    return article.pdf_path ?? (Array.isArray(article.files) ? article.files[0] : null) ?? null;
+  }, [article]);
+
+  const coverImage = article?.cover_image ?? null;
+  const isPdf = (article?.type ?? 'article') === 'pdf';
+
+  // ─── Loading ────────────────────────────────────────────────────────────────
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <FaSpinner className="w-12 h-12 text-emerald-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading article...</p>
+          <p className="text-gray-600 text-lg">Loading article...</p>
         </div>
       </div>
     );
   }
 
+  // ─── Error ──────────────────────────────────────────────────────────────────
+
   if (error || !article) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center max-w-md">
-          <div className="text-red-600 text-5xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Article Not Found</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <Link 
+        <div className="text-center max-w-md px-4">
+          <div className="text-6xl mb-6">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-3">Article Not Found</h2>
+          <p className="text-gray-500 mb-8">{error ?? 'This article does not exist or has been removed.'}</p>
+          <Link
             to="/articles"
-            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
+            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-colors"
           >
             <FaArrowLeft /> Back to Articles
           </Link>
@@ -120,147 +135,274 @@ const ArticleDetail = () => {
     );
   }
 
+  // ─── Main ───────────────────────────────────────────────────────────────────
+
   return (
     <>
-      <SEO 
+      <SEO
         title={article.title}
-        description={article.excerpt || article.description || ''}
+        description={article.description || ''}
         keywords={`${article.category || ''}, agriculture, farming, ${article.title}`}
-        image={article.coverImage || article.image}
+        image={coverImage ?? undefined}
       />
 
-      <div className="bg-white">
-        {/* Back Button */}
-        <div className="bg-gray-50 border-b border-gray-200 py-4 px-4">
-          <div className="container mx-auto max-w-4xl">
-            <Link 
+      <div className="bg-white min-h-screen">
+
+        {/* ── Breadcrumb / Back bar ── */}
+        <div className="bg-gray-50 border-b border-gray-200 py-3 px-4">
+          <div className="container mx-auto max-w-4xl flex items-center justify-between gap-4 flex-wrap">
+            <Link
               to="/articles"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors font-medium"
+              className="inline-flex items-center gap-2 text-gray-500 hover:text-emerald-600 transition-colors text-sm font-medium"
             >
-              <FaArrowLeft /> Back to Articles
+              <FaArrowLeft className="text-xs" />
+              Back to Articles
             </Link>
+
+            {/* Type badge */}
+            {isPdf ? (
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold bg-red-50 text-red-600 border border-red-200 px-3 py-1 rounded-full">
+                <FaFilePdf /> PDF Publication
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full">
+                Article
+              </span>
+            )}
           </div>
         </div>
 
-        {/* Article Header */}
-        <article className="py-12 px-4">
-          <div className="container mx-auto max-w-4xl">
+        {/* ── Article Header ── */}
+        <article>
+          <div className="container mx-auto max-w-4xl px-4 pt-10 pb-6">
+
+            {/* Category */}
             {article.category && (
-              <span className="text-emerald-600 text-sm font-semibold uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 text-emerald-600 text-xs font-semibold uppercase tracking-widest mb-3">
+                <FaTag className="text-[10px]" />
                 {article.category}
-              </span>
+              </div>
             )}
-            
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mt-4 mb-6">
+
+            {/* Title */}
+            <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-5">
               {article.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-6 text-gray-600 mb-8 pb-8 border-b border-gray-200">
-              {article.author && (
-                <div className="flex items-center gap-2">
-                  <FaUser className="text-emerald-600" />
-                  <span className="font-medium">{article.author}</span>
+            {/* Meta row */}
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
+              {(article.published_at || article.published_date || article.created_at) && (
+                <div className="flex items-center gap-1.5">
+                  <FaCalendar className="text-emerald-500 text-xs" />
+                  <span>{formatDate(article)}</span>
                 </div>
               )}
-              {article.publishedDate && (
-                <div className="flex items-center gap-2">
-                  <FaCalendar className="text-emerald-600" />
-                  <span>{formatDate(article.publishedDate)}</span>
-                </div>
-              )}
+
+              {/* Access badge */}
+              <span
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                  isFree
+                    ? 'bg-emerald-50 text-emerald-700'
+                    : 'bg-amber-50 text-amber-700'
+                }`}
+              >
+                {isFree ? '✓ Free' : '★ Premium'}
+              </span>
+
+              {/* Action buttons */}
               <div className="flex items-center gap-3 ml-auto">
-                {'share' in navigator && (
-                  <button
-                    onClick={handleShare}
-                    className="flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium"
-                  >
-                    <FaShareAlt /> Share
-                  </button>
-                )}
-                {article.file && article.isFree && (
+                <button
+                  onClick={handleShare}
+                  className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-600 transition-colors text-sm font-medium"
+                >
+                  <FaShareAlt className="text-xs" /> Share
+                </button>
+
+                {/* ✅ PDF Download: only if type=pdf AND free */}
+                {pdfUrl && isFree && (
                   <a
-                    href={article.file}
+                    href={pdfUrl}
                     download
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition-colors"
+                    className="inline-flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-700 transition-colors"
                   >
-                    <FaDownload /> Download PDF
+                    <FaDownload className="text-xs" /> Download PDF
                   </a>
                 )}
               </div>
             </div>
+          </div>
 
-            {/* Cover Image */}
-            {(article.coverImage || article.image) && (
-              <div className="mb-10 rounded-2xl overflow-hidden shadow-xl">
+          {/* ── Cover Image (full width hero) ── */}
+          {coverImage && (
+            <div className="container mx-auto max-w-4xl px-4 mb-8">
+              <div className="rounded-2xl overflow-hidden shadow-lg aspect-video bg-gray-100">
                 <img
-                  src={article.coverImage || article.image}
+                  src={coverImage}
                   alt={article.title}
-                  className="w-full h-auto"
+                  className="w-full h-full object-cover"
                 />
               </div>
-            )}
-
-            {/* Article Content */}
-            <div className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-emerald-600 prose-strong:text-gray-900 prose-ul:text-gray-700 prose-ol:text-gray-700">
-              {article.content ? (
-                <ReactMarkdown>{article.content}</ReactMarkdown>
-              ) : (
-                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                  {article.description}
-                </p>
-              )}
             </div>
+          )}
 
-            {/* Download CTA for paid content */}
-            {article.file && !article.isFree && (
-              <div className="mt-10 bg-emerald-50 border-2 border-emerald-200 rounded-xl p-8 text-center">
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                  Get the Full Article
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Contact us to access the complete version of this publication
-                </p>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center gap-2 bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
-                >
-                  Contact Us <FaArrowRight />
-                </Link>
+          {/* ── Content area ── */}
+          <div className="container mx-auto max-w-4xl px-4 pb-16">
+
+            {/* ── PDF Type ── */}
+            {isPdf ? (
+              <div className="space-y-6">
+                {pdfUrl ? (
+                  <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
+
+                    {/* PDF toolbar */}
+                    <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-200 bg-white">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center">
+                          <FaFilePdf className="text-red-500" />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900 text-sm">{article.title}</div>
+                          <div className="text-xs text-gray-400">PDF Document</div>
+                        </div>
+                      </div>
+                      <a
+                        href={pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                      >
+                        <FaExternalLinkAlt className="text-[10px]" /> Open in new tab
+                      </a>
+                    </div>
+
+                    {/*
+                      ✅ Use <object> instead of <iframe>.
+                      <object> handles cross-origin PDFs better in Chrome/Edge/Firefox.
+                      The inner <div> is the fallback shown when PDF can't be embedded.
+                    */}
+                    <object
+                      data={pdfUrl}
+                      type="application/pdf"
+                      className="w-full"
+                      style={{ height: '80vh' }}
+                    >
+                      {/* Fallback for browsers that can't embed */}
+                      <div className="flex flex-col items-center justify-center py-16 px-6 text-center gap-4">
+                        <FaFilePdf className="text-5xl text-red-400" />
+                        <p className="text-gray-600 font-medium">
+                          Your browser cannot display the PDF inline.
+                        </p>
+                        <div className="flex flex-wrap gap-3 justify-center">
+                          <a
+                            href={pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-emerald-700 transition-colors text-sm"
+                          >
+                            <FaExternalLinkAlt className="text-xs" /> Open PDF
+                          </a>
+                          {isFree && (
+                            <a
+                              href={pdfUrl}
+                              download
+                              className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition-colors text-sm"
+                            >
+                              <FaDownload className="text-xs" /> Download
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </object>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    <FaFilePdf className="text-4xl text-gray-300 mx-auto mb-3" />
+                    <p>PDF file not available.</p>
+                  </div>
+                )}
+
+                {/* Description below PDF */}
+                {article.description && (
+                  <p className="text-gray-600 leading-relaxed text-base whitespace-pre-wrap">
+                    {article.description}
+                  </p>
+                )}
+
+                {/* Paid PDF CTA */}
+                {pdfUrl && !isFree && (
+                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-8 text-center">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Get the Full Publication</h3>
+                    <p className="text-gray-500 text-sm mb-6">
+                      Contact us to access the complete version of this publication.
+                    </p>
+                    <Link
+                      to="/contact"
+                      className="inline-flex items-center gap-2 bg-emerald-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-colors"
+                    >
+                      Contact Us <FaArrowRight />
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              // ── Article Type ──
+              <div className="prose prose-lg max-w-none
+                prose-headings:font-bold prose-headings:text-gray-900
+                prose-p:text-gray-700 prose-p:leading-relaxed
+                prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline
+                prose-strong:text-gray-900
+                prose-ul:text-gray-700 prose-ol:text-gray-700
+                prose-li:my-1
+                prose-blockquote:border-emerald-400 prose-blockquote:text-gray-600
+                prose-img:rounded-xl prose-img:shadow-md">
+                {article.content ? (
+                  <ReactMarkdown>{article.content}</ReactMarkdown>
+                ) : article.description ? (
+                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">
+                    {article.description}
+                  </p>
+                ) : (
+                  <p className="text-gray-400 italic">No content available.</p>
+                )}
               </div>
             )}
           </div>
         </article>
 
-        {/* Related Articles */}
+        {/* ── Related Articles ── */}
         {relatedArticles.length > 0 && (
           <section className="py-16 px-4 bg-gray-50 border-t border-gray-200">
-            <div className="container mx-auto max-w-6xl">
-              <h2 className="text-2xl md:text-3xl font-bold mb-8 text-gray-900">Related Articles</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {relatedArticles.map((relatedArticle) => (
+            <div className="container mx-auto max-w-5xl">
+              <h2 className="text-2xl font-bold mb-8 text-gray-900">Related Articles</h2>
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {relatedArticles.map((related) => (
                   <Link
-                    key={relatedArticle.id}
-                    to={`/articles/${relatedArticle.slug || relatedArticle.id}`}
-                    className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all border border-gray-200 hover:border-emerald-200"
+                    key={related.id}
+                    to={`/articles/${related.slug || related.id}`}
+                    className="group bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition-all border border-gray-100 hover:border-emerald-200"
                   >
-                    {(relatedArticle.coverImage || relatedArticle.image) && (
-                      <div className="relative h-40 overflow-hidden">
+                    {related.cover_image ? (
+                      <div className="h-44 overflow-hidden bg-gray-100">
                         <img
-                          src={relatedArticle.coverImage || relatedArticle.image}
-                          alt={relatedArticle.title}
+                          src={related.cover_image}
+                          alt={related.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
+                    ) : (
+                      <div className="h-44 bg-gradient-to-br from-emerald-50 to-teal-100 flex items-center justify-center">
+                        <span className="text-4xl">🌱</span>
+                      </div>
                     )}
                     <div className="p-5">
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
-                        {relatedArticle.title}
+                      <h3 className="text-base font-bold text-gray-900 mb-1.5 group-hover:text-emerald-600 transition-colors line-clamp-2">
+                        {related.title}
                       </h3>
-                      <p className="text-gray-600 text-sm line-clamp-2">
-                        {relatedArticle.excerpt || relatedArticle.description}
-                      </p>
+                      {related.description && (
+                        <p className="text-gray-500 text-sm line-clamp-2">{related.description}</p>
+                      )}
                     </div>
                   </Link>
                 ))}
@@ -269,31 +411,8 @@ const ArticleDetail = () => {
           </section>
         )}
 
-        {/* CTA Section */}
-        <section className="py-16 px-4 bg-white border-t border-gray-200">
-          <div className="container mx-auto max-w-3xl text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">
-              Ready to transform your agribusiness?
-            </h2>
-            <p className="text-gray-600 mb-8">
-              Explore our training programs and services
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/knowledge-training"
-                className="inline-block bg-emerald-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
-              >
-                View Training Programs
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-block border-2 border-gray-300 text-gray-900 px-8 py-3 rounded-lg font-semibold hover:border-emerald-600 hover:text-emerald-600 transition-colors"
-              >
-                Contact Us
-              </Link>
-            </div>
-          </div>
-        </section>
+        {/* ── CTA Section ── */}
+
       </div>
     </>
   );

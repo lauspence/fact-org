@@ -13,13 +13,11 @@ import {
   FaShoppingCart,
 } from 'react-icons/fa';
 
-
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,7 +29,6 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
 
   const navLinks = [
     { path: '/about', label: 'About Us' },
@@ -51,9 +48,7 @@ const Header = () => {
     { path: '/contact', label: 'Contact Us' },
   ];
 
-
   const isActive = (path: string) => location.pathname === path;
-
 
   return (
     <>
@@ -94,7 +89,6 @@ const Header = () => {
         </div>
       </div>
 
-
       {/* Header */}
       <header
         className={`shadow-sm sticky top-0 z-50 border-b-2 transition-all duration-300 ${
@@ -111,49 +105,11 @@ const Header = () => {
                 <img
                   src="/fact-logo.png"
                   alt="FACT Logo"
-                  // ✅ CHANGED: bumped up one step at each breakpoint
-                  // was:  h-10  sm:h-12  md:h-14  lg:h-16
-                  // now:  h-12  sm:h-14  md:h-16  lg:h-20
                   className="h-12 sm:h-14 md:h-16 lg:h-20 w-auto object-contain transition-all duration-300"
                   loading="eager"
                   fetchPriority="high"
                 />
-
-                {/* Mobile: FACT + LTD */}
-                <div className="sm:hidden flex items-baseline gap-1">
-                  <span
-                    className={`font-black text-lg tracking-tight transition-all duration-300 ${
-                      scrolled ? 'text-gray-900' : 'text-white'
-                    }`}
-                  >
-                    FaCT
-                  </span>
-                  <span
-                    className={`text-xs font-semibold tracking-wider uppercase transition-all duration-300 ${
-                      scrolled ? 'text-emerald-600' : 'text-emerald-100'
-                    }`}
-                  >
-                    LTD
-                  </span>
-                </div>
-
-                {/* Desktop stacked */}
-                <div className="hidden sm:block flex-col">
-                  <span
-                    className={`font-black text-lg sm:text-xl md:text-2xl lg:text-3xl transition-all duration-300 ${
-                      scrolled ? 'text-gray-900' : 'text-white'
-                    }`}
-                  >
-                    FaCT
-                  </span>
-                  <span
-                    className={`text-xs sm:text-sm md:text-base font-semibold uppercase transition-all duration-300 ${
-                      scrolled ? 'text-emerald-600' : 'text-emerald-100'
-                    }`}
-                  >
-                    LTD
-                  </span>
-                </div>
+                {/* ✅ REMOVED: FACT/LTD text next to logo */}
               </div>
             </Link>
 
@@ -165,7 +121,9 @@ const Header = () => {
                     <>
                       <button
                         className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg ${
-                          scrolled ? 'text-gray-700 hover:text-emerald-600 hover:bg-emerald-50' : 'text-white hover:bg-white/20'
+                          scrolled
+                            ? 'text-gray-700 hover:text-emerald-600 hover:bg-emerald-50'
+                            : 'text-white hover:bg-white/20'
                         }`}
                         onMouseEnter={() => setActiveDropdown(link.path)}
                       >
@@ -183,7 +141,9 @@ const Header = () => {
                               key={item.path}
                               to={item.path}
                               className={`block px-4 py-3 text-sm ${
-                                isActive(item.path) ? 'bg-emerald-50 text-emerald-700 font-semibold' : 'text-gray-700 hover:bg-emerald-50'
+                                isActive(item.path)
+                                  ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                                  : 'text-gray-700 hover:bg-emerald-50'
                               }`}
                             >
                               {item.label}
@@ -199,8 +159,8 @@ const Header = () => {
                         isActive(link.path)
                           ? 'bg-emerald-600 text-white'
                           : scrolled
-                            ? 'text-gray-700 hover:bg-emerald-50'
-                            : 'text-white hover:bg-white/20'
+                          ? 'text-gray-700 hover:bg-emerald-50'
+                          : 'text-white hover:bg-white/20'
                       }`}
                     >
                       {link.icon && <link.icon />}

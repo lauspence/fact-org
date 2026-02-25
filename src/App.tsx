@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';   // ✅ import hook
+import { useEffect } from 'react';
 
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
@@ -15,16 +15,16 @@ import Marketplace from './pages/Marketplace';
 import ProductDetail from './pages/ProductDetail';
 import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
+import TrainingEvents from './pages/TrainingEvents';
+import YouthInAgriculture from './pages/YouthInAgriculture';
 
-import { laravelApi } from "./services/laravel";
+import { laravelApi } from './services/laravel';
 
 function App() {
-
-  // ✅ place useEffect inside component
   useEffect(() => {
     laravelApi.health()
-      .then(res => console.log("API OK:", res))
-      .catch(err => console.error("API ERROR:", err));
+      .then(res => console.log('API OK:', res))
+      .catch(err => console.error('API ERROR:', err));
   }, []);
 
   return (
@@ -34,14 +34,15 @@ function App() {
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="knowledge-training" element={<KnowledgeTraining />} />
+          <Route path="training-events" element={<TrainingEvents />} />
+
+          <Route path="youth-in-agriculture" element={<YouthInAgriculture />} />
+
           <Route path="agricultural-inputs" element={<AgriculturalInputs />} />
           <Route path="enterprise-building" element={<EnterpriseBuilding />} />
           <Route path="analytical-services" element={<AnalyticalServices />} />
-
-          {/* Category cards click → Coming Soon */}
           <Route path="analytical/:slug" element={<AnalyticalServiceComingSoon />} />
-
-          <Route path="marketplace" element={<Marketplace />} /> 
+          <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/:id" element={<ProductDetail />} />
           <Route path="articles" element={<Articles />} />
           <Route path="articles/:slug" element={<ArticleDetail />} />

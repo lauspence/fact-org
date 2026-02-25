@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FaImage, FaSearch, FaTimes, FaVideo, FaPlay, FaChevronDown } from 'react-icons/fa';
-import { laravelApi } from '../services/laravel';
+import { laravelApi, type GalleryVideo } from '../services/laravel';
 
 type PhotoCategory = 'Training Events' | 'Workshops' | 'Field Visits' | 'Farm Harvests';
 
@@ -14,32 +14,39 @@ interface Photo {
   featured?: boolean;
 }
 
-interface Video {
-  id: number;
-  title: string;
-  link: string;
-  category: string;
-  description?: string;
-  featured?: boolean;
-  thumbnail?: string;
-}
+type VideoCategory =
+  | 'Climate-Smart Agriculture'
+  | 'Training & Workshops'
+  | 'Smart Technology'
+  | 'Irrigation & Water'
+  | 'Value Addition';
+
+type Video = GalleryVideo & {
+  category: VideoCategory; // narrow it for UI dropdown
+};
 
 const Gallery = () => {
   const [activeTab, setActiveTab] = useState<'photos' | 'videos'>('photos');
 
   // Photos state
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loadingPhotos, setLoadingPhotos] = useState(true);
+  const [errorPhotos, setErrorPhotos] = useState<string | null>(null);
+
+  // Videos state
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loadingVideos, setLoadingVideos] = useState(false);
+  const [errorVideos, setErrorVideos] = useState<string | null>(null);
 
   // Filters
   const [selectedCategory, setSelectedCategory] = useState<'All' | PhotoCategory>('All');
-  const [selectedVideoCategory, setSelectedVideoCategory] = useState('All');
+  const [selectedVideoCategory, setSelectedVideoCategory] = useState<'All' | VideoCategory>('All');
   const [query, setQuery] = useState('');
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 
-  // Lightbox
+  // Lightboxes
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
+  const [lightboxVideo, setLightboxVideo] = useState<Video | null>(null);
 
   const photoCategories: Array<'All' | PhotoCategory> = [
     'All',
@@ -49,62 +56,13 @@ const Gallery = () => {
     'Field Visits',
   ];
 
-  const videoCategories = [
+  const videoCategories: Array<'All' | VideoCategory> = [
     'All',
     'Climate-Smart Agriculture',
     'Training & Workshops',
     'Smart Technology',
     'Irrigation & Water',
-    'Value Addition'
-  ];
-
-  // Placeholder videos (categorized) - can be moved to API later
-  const videos: Video[] = [
-    {
-      id: 1,
-      title: 'Climate-Smart Agriculture',
-      link: '#',
-      category: 'Climate-Smart Agriculture',
-      description: 'Practical approaches to climate resilience on the farm.',
-      thumbnail:
-        'https://images.unsplash.com/photo-1592982537447-6b17a4b1a8a7?auto=format&fit=crop&w=1200&q=60'
-    },
-    {
-      id: 2,
-      title: 'Value Addition Training',
-      link: '#',
-      category: 'Value Addition',
-      description: 'Processing and packaging to increase farm income.',
-      thumbnail:
-        'https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&w=1200&q=60'
-    },
-    {
-      id: 3,
-      title: 'Smart Irrigation Demo',
-      link: '#',
-      category: 'Irrigation & Water',
-      description: 'Efficient irrigation methods and basic system demos.',
-      thumbnail:
-        'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=60'
-    },
-    {
-      id: 4,
-      title: 'Farm Data & Sensors Overview',
-      link: '#',
-      category: 'Smart Technology',
-      description: 'Intro to sensors, data loggers, and farm monitoring.',
-      thumbnail:
-        'https://images.unsplash.com/photo-1581091870622-3d4b3a6f1b58?auto=format&fit=crop&w=1200&q=60'
-    },
-    {
-      id: 5,
-      title: 'Practical Farmer Training Session',
-      link: '#',
-      category: 'Training & Workshops',
-      description: 'Highlights from hands-on training with farmers.',
-      thumbnail:
-        'https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=1200&q=60'
-    }
+    'Value Addition',
   ];
 
   // Reset filters when switching tabs
@@ -113,9 +71,11 @@ const Gallery = () => {
     if (activeTab === 'photos') setSelectedCategory('All');
     if (activeTab === 'videos') setSelectedVideoCategory('All');
     setLightboxPhoto(null);
+    setLightboxVideo(null);
     setShowCategoryDropdown(false);
   }, [activeTab]);
 
+  // Fetch Photos
   useEffect(() => {
     if (activeTab === 'photos') {
       fetchPhotos();
@@ -123,13 +83,20 @@ const Gallery = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, selectedCategory]);
 
+  // Fetch Videos
+  useEffect(() => {
+    if (activeTab === 'videos') {
+      fetchVideos();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, selectedVideoCategory]);
+
   const fetchPhotos = async () => {
     try {
-      setLoading(true);
-      setError(null);
+      setLoadingPhotos(true);
+      setErrorPhotos(null);
 
-      const categoryParam =
-        selectedCategory === 'All' ? undefined : selectedCategory;
+      const categoryParam = selectedCategory === 'All' ? undefined : selectedCategory;
 
       const data = await laravelApi.getGalleryImages({
         category: categoryParam,
@@ -137,16 +104,37 @@ const Gallery = () => {
 
       setPhotos((data as unknown as Photo[]) || []);
     } catch (err) {
-      console.error('Error fetching gallery:', err);
-      setError('Failed to load gallery. Please check if the API is running.');
+      console.error('Error fetching photos:', err);
+      setErrorPhotos('Failed to load photos. Please check if the API is running.');
     } finally {
-      setLoading(false);
+      setLoadingPhotos(false);
+    }
+  };
+
+  const fetchVideos = async () => {
+    try {
+      setLoadingVideos(true);
+      setErrorVideos(null);
+
+      const categoryParam = selectedVideoCategory === 'All' ? undefined : selectedVideoCategory;
+
+      const data = await laravelApi.getGalleryVideos({
+        category: categoryParam,
+      });
+
+      setVideos((data as unknown as Video[]) || []);
+    } catch (err) {
+      console.error('Error fetching videos:', err);
+      setErrorVideos('Failed to load videos. Please check if the API is running.');
+    } finally {
+      setLoadingVideos(false);
     }
   };
 
   const filteredPhotos = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return photos;
+
     return photos.filter((p) => {
       const hay = `${p.title} ${p.description ?? ''} ${p.category}`.toLowerCase();
       return hay.includes(q);
@@ -154,26 +142,21 @@ const Gallery = () => {
   }, [photos, query]);
 
   const filteredVideos = useMemo(() => {
-    const byCategory =
-      selectedVideoCategory === 'All'
-        ? videos
-        : videos.filter((v) => v.category === selectedVideoCategory);
-
     const q = query.trim().toLowerCase();
-    if (!q) return byCategory;
+    if (!q) return videos;
 
-    return byCategory.filter((v) => {
+    return videos.filter((v) => {
       const hay = `${v.title} ${v.description ?? ''} ${v.category}`.toLowerCase();
       return hay.includes(q);
     });
-  }, [videos, selectedVideoCategory, query]);
+  }, [videos, query]);
 
   const activeCategories = activeTab === 'photos' ? photoCategories : videoCategories;
   const activeSelectedCategory = activeTab === 'photos' ? selectedCategory : selectedVideoCategory;
 
   const setActiveSelectedCategory = (cat: string) => {
     if (activeTab === 'photos') setSelectedCategory(cat as 'All' | PhotoCategory);
-    else setSelectedVideoCategory(cat);
+    else setSelectedVideoCategory(cat as 'All' | VideoCategory);
     setShowCategoryDropdown(false);
   };
 
@@ -183,12 +166,23 @@ const Gallery = () => {
       return new Date(value).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
     } catch {
       return null;
     }
   };
+
+  const getVideoThumb = (v: Video): string => {
+    // Prefer uploaded thumbnail image, then thumbnail URL, else fallback
+    return (
+      v.thumbnail_path ||
+      v.thumbnail ||
+      'https://via.placeholder.com/600x400?text=Video'
+    );
+  };
+
+  const canEmbed = (v: Video) => !!v.embed_url;
 
   return (
     <div className="bg-gray-50 min-h-screen pb-16">
@@ -232,7 +226,6 @@ const Gallery = () => {
       <section className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur-md border-b border-gray-200 py-3 md:py-4 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:justify-between md:items-center">
-
             {/* Categories */}
             <div className="w-full md:w-auto">
               {/* Mobile Dropdown */}
@@ -245,15 +238,14 @@ const Gallery = () => {
                     <span className="text-gray-500">Category:</span>
                     <span className="text-emerald-700 font-semibold">{activeSelectedCategory}</span>
                   </span>
-                  <FaChevronDown className={`text-gray-400 transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
+                  <FaChevronDown
+                    className={`text-gray-400 transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`}
+                  />
                 </button>
 
                 {showCategoryDropdown && (
                   <>
-                    <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => setShowCategoryDropdown(false)}
-                    />
+                    <div className="fixed inset-0 z-10" onClick={() => setShowCategoryDropdown(false)} />
 
                     <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-64 overflow-y-auto">
                       {activeCategories.map((category) => (
@@ -320,14 +312,14 @@ const Gallery = () => {
         {/* Photos Tab */}
         {activeTab === 'photos' && (
           <>
-            {loading ? (
+            {loadingPhotos ? (
               <div className="text-center py-16 md:py-20 text-gray-500">
                 <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mb-3"></div>
                 <p>Loading photos...</p>
               </div>
-            ) : error ? (
+            ) : errorPhotos ? (
               <div className="text-center py-16 md:py-20">
-                <p className="text-red-500 mb-4">{error}</p>
+                <p className="text-red-500 mb-4">{errorPhotos}</p>
                 <button
                   onClick={fetchPhotos}
                   className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
@@ -389,7 +381,22 @@ const Gallery = () => {
         {/* Videos Tab */}
         {activeTab === 'videos' && (
           <>
-            {filteredVideos.length === 0 ? (
+            {loadingVideos ? (
+              <div className="text-center py-16 md:py-20 text-gray-500">
+                <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-600 mb-3"></div>
+                <p>Loading videos...</p>
+              </div>
+            ) : errorVideos ? (
+              <div className="text-center py-16 md:py-20">
+                <p className="text-red-500 mb-4">{errorVideos}</p>
+                <button
+                  onClick={fetchVideos}
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+                >
+                  Try Again
+                </button>
+              </div>
+            ) : filteredVideos.length === 0 ? (
               <div className="text-center py-16 md:py-20">
                 <div className="text-gray-400 text-5xl mb-4">🎥</div>
                 <p className="text-gray-500 text-lg">No videos found.</p>
@@ -398,14 +405,15 @@ const Gallery = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {filteredVideos.map((video) => (
-                  <a
+                  <button
                     key={video.id}
-                    href={video.link}
-                    className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow block group"
+                    type="button"
+                    onClick={() => setLightboxVideo(video)}
+                    className="text-left bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow block group"
                   >
                     <div className="aspect-video bg-gray-900 relative flex items-center justify-center">
                       <img
-                        src={video.thumbnail || 'https://via.placeholder.com/600x400?text=Video'}
+                        src={getVideoThumb(video)}
                         alt={video.title}
                         className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                         loading="lazy"
@@ -414,6 +422,7 @@ const Gallery = () => {
                         <FaPlay className="text-emerald-600 ml-1 text-sm md:text-base" />
                       </div>
                     </div>
+
                     <div className="p-4">
                       <div className="flex flex-wrap gap-2 mb-2">
                         <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
@@ -424,13 +433,23 @@ const Gallery = () => {
                             Featured
                           </span>
                         )}
+                        {video.event_date && (
+                          <span className="text-xs text-gray-500 px-2 py-1">
+                            {formatEventDate(video.event_date)}
+                          </span>
+                        )}
                       </div>
+
                       <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">{video.title}</h3>
                       {video.description && (
                         <p className="text-xs md:text-sm text-gray-600 line-clamp-2">{video.description}</p>
                       )}
+
+                      <p className="text-xs text-gray-400 mt-3">
+                        {video.video_path ? 'Uploaded video' : canEmbed(video) ? 'Embedded link' : 'External link'}
+                      </p>
                     </div>
-                  </a>
+                  </button>
                 ))}
               </div>
             )}
@@ -438,7 +457,7 @@ const Gallery = () => {
         )}
       </section>
 
-      {/* Lightbox Modal */}
+      {/* Photo Lightbox */}
       {lightboxPhoto && (
         <div
           className="fixed inset-0 z-50 bg-black/90 flex flex-col"
@@ -483,6 +502,92 @@ const Gallery = () => {
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{lightboxPhoto.title}</h3>
                 {lightboxPhoto.description && (
                   <p className="text-sm md:text-base text-gray-600">{lightboxPhoto.description}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Lightbox */}
+      {lightboxVideo && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex flex-col"
+          onClick={() => setLightboxVideo(null)}
+        >
+          <div className="flex justify-end p-3 md:p-4">
+            <button
+              onClick={() => setLightboxVideo(null)}
+              className="text-white hover:text-gray-300 p-2 rounded-full hover:bg-white/10 transition-colors"
+              aria-label="Close"
+            >
+              <FaTimes className="text-xl md:text-2xl" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-auto flex items-center justify-center p-3 md:p-4">
+            <div
+              className="max-w-5xl w-full bg-white rounded-lg overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="bg-black">
+                {lightboxVideo.video_path ? (
+                  <video controls className="w-full max-h-[70vh]">
+                    <source src={lightboxVideo.video_path} />
+                    Your browser does not support the video tag.
+                  </video>
+                ) : lightboxVideo.embed_url ? (
+                  <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+                    <iframe
+                      className="absolute inset-0 w-full h-full"
+                      src={lightboxVideo.embed_url}
+                      title={lightboxVideo.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : lightboxVideo.link ? (
+                  <div className="p-6 bg-white">
+                    <p className="text-gray-700">
+                      This video cannot be embedded. Open it here:
+                    </p>
+                    <a
+                      href={lightboxVideo.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-emerald-700 underline break-all"
+                    >
+                      {lightboxVideo.link}
+                    </a>
+                  </div>
+                ) : (
+                  <div className="p-6 bg-white text-red-600">
+                    No playable source found for this video.
+                  </div>
+                )}
+              </div>
+
+              <div className="p-4 md:p-6">
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
+                    {lightboxVideo.category}
+                  </span>
+                  {lightboxVideo.featured && (
+                    <span className="text-xs font-semibold text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
+                      Featured
+                    </span>
+                  )}
+                  {lightboxVideo.event_date && (
+                    <span className="text-xs text-gray-500 px-2 py-1">
+                      {formatEventDate(lightboxVideo.event_date)}
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{lightboxVideo.title}</h3>
+
+                {lightboxVideo.description && (
+                  <p className="text-sm md:text-base text-gray-600">{lightboxVideo.description}</p>
                 )}
               </div>
             </div>
