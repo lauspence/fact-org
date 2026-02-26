@@ -12,28 +12,24 @@ interface RichTextChild {
 
 interface RichTextBlock {
   type: string;
-  children?: RichTextChild[];
+  children?: RichTextChild[] | undefined;
 }
 
 type Description = string | RichTextBlock[];
 
 interface Product {
   id: number;
-  // documentId?: string; // ❌ Strapi only - remove if you want
   name: string;
   description?: Description;
-  price?: number;
+  price?: number | string;
   category?: string;
   featured?: boolean;
-  image?: string;
 
-  // ✅ Laravel uses snake_case
+  // Laravel fields
   in_stock?: boolean;
-
-  // ✅ Laravel controller validates images.* as strings
   images?: string[];
+  image_urls?: string[]; // ✅ absolute URLs from backend (if provided)
 
-  // Any other fields from Laravel
   [key: string]: unknown;
 }
 
@@ -44,11 +40,9 @@ const extractTextFromDescription = (description: Description | undefined): strin
 
   if (Array.isArray(description)) {
     return description
-      .map(block => {
+      .map((block) => {
         if (block?.children && Array.isArray(block.children)) {
-          return block.children
-            .map((child) => child?.text || '')
-            .join('');
+          return block.children.map((child) => child?.text || '').join('');
         }
         return '';
       })
@@ -56,6 +50,48 @@ const extractTextFromDescription = (description: Description | undefined): strin
   }
 
   return '';
+};
+
+/**
+ * ✅ Public site root (NOT API root)
+ * - set in .env as: VITE_PUBLIC_SITE_URL=https://factfarm.africa
+ * - fallback to current origin (works in dev)
+ */
+const PUBLIC_SITE_URL =
+  (import.meta.env.VITE_PUBLIC_SITE_URL?.replace(/\/+$/, '') || window.location.origin);
+
+/**
+ * ✅ Resolve product image URL safely
+ * Fixes:
+ * - "/api/storage/..." -> "/storage/..."
+ * - "https://domain/api/storage/..." -> "https://domain/storage/..."
+ * - "/storage/..." -> "PUBLIC_SITE_URL + /storage/..."
+ * - "storage/..." -> "PUBLIC_SITE_URL + /storage/..."
+ */
+const resolveImageUrl = (raw: unknown): string | null => {
+  if (typeof raw !== 'string' || !raw.trim()) return null;
+
+  let url = raw.trim();
+
+  // normalize any /api/storage to /storage (works for absolute and relative)
+  url = url.replace(/\/api\/storage\//g, '/storage/');
+
+  // already absolute
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  // normalize "storage/..." to "/storage/..."
+  if (url.startsWith('storage/')) {
+    url = `/${url}`;
+  }
+
+  // prefix "/storage/..." from public site root
+  if (url.startsWith('/storage/')) {
+    return `${PUBLIC_SITE_URL}${url}`;
+  }
+
+  return null;
 };
 
 const Marketplace = () => {
@@ -71,8 +107,8 @@ const Marketplace = () => {
         const data = await laravelApi.getProducts(selectedCategory);
         setProducts(data as Product[]);
         setError(null);
-      } catch (error) {
-        console.error('Error fetching products:', error);
+      } catch (err) {
+        console.error('Error fetching products:', err);
         setError('Failed to load products. Please try again later.');
       } finally {
         setLoading(false);
@@ -188,105 +224,95 @@ const Marketplace = () => {
                   </p>
                 </div>
 
-                {/* Product Grid - Mobile First, 2 cols on mobile, 3 on tablet, 4 on desktop */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-                  {products.map((product) => (
-                    <div
-                      key={product.id}
-                      className="bg-white rounded-lg md:rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all overflow-hidden group"
-                    >
-                      {/* Product Image - Smaller on Mobile */}
-                      <div className="relative h-40 md:h-56 overflow-hidden bg-gray-50">
-                        {product.image ? (
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            loading="lazy"
-                          />
-                        ) : product.images && product.images.length > 0 ? (
-                          <img
-                            src={product.images[0]} // ✅ Laravel: string[]
-                            alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <FaShoppingCart className="text-4xl md:text-5xl text-gray-300" />
-                          </div>
-                        )}
+                  {products.map((product) => {
+                    const imgSrc =
+                      resolveImageUrl(product.image_urls?.[0]) ??
+                      resolveImageUrl(product.images?.[0]);
 
-                        {/* Badges - Compact on Mobile */}
-                        <div className="absolute top-2 left-2 right-2 flex justify-between items-start gap-1">
-                          {product.category && (
-                            <div className="inline-flex items-center gap-1 bg-white/95 backdrop-blur-sm text-gray-700 px-2 py-1 rounded-md text-[10px] md:text-xs font-bold shadow-sm">
-                              <FaTag className="text-gray-500 text-[8px] md:text-xs" />
-                              <span className="hidden md:inline">{product.category.trim()}</span>
-                              <span className="md:hidden">{product.category.trim().substring(0, 4)}</span>
-                            </div>
-                          )}
-                          {product.featured && (
-                            <div className="bg-amber-400 text-gray-900 px-2 py-1 rounded-md text-[10px] md:text-xs font-bold shadow-sm">
-                              ⭐
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Out of Stock Overlay */}
-                        {product.in_stock === false && (
-                          <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                            <span className="text-white font-bold text-xs md:text-sm bg-red-600 px-3 py-1.5 rounded-lg">
-                              Out of Stock
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Product Info - Compact */}
-                      <div className="p-3 md:p-4">
-                        <h3 className="text-sm md:text-base font-bold mb-2 text-gray-900 line-clamp-2 leading-snug">
-                          {product.name}
-                        </h3>
-
-                        {/* Description - Hidden on Mobile */}
-                        {product.description && (
-                          <p className="hidden md:block text-gray-600 text-xs leading-relaxed mb-3 line-clamp-2">
-                            {extractTextFromDescription(product.description)}
-                          </p>
-                        )}
-
-                        {/* Price - Compact */}
-                        <div className="mb-3">
-                          {product.price && product.price > 0 ? (
-                            <div>
-                              <p className="text-[10px] md:text-xs text-gray-500 mb-0.5">Price</p>
-                              <p className="text-base md:text-lg font-bold text-gray-900">
-                                KES {Number(product.price).toLocaleString()}
-                              </p>
-                            </div>
+                    return (
+                      <div
+                        key={product.id}
+                        className="bg-white rounded-lg md:rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all overflow-hidden group"
+                      >
+                        <div className="relative h-40 md:h-56 overflow-hidden bg-gray-50">
+                          {imgSrc ? (
+                            <img
+                              src={imgSrc}
+                              alt={product.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              loading="lazy"
+                            />
                           ) : (
-                            <span className="text-xs text-gray-500">Contact for Price</span>
+                            <div className="w-full h-full flex items-center justify-center">
+                              <FaShoppingCart className="text-4xl md:text-5xl text-gray-300" />
+                            </div>
+                          )}
+
+                          <div className="absolute top-2 left-2 right-2 flex justify-between items-start gap-1">
+                            {product.category && (
+                              <div className="inline-flex items-center gap-1 bg-white/95 backdrop-blur-sm text-gray-700 px-2 py-1 rounded-md text-[10px] md:text-xs font-bold shadow-sm">
+                                <FaTag className="text-gray-500 text-[8px] md:text-xs" />
+                                <span className="hidden md:inline">{product.category.trim()}</span>
+                                <span className="md:hidden">{product.category.trim().substring(0, 4)}</span>
+                              </div>
+                            )}
+                            {product.featured && (
+                              <div className="bg-amber-400 text-gray-900 px-2 py-1 rounded-md text-[10px] md:text-xs font-bold shadow-sm">
+                                ⭐
+                              </div>
+                            )}
+                          </div>
+
+                          {product.in_stock === false && (
+                            <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                              <span className="text-white font-bold text-xs md:text-sm bg-red-600 px-3 py-1.5 rounded-lg">
+                                Out of Stock
+                              </span>
+                            </div>
                           )}
                         </div>
 
-                        {/* CTA Button - Full Width on Mobile */}
-                        <Link
-                          to={`/marketplace/${product.id}`} // ✅ Use Laravel ID
-                          className="block w-full text-center bg-gray-900 text-white px-3 py-2 md:py-2.5 rounded-lg hover:bg-gray-800 transition text-xs md:text-sm font-semibold"
-                        >
-                          View Details
-                        </Link>
+                        <div className="p-3 md:p-4">
+                          <h3 className="text-sm md:text-base font-bold mb-2 text-gray-900 line-clamp-2 leading-snug">
+                            {product.name}
+                          </h3>
+
+                          {product.description && (
+                            <p className="hidden md:block text-gray-600 text-xs leading-relaxed mb-3 line-clamp-2">
+                              {extractTextFromDescription(product.description)}
+                            </p>
+                          )}
+
+                          <div className="mb-3">
+                            {product.price && Number(product.price) > 0 ? (
+                              <div>
+                                <p className="text-[10px] md:text-xs text-gray-500 mb-0.5">Price</p>
+                                <p className="text-base md:text-lg font-bold text-gray-900">
+                                  KES {Number(product.price).toLocaleString()}
+                                </p>
+                              </div>
+                            ) : (
+                              <span className="text-xs text-gray-500">Contact for Price</span>
+                            )}
+                          </div>
+
+                          <Link
+                            to={`/marketplace/${product.id}`}
+                            className="block w-full text-center bg-gray-900 text-white px-3 py-2 md:py-2.5 rounded-lg hover:bg-gray-800 transition text-xs md:text-sm font-semibold"
+                          >
+                            View Details
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}
           </div>
         </section>
 
-        {/* Call to Action - Mobile Optimized */}
         <section className="py-12 md:py-16 px-4 bg-gray-900 text-white">
           <div className="container mx-auto max-w-3xl text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-3">

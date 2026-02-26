@@ -36,3 +36,5 @@ dist-ssr
 fact-cms/
 fact-cms/**
 node_modules/fact-cms
+
+stats.html

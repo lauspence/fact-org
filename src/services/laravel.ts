@@ -1,7 +1,28 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL; // e.g. http://127.0.0.1:8000
-const API_TOKEN = import.meta.env.VITE_API_TOKEN;
+/**
+ * ENV
+ * - VITE_API_URL should be the API base, e.g:
+ *     dev:  http://127.0.0.1:8000/api
+ *     prod: https://factfarm.africa/api
+ */
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/+$/, '');
+const API_TOKEN = import.meta.env.VITE_API_TOKEN as string | undefined;
+
+// Fallback for local dev if env is missing
+const FALLBACK_API_BASE = 'http://127.0.0.1:8000/api';
+const FINAL_API_BASE = API_BASE && API_BASE.length > 0 ? API_BASE : FALLBACK_API_BASE;
+
+// Derive site origin for absolute asset URLs (storage, uploads, etc.)
+const SITE_ORIGIN = (() => {
+  try {
+    // FINAL_API_BASE looks like: https://factfarm.africa/api
+    // origin becomes: https://factfarm.africa
+    return new URL(FINAL_API_BASE).origin;
+  } catch {
+    return 'http://127.0.0.1:8000';
+  }
+})();
 
 export type HealthResponse = {
   ok: boolean;
@@ -19,7 +40,7 @@ export type MarketProduct = {
   name: string;
   slug?: string | null;
   description?: string | null;
-  price?: number | null;
+  price?: number | string | null;
   category?: string | null;
   unit?: string | null;
 
@@ -29,6 +50,9 @@ export type MarketProduct = {
 
   image?: string | null;
   images?: string[] | null;
+
+  // ✅ new field from backend accessor
+  image_urls?: string[] | null;
 
   status?: 'draft' | 'published';
   orders_count?: number;
@@ -146,7 +170,7 @@ export type TrainingCourse = {
   available?: boolean;
   max_participants?: number | null;
 
-  start_date?: string | null; // Laravel cast date -> usually "YYYY-MM-DD"
+  start_date?: string | null;
   delivery_mode?: 'in_person' | 'online' | 'hybrid' | null;
   meeting_link?: string | null;
 
@@ -169,7 +193,7 @@ type LaravelPaginator<T> = {
 */
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: FINAL_API_BASE, // ✅ ends with /api
   headers: {
     'Content-Type': 'application/json',
     ...(API_TOKEN ? { Authorization: `Bearer ${API_TOKEN}` } : {}),
@@ -182,11 +206,11 @@ const api = axios.create({
 |--------------------------------------------------------------------------
 */
 
-// Prefix relative /storage paths
-const withBase = (url?: string | null): string | null => {
+// Prefix relative /storage paths using SITE_ORIGIN (not API base)
+const withSiteOrigin = (url?: string | null): string | null => {
   if (!url) return null;
-  if (url.startsWith('http')) return url;
-  return `${API_URL}${url}`;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return `${SITE_ORIGIN}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
 /*
@@ -197,36 +221,42 @@ const withBase = (url?: string | null): string | null => {
 
 const normalizeProduct = (p: MarketProduct): MarketProduct => ({
   ...p,
-  image: withBase(p.image ?? null),
+
+  // Prefer the backend-provided absolute URLs if present
+  image_urls: Array.isArray(p.image_urls) ? p.image_urls : [],
+
+  // Keep legacy fields, but normalize them correctly for assets
+  image: withSiteOrigin(p.image ?? null),
+
   images: Array.isArray(p.images)
-    ? p.images.map((img) => withBase(img) ?? img)
+    ? p.images.map((img) => withSiteOrigin(img) ?? img)
     : [],
 });
 
 const normalizeGalleryImage = (g: GalleryImage): GalleryImage => ({
   ...g,
-  image: withBase(g.image) ?? g.image,
+  image: withSiteOrigin(g.image) ?? g.image,
 });
 
 const normalizeGalleryVideo = (v: GalleryVideo): GalleryVideo => ({
   ...v,
-  video_path: withBase(v.video_path ?? null) ?? v.video_path ?? null,
-  thumbnail_path: withBase(v.thumbnail_path ?? null) ?? v.thumbnail_path ?? null,
-  thumbnail: withBase(v.thumbnail ?? null) ?? v.thumbnail ?? null,
+  video_path: withSiteOrigin(v.video_path ?? null) ?? v.video_path ?? null,
+  thumbnail_path: withSiteOrigin(v.thumbnail_path ?? null) ?? v.thumbnail_path ?? null,
+  thumbnail: withSiteOrigin(v.thumbnail ?? null) ?? v.thumbnail ?? null,
 });
 
 const normalizePublication = (p: Publication): Publication => ({
   ...p,
-  cover_image: withBase(p.cover_image ?? null) ?? p.cover_image ?? null,
-  pdf_path: withBase(p.pdf_path ?? null) ?? p.pdf_path ?? null,
+  cover_image: withSiteOrigin(p.cover_image ?? null) ?? p.cover_image ?? null,
+  pdf_path: withSiteOrigin(p.pdf_path ?? null) ?? p.pdf_path ?? null,
   files: Array.isArray(p.files)
-    ? p.files.map((f) => withBase(f) ?? f)
+    ? p.files.map((f) => withSiteOrigin(f) ?? f)
     : [],
 });
 
 const normalizeTrainingCourse = (t: TrainingCourse): TrainingCourse => ({
   ...t,
-  image: withBase(t.image ?? null) ?? t.image ?? null,
+  image: withSiteOrigin(t.image ?? null) ?? t.image ?? null,
 });
 
 /*
@@ -242,7 +272,8 @@ export const laravelApi = {
   |--------------------------------------------------------------------------
   */
   health: async (): Promise<HealthResponse> => {
-    const response = await api.get<HealthResponse>('/api/health');
+    // ✅ baseURL already includes /api
+    const response = await api.get<HealthResponse>('/health');
     return response.data;
   },
 
@@ -253,7 +284,7 @@ export const laravelApi = {
   */
   getProducts: async (category?: string | null): Promise<MarketProduct[]> => {
     const response = await api.get<LaravelPaginator<MarketProduct>>(
-      '/api/market-products',
+      '/market-products',
       { params: { category } }
     );
 
@@ -261,7 +292,7 @@ export const laravelApi = {
   },
 
   getProductById: async (id: string | number): Promise<MarketProduct> => {
-    const response = await api.get<MarketProduct>(`/api/market-products/${id}`);
+    const response = await api.get<MarketProduct>(`/market-products/${id}`);
     return normalizeProduct(response.data);
   },
 
@@ -276,7 +307,7 @@ export const laravelApi = {
     per_page?: number;
   }): Promise<Publication[]> => {
     const response = await api.get<LaravelPaginator<Publication>>(
-      '/api/publications',
+      '/publications',
       { params }
     );
 
@@ -284,7 +315,7 @@ export const laravelApi = {
   },
 
   getPublicationById: async (id: string | number): Promise<Publication> => {
-    const response = await api.get<Publication>(`/api/publications/${id}`);
+    const response = await api.get<Publication>(`/publications/${id}`);
     return normalizePublication(response.data);
   },
 
@@ -299,7 +330,7 @@ export const laravelApi = {
     per_page?: number;
   }): Promise<GalleryImage[]> => {
     const response = await api.get<LaravelPaginator<GalleryImage>>(
-      '/api/gallery-images',
+      '/gallery-images',
       { params }
     );
 
@@ -307,7 +338,7 @@ export const laravelApi = {
   },
 
   getGalleryImageById: async (id: string | number): Promise<GalleryImage> => {
-    const response = await api.get<GalleryImage>(`/api/gallery-images/${id}`);
+    const response = await api.get<GalleryImage>(`/gallery-images/${id}`);
     return normalizeGalleryImage(response.data);
   },
 
@@ -322,7 +353,7 @@ export const laravelApi = {
     per_page?: number;
   }): Promise<GalleryVideo[]> => {
     const response = await api.get<LaravelPaginator<GalleryVideo>>(
-      '/api/gallery-videos',
+      '/gallery-videos',
       { params }
     );
 
@@ -330,7 +361,7 @@ export const laravelApi = {
   },
 
   getGalleryVideoById: async (id: string | number): Promise<GalleryVideo> => {
-    const response = await api.get<GalleryVideo>(`/api/gallery-videos/${id}`);
+    const response = await api.get<GalleryVideo>(`/gallery-videos/${id}`);
     return normalizeGalleryVideo(response.data);
   },
 
@@ -347,7 +378,7 @@ export const laravelApi = {
     per_page?: number;
   }): Promise<TrainingCourse[]> => {
     const response = await api.get<LaravelPaginator<TrainingCourse>>(
-      '/api/training-courses',
+      '/training-courses',
       { params }
     );
 
