@@ -17,6 +17,7 @@ import Articles from './pages/Articles';
 import ArticleDetail from './pages/ArticleDetail';
 import TrainingEvents from './pages/TrainingEvents';
 import YouthInAgriculture from './pages/YouthInAgriculture';
+import TrainingBooking from './pages/TrainingBooking';
 
 import { laravelApi } from './services/laravel';
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="knowledge-training" element={<KnowledgeTraining />} />
           <Route path="training-events" element={<TrainingEvents />} />
+          <Route path="/training/:id/book" element={<TrainingBooking />} />
 
           <Route path="youth-in-agriculture" element={<YouthInAgriculture />} />
 

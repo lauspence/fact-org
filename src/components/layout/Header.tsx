@@ -40,6 +40,7 @@ const Header = () => {
         { path: '/agricultural-inputs', label: 'Agricultural Inputs' },
         { path: '/enterprise-building', label: 'Enterprise Building' },
         { path: '/analytical-services', label: 'Analytical Services' },
+        { path: '#', label: 'Agritourism' },
       ],
     },
     { path: '/marketplace', label: 'Marketplace', icon: FaShoppingCart },

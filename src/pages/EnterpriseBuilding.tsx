@@ -30,16 +30,15 @@ const EnterpriseBuilding = () => {
     "Agripreneurship Training",
     "Start-up Incubation",
     "Skills Development",
-    "Access to Finance",
+    "Training on Access to Finance  ",
     "Peer Networks",
     "Leadership Development"
   ];
 
   const successMetrics = [
-    { number: "30+", label: "Youth Agripreneurs" },
-    { number: "KES 2M+", label: "Annual Revenue Generated" },
-    { number: "200%", label: "Income Increase" },
-    { number: "50+", label: "Jobs Created" }
+    { number: "500+", label: "Agripreneurs" },
+    {number:"10", label:"Counties Reached"},
+    { number: "200+", label: "Jobs Created" },
   ];
 
   return (

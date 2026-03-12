@@ -82,6 +82,7 @@ export type Publication = {
   files?: string[] | null;
 
   category?: string | null;
+  written_by?: string | null;
   price?: number | null;
   is_free?: boolean;
 
@@ -96,6 +97,7 @@ export type Publication = {
   updated_at?: string;
 };
 
+
 /*
 |--------------------------------------------------------------------------
 | Gallery Images
@@ -107,7 +109,7 @@ export type GalleryImage = {
   title: string;
   description?: string | null;
   image: string;
-  category: 'Training Events' | 'Workshops' | 'Field Visits' | 'Farm Harvests';
+  category: 'Training and Events' | 'Workshops' | 'Field Visits' | 'Fact Limited Harvests';
   event_date?: string | null;
   featured?: boolean;
   status?: 'draft' | 'published';
@@ -168,7 +170,11 @@ export type TrainingCourse = {
   target_audience?: string | null;
 
   available?: boolean;
+
   max_participants?: number | null;
+
+  // NEW
+  booked_count?: number | null;
 
   start_date?: string | null;
   delivery_mode?: 'in_person' | 'online' | 'hybrid' | null;
@@ -179,7 +185,6 @@ export type TrainingCourse = {
   created_at?: string;
   updated_at?: string;
 };
-
 type LaravelPaginator<T> = {
   data: T[];
   links?: unknown;

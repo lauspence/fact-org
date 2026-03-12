@@ -83,7 +83,7 @@ const AgriculturalInputs = () => {
     {
       emoji: "🚚",
       title: "Complete Service",
-      description: "Installation support, and post sales services"
+      description: "Post sales services"
     }
   ];
 

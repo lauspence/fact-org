@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FaImage, FaSearch, FaTimes, FaVideo, FaPlay, FaChevronDown } from 'react-icons/fa';
 import { laravelApi, type GalleryVideo } from '../services/laravel';
 
-type PhotoCategory = 'Training Events' | 'Workshops' | 'Field Visits' | 'Farm Harvests';
+type PhotoCategory = 'Training and Events' | 'Workshops' | 'Field Visits' | 'Fact Limited Harvests';
 
 interface Photo {
   id: number;
@@ -50,8 +50,8 @@ const Gallery = () => {
 
   const photoCategories: Array<'All' | PhotoCategory> = [
     'All',
-    'Training Events',
-    'Farm Harvests',
+    'Training and Events',
+    'Fact Limited Harvests',
     'Workshops',
     'Field Visits',
   ];

@@ -21,7 +21,6 @@ const KnowledgeTraining = () => {
         "Fruits production (avocado, banana, mango, passion, etc)",
         "Vegetable farming (exotic and African leafy vegetables)",
         "Greenhouse tomato farming",
-        "Greenhouse tomato farming",
         "Exotic fruits (apples, berries, dragon fruit, lychee)",
         "Herbs and spices",
         "Medicinal plants"
@@ -51,7 +50,7 @@ const KnowledgeTraining = () => {
   const trainingFormats = [
     {
       title: "Workshops & Seminars",
-      description: "Interactive in-person sessions with hands-on learning.",
+      description: "Interactive in-person and online sessions with learning.",
       icon: <FaChalkboardTeacher className="w-12 h-12 text-emerald-600 sm:w-14 sm:h-14" />
     },
     {

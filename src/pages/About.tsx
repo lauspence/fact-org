@@ -41,10 +41,15 @@ const About = () => {
   ];
 
   const sdgContributions = [
-    { number: '1 & 2', text: 'Reducing poverty and hunger' },
-    { number: '3 & 5', text: 'Promoting good health and gender equality' },
-    { number: '8 & 9', text: 'Creating employment and industrial growth' },
-    { number: '13-15', text: 'Climate action and environmental well-being' }
+    { number: '1', text: 'No Poverty' },
+    { number: '2', text: 'Zero Hunger' },
+    { number: '3', text: 'Good Health and Well-Being' },
+    { number: '5', text: 'Gender Equality' },
+    { number: '8', text: 'Decent Work and Economic Growth' },
+    { number: '9', text: 'Industry, Innovation and Infrastructure' },
+    { number: '13', text: 'Climate Action' },
+    { number: '14', text: 'Life Below Water' },
+    { number: '15', text: 'Life on Land' }
   ];
 
   return (
@@ -56,32 +61,25 @@ const About = () => {
       />
 
       <div className="bg-white">
-        {/* Hero with Background Image */}
-        <section className="relative bg-gray-900 text-white py-20 md:py-32 px-4 overflow-hidden">
-          {/* Background Image */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        <section className="relative text-white py-20 md:py-32 px-4 overflow-hidden bg-slate-900">
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
             style={{
-              backgroundImage: "url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1920&q=80')"
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80')"
             }}
           />
-          {/* Dark Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/90 via-emerald-800/85 to-teal-900/90" />
-          
-          {/* Content */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-950/75 via-slate-900/60 to-stone-900/55" />
+
           <div className="container mx-auto max-w-4xl relative z-10">
-            <p className="text-sm font-semibold text-emerald-300 mb-3">Since 2007 • Transforming Agriculture</p>
+            <p className="text-sm font-semibold text-amber-300 mb-3">Since 2007 • Transforming Agriculture</p>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">About FaCT Ltd</h1>
-            <p className="text-xl md:text-2xl text-emerald-50 font-light mb-3">
-              Farm and Community Technologies Limited
-            </p>
-            <p className="text-base md:text-lg text-emerald-100 max-w-3xl leading-relaxed">
-              Providing technical expertise and specialist knowledge to stakeholders in agricultural production, agribusiness, and food security sectors across Kenya and beyond.
+            <p className="text-base md:text-lg text-slate-100 max-w-3xl leading-relaxed">
+              Providing technical expertise and specialist knowledge to stakeholders in agriculture.
             </p>
           </div>
         </section>
 
-        {/* Who We Are */}
         <section className="py-14 md:py-16 px-4">
           <div className="container mx-auto max-w-4xl">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Who We Are</h2>
@@ -104,16 +102,15 @@ const About = () => {
                 empowering communities across Africa to achieve high quality lives.
               </p>
               <p>
-                Agri-enterprise contributes directly to at least <strong>12 of the 17 Sustainable Development Goals</strong> set by
+                Agri-enterprise contributes directly to at least <strong>9 of the 17 Sustainable Development Goals</strong> set by
                 the UN members on reducing poverty and hunger (1, 2), promoting good health and gender equality (3, 5), creating
-                employment and industrial growth (8, 9), Climate Action and the well being of life below water and on land (13, 14,
-                15).
+                employment and industrial growth (8, 9), and advancing climate action together with the well-being of life below
+                water and on land (13, 14, 15).
               </p>
             </div>
           </div>
         </section>
 
-        {/* Impact */}
         <section className="py-14 md:py-16 px-4 bg-gray-50">
           <div className="container mx-auto max-w-4xl">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Our Impact</h2>
@@ -131,7 +128,6 @@ const About = () => {
               ))}
             </div>
 
-            {/* Who we serve */}
             <div className="mt-8 bg-white border border-emerald-200 rounded-lg p-6 border-l-4 border-l-emerald-600">
               <h3 className="text-xl font-bold text-gray-900">Who We Serve</h3>
               <p className="text-gray-700 mt-3 leading-relaxed">
@@ -148,7 +144,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* Vision & Mission */}
         <section className="py-14 md:py-16 px-4">
           <div className="container mx-auto max-w-4xl">
             <div className="grid gap-6 md:grid-cols-2">
@@ -180,7 +175,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* Values */}
         <section className="py-14 md:py-16 px-4 bg-gray-50">
           <div className="container mx-auto max-w-4xl">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Our Core Values</h2>
@@ -197,20 +191,19 @@ const About = () => {
           </div>
         </section>
 
-        {/* SDG */}
         <section className="py-14 md:py-16 px-4">
           <div className="container mx-auto max-w-4xl">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Sustainable Development</h2>
             <p className="text-gray-600 mt-3">
-              Agri-enterprise contributes directly to at least 12 of the 17 UN Sustainable Development Goals.
+              Through Agri-Enterprise, Fact Limited contributes directly to at least 9 of the 17 UN Sustainable Development Goals.
             </p>
 
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {sdgContributions.map((sdg, index) => (
                 <div key={index} className="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
                   <div className="flex items-center justify-between mb-2">
                     <div className="font-bold text-lg text-emerald-700">SDG {sdg.number}</div>
-                    <div className="text-xs text-emerald-600 font-medium">UN Goals</div>
+                    <div className="text-xs text-emerald-600 font-medium">UN Goal</div>
                   </div>
                   <p className="text-sm text-gray-700">{sdg.text}</p>
                 </div>
@@ -219,7 +212,6 @@ const About = () => {
           </div>
         </section>
 
-        {/* CTA */}
         <section className="py-14 md:py-16 px-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
           <div className="container mx-auto max-w-4xl text-center">
             <h2 className="text-2xl md:text-3xl font-bold">Ready to Transform Your Agribusiness?</h2>

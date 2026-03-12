@@ -8,7 +8,7 @@ const AnalyticalServices = () => {
       title: "Soil Analysis",
       slug: "soil-analysis",
       icon: <FaFlask className="w-10 h-10 text-emerald-600" />,
-      description: "Comprehensive soil testing for optimal crop nutrition and productivity.",
+      description: "Comprehensive soil testing for maximum crop nutrition and productivity.",
       tests: [
         "NPK Analysis (Nitrogen, Phosphorus, Potassium)",
         "Micronutrient Testing (Fe, Zn, Cu, Mn, B)",
@@ -21,7 +21,7 @@ const AnalyticalServices = () => {
       title: "Water Testing",
       slug: "water-testing",
       icon: <FaTint className="w-10 h-10 text-emerald-600" />,
-      description: "Water quality assessment for safe irrigation and consumption.",
+      description: "Water quality assessment for safe use.",
       tests: [
         "Physical Parameters (pH, TDS, turbidity)",
         "Chemical Analysis (Nitrates, phosphates)",
@@ -34,7 +34,7 @@ const AnalyticalServices = () => {
       title: "Pesticide Residue Analysis",
       slug: "pesticide-residue-analysis",
       icon: <FaLeaf className="w-10 h-10 text-emerald-600" />,
-      description: "Detection of pesticide residues for food safety and export compliance.",
+      description: "Detection of pesticide residues for food safety.",
       tests: [
         "Multi-Residue Screening (200+ pesticides)",
         "MRL Compliance Verification",

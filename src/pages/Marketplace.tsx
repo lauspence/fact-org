@@ -118,7 +118,7 @@ const Marketplace = () => {
     fetchProducts();
   }, [selectedCategory]);
 
-  const categories = ['Seeds', 'Fertilizers', 'Tools', 'Equipment', 'Inputs'];
+  const categories = ['Smart Technology', 'Farm Tools & Equipment', 'Planting Materials', 'Plant Nutrition Products', 'Pest Control Solutions', 'Irrigation Products & Services'];
 
   return (
     <>

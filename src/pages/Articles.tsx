@@ -7,14 +7,13 @@ import { laravelApi, type Publication } from '../services/laravel';
 type Article = Publication;
 
 const Articles = () => {
-  const [allArticles, setAllArticles] = useState<Article[]>([]); // ✅ full list for category extraction
+  const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedType, setSelectedType] = useState<'all' | 'article' | 'pdf'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // ✅ Fetch once on mount — client-side filter for categories/type/search
   useEffect(() => {
     fetchArticles();
   }, []);
@@ -22,11 +21,8 @@ const Articles = () => {
   const fetchArticles = async () => {
     try {
       setLoading(true);
-
-      // ✅ Fetch ALL publications (articles + PDFs)
       const data = await laravelApi.getPublications({ per_page: 50 });
       const all = data ?? [];
-
       setAllArticles(all);
       setError(null);
     } catch (err) {
@@ -37,7 +33,6 @@ const Articles = () => {
     }
   };
 
-  // ✅ Client-side filtering: category + type + search
   const filtered = useMemo(() => {
     return allArticles
       .filter((a) => selectedCategory === 'all' || a.category === selectedCategory)
@@ -45,24 +40,28 @@ const Articles = () => {
       .filter((a) => {
         if (!searchQuery.trim()) return true;
         const q = searchQuery.toLowerCase();
+
         return (
           a.title.toLowerCase().includes(q) ||
-          (a.description ?? '').toLowerCase().includes(q)
+          (a.description ?? '').toLowerCase().includes(q) ||
+          (a.written_by ?? '').toLowerCase().includes(q) ||
+          (a.category ?? '').toLowerCase().includes(q)
         );
       });
   }, [allArticles, selectedCategory, selectedType, searchQuery]);
 
-  // ✅ Categories persist regardless of active filter
   const categories = useMemo(() => {
-    const unique = new Set(
-      allArticles.map((a) => a.category).filter((c): c is string => Boolean(c))
-    );
-    return ['all', ...Array.from(unique)];
+    const unique = Array.from(
+      new Set(allArticles.map((a) => a.category).filter((c): c is string => Boolean(c)))
+    ).sort((a, b) => a.localeCompare(b));
+
+    return ['all', ...unique];
   }, [allArticles]);
 
   const formatDate = (p: Article) => {
     const dateString = p.published_at ?? p.published_date ?? p.created_at ?? undefined;
     if (!dateString) return '';
+
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -72,8 +71,6 @@ const Articles = () => {
 
   const isFree = (p: Article) =>
     p.is_free === true || (p.is_free as unknown as number) === 1;
-
-  // ─── Loading ─────────────────────────────────────────────────────────────
 
   if (loading) {
     return (
@@ -104,8 +101,6 @@ const Articles = () => {
     );
   }
 
-  // ─── Main ─────────────────────────────────────────────────────────────────
-
   return (
     <>
       <SEO
@@ -115,21 +110,20 @@ const Articles = () => {
       />
 
       <div className="bg-white min-h-screen">
-
-        {/* ── Hero ── */}
         <section className="bg-white border-b border-gray-100 py-16 px-4">
           <div className="container mx-auto max-w-3xl text-center">
             <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 border border-emerald-100">
               Knowledge Hub
             </div>
+
             <h1 className="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900 leading-tight">
               Articles & Insights
             </h1>
+
             <p className="text-gray-500 text-lg max-w-xl mx-auto">
               Expert knowledge, practical tips, and publications to help you succeed in agriculture and agribusiness.
             </p>
 
-            {/* ✅ Search bar */}
             <div className="mt-8 max-w-md mx-auto relative">
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
               <input
@@ -143,11 +137,8 @@ const Articles = () => {
           </div>
         </section>
 
-        {/* ── Filters ── */}
         <section className="py-5 px-4 bg-gray-50 border-b border-gray-200 sticky top-0 z-10 shadow-sm">
           <div className="container mx-auto max-w-7xl flex flex-wrap items-center gap-4 justify-between">
-
-            {/* Type toggle */}
             <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1">
               {(['all', 'article', 'pdf'] as const).map((type) => (
                 <button
@@ -166,7 +157,6 @@ const Articles = () => {
               ))}
             </div>
 
-            {/* Category pills */}
             {categories.length > 1 && (
               <div className="flex flex-wrap gap-2">
                 {categories.map((category) => (
@@ -180,22 +170,18 @@ const Articles = () => {
                     }`}
                   >
                     {category !== 'all' && <FaTag className="text-[10px]" />}
-                    {category === 'all'
-                      ? 'All Categories'
-                      : category.charAt(0).toUpperCase() + category.slice(1)}
+                    {category === 'all' ? 'All Categories' : category}
                   </button>
                 ))}
               </div>
             )}
 
-            {/* Result count */}
             <span className="text-xs text-gray-400 ml-auto">
               {filtered.length} {filtered.length === 1 ? 'result' : 'results'}
             </span>
           </div>
         </section>
 
-        {/* ── Grid ── */}
         {filtered.length > 0 ? (
           <section className="py-12 px-4 bg-white">
             <div className="container mx-auto max-w-7xl">
@@ -210,7 +196,6 @@ const Articles = () => {
                       to={`/articles/${article.slug || article.id}`}
                       className="group bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition-all border border-gray-100 hover:border-emerald-200 flex flex-col"
                     >
-                      {/* Cover image or placeholder */}
                       {article.cover_image ? (
                         <div className="h-48 overflow-hidden bg-gray-100">
                           <img
@@ -220,24 +205,23 @@ const Articles = () => {
                           />
                         </div>
                       ) : (
-                        <div className={`h-48 flex items-center justify-center ${
-                          isPdf
-                            ? 'bg-gradient-to-br from-red-50 to-orange-50'
-                            : 'bg-gradient-to-br from-emerald-50 to-teal-100'
-                        }`}>
-                          {isPdf
-                            ? <FaFilePdf className="text-5xl text-red-300" />
-                            : <FaNewspaper className="text-5xl text-emerald-300" />
-                          }
+                        <div
+                          className={`h-48 flex items-center justify-center ${
+                            isPdf
+                              ? 'bg-gradient-to-br from-red-50 to-orange-50'
+                              : 'bg-gradient-to-br from-emerald-50 to-teal-100'
+                          }`}
+                        >
+                          {isPdf ? (
+                            <FaFilePdf className="text-5xl text-red-300" />
+                          ) : (
+                            <FaNewspaper className="text-5xl text-emerald-300" />
+                          )}
                         </div>
                       )}
 
-                      {/* Card body */}
                       <div className="p-5 flex flex-col flex-1">
-
-                        {/* Top badges row */}
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
-                          {/* Type badge */}
                           {isPdf ? (
                             <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded-full">
                               <FaFilePdf className="text-[9px]" /> PDF
@@ -248,16 +232,16 @@ const Articles = () => {
                             </span>
                           )}
 
-                          {/* Access badge */}
-                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
-                            free
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                              : 'bg-amber-50 text-amber-700 border-amber-100'
-                          }`}>
+                          <span
+                            className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${
+                              free
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                                : 'bg-amber-50 text-amber-700 border-amber-100'
+                            }`}
+                          >
                             {free ? '✓ Free' : '★ Premium'}
                           </span>
 
-                          {/* Category */}
                           {article.category && (
                             <span className="text-[11px] text-gray-400 uppercase tracking-wide font-semibold ml-auto">
                               {article.category}
@@ -265,19 +249,22 @@ const Articles = () => {
                           )}
                         </div>
 
-                        {/* Title */}
                         <h3 className="text-base font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2 leading-snug">
                           {article.title}
                         </h3>
 
-                        {/* Description */}
+                        {article.written_by && (
+                          <p className="text-xs text-gray-500 mb-2">
+                            By {article.written_by}
+                          </p>
+                        )}
+
                         {article.description && (
                           <p className="text-gray-500 text-sm line-clamp-2 leading-relaxed mb-3">
                             {article.description}
                           </p>
                         )}
 
-                        {/* Footer */}
                         <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
                           <span className="text-xs text-gray-400 flex items-center gap-1">
                             <FaCalendar className="text-[9px]" />
@@ -320,7 +307,6 @@ const Articles = () => {
           </section>
         )}
 
-        {/* ── CTA ── */}
         <section className="py-20 px-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
           <div className="container mx-auto max-w-3xl text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Want to Learn More?</h2>

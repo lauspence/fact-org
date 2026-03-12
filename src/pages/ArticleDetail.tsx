@@ -10,6 +10,8 @@ import {
   FaFilePdf,
   FaExternalLinkAlt,
   FaTag,
+  FaPrint,
+  FaUser,
 } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import SEO from '../components/common/SEO';
@@ -18,7 +20,7 @@ import { laravelApi, type Publication } from '../services/laravel';
 type Article = Publication;
 
 const ArticleDetail = () => {
-  const { slug } = useParams<{ slug: string }>(); // slug or id — backend handles both
+  const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +59,7 @@ const ArticleDetail = () => {
         .filter((p) => (p.type ?? 'article') === 'article')
         .filter((p) => p.id !== currentId)
         .slice(0, 3);
+
       setRelatedArticles(related);
     } catch (err) {
       console.error('Error fetching related articles:', err);
@@ -67,6 +70,7 @@ const ArticleDetail = () => {
   const formatDate = (p: Article) => {
     const dateString = p.published_at ?? p.published_date ?? p.created_at ?? undefined;
     if (!dateString) return '';
+
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -76,6 +80,7 @@ const ArticleDetail = () => {
 
   const handleShare = () => {
     if (!article) return;
+
     if (navigator.share) {
       navigator
         .share({
@@ -85,12 +90,14 @@ const ArticleDetail = () => {
         })
         .catch((err) => console.error('Error sharing:', err));
     } else {
-      // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href).catch(() => {});
     }
   };
 
-  // ✅ Cast is_free to boolean safely (API may return 0/1 or true/false)
+  const handlePrint = () => {
+    window.print();
+  };
+
   const isFree = article?.is_free === true || (article?.is_free as unknown as number) === 1;
 
   const pdfUrl = useMemo(() => {
@@ -102,8 +109,6 @@ const ArticleDetail = () => {
   const coverImage = article?.cover_image ?? null;
   const isPdf = (article?.type ?? 'article') === 'pdf';
 
-  // ─── Loading ────────────────────────────────────────────────────────────────
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -114,8 +119,6 @@ const ArticleDetail = () => {
       </div>
     );
   }
-
-  // ─── Error ──────────────────────────────────────────────────────────────────
 
   if (error || !article) {
     return (
@@ -135,8 +138,6 @@ const ArticleDetail = () => {
     );
   }
 
-  // ─── Main ───────────────────────────────────────────────────────────────────
-
   return (
     <>
       <SEO
@@ -146,10 +147,61 @@ const ArticleDetail = () => {
         image={coverImage ?? undefined}
       />
 
-      <div className="bg-white min-h-screen">
+      <style>
+        {`
+          @media print {
+            @page {
+              margin: 18mm;
+            }
 
-        {/* ── Breadcrumb / Back bar ── */}
-        <div className="bg-gray-50 border-b border-gray-200 py-3 px-4">
+            .no-print,
+            .no-print * {
+              display: none !important;
+            }
+
+            .print-content {
+              display: block !important;
+            }
+
+            .print-content,
+            .print-content * {
+              visibility: visible !important;
+            }
+
+            body {
+              background: #ffffff !important;
+              color: #000000 !important;
+            }
+
+            .print-article-shell {
+              max-width: 100% !important;
+              padding: 0 !important;
+              margin: 0 !important;
+            }
+
+            .print-cover-image {
+              margin-bottom: 24px !important;
+              break-inside: avoid;
+            }
+
+            .print-markdown,
+            .print-markdown * {
+              color: #111827 !important;
+            }
+
+            .print-markdown a {
+              text-decoration: underline !important;
+            }
+
+            .print-section {
+              break-inside: avoid;
+            }
+          }
+        `}
+      </style>
+
+      <div className="bg-white min-h-screen">
+        <div className="bg-gray-50 border-b border-gray-200 py-3 px-4 no-print">
           <div className="container mx-auto max-w-4xl flex items-center justify-between gap-4 flex-wrap">
             <Link
               to="/articles"
@@ -159,7 +211,6 @@ const ArticleDetail = () => {
               Back to Articles
             </Link>
 
-            {/* Type badge */}
             {isPdf ? (
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold bg-red-50 text-red-600 border border-red-200 px-3 py-1 rounded-full">
                 <FaFilePdf /> PDF Publication
@@ -172,25 +223,20 @@ const ArticleDetail = () => {
           </div>
         </div>
 
-        {/* ── Article Header ── */}
-        <article>
-          <div className="container mx-auto max-w-4xl px-4 pt-10 pb-6">
-
-            {/* Category */}
+        <article className="print-content">
+          <div className="container mx-auto max-w-4xl px-4 pt-10 pb-6 print-article-shell">
             {article.category && (
-              <div className="flex items-center gap-1.5 text-emerald-600 text-xs font-semibold uppercase tracking-widest mb-3">
+              <div className="flex items-center gap-1.5 text-emerald-600 text-xs font-semibold uppercase tracking-widest mb-3 print-section">
                 <FaTag className="text-[10px]" />
                 {article.category}
               </div>
             )}
 
-            {/* Title */}
             <h1 className="text-3xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-5">
               {article.title}
             </h1>
 
-            {/* Meta row */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200 print-section">
               {(article.published_at || article.published_date || article.created_at) && (
                 <div className="flex items-center gap-1.5">
                   <FaCalendar className="text-emerald-500 text-xs" />
@@ -198,7 +244,13 @@ const ArticleDetail = () => {
                 </div>
               )}
 
-              {/* Access badge */}
+              {article.written_by && (
+                <div className="flex items-center gap-1.5">
+                  <FaUser className="text-emerald-500 text-xs" />
+                  <span>Written by {article.written_by}</span>
+                </div>
+              )}
+
               <span
                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                   isFree
@@ -209,8 +261,16 @@ const ArticleDetail = () => {
                 {isFree ? '✓ Free' : '★ Premium'}
               </span>
 
-              {/* Action buttons */}
-              <div className="flex items-center gap-3 ml-auto">
+              <div className="flex items-center gap-3 ml-auto no-print">
+                {!isPdf && (
+                  <button
+                    onClick={handlePrint}
+                    className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-600 transition-colors text-sm font-medium"
+                  >
+                    <FaPrint className="text-xs" /> Print
+                  </button>
+                )}
+
                 <button
                   onClick={handleShare}
                   className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-600 transition-colors text-sm font-medium"
@@ -218,7 +278,6 @@ const ArticleDetail = () => {
                   <FaShareAlt className="text-xs" /> Share
                 </button>
 
-                {/* ✅ PDF Download: only if type=pdf AND free */}
                 {pdfUrl && isFree && (
                   <a
                     href={pdfUrl}
@@ -234,9 +293,8 @@ const ArticleDetail = () => {
             </div>
           </div>
 
-          {/* ── Cover Image (full width hero) ── */}
           {coverImage && (
-            <div className="container mx-auto max-w-4xl px-4 mb-8">
+            <div className="container mx-auto max-w-4xl px-4 mb-8 print-cover-image">
               <div className="rounded-2xl overflow-hidden shadow-lg aspect-video bg-gray-100">
                 <img
                   src={coverImage}
@@ -247,16 +305,11 @@ const ArticleDetail = () => {
             </div>
           )}
 
-          {/* ── Content area ── */}
-          <div className="container mx-auto max-w-4xl px-4 pb-16">
-
-            {/* ── PDF Type ── */}
+          <div className="container mx-auto max-w-4xl px-4 pb-16 print-article-shell">
             {isPdf ? (
               <div className="space-y-6">
                 {pdfUrl ? (
-                  <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
-
-                    {/* PDF toolbar */}
+                  <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden no-print">
                     <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-200 bg-white">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center">
@@ -277,18 +330,12 @@ const ArticleDetail = () => {
                       </a>
                     </div>
 
-                    {/*
-                      ✅ Use <object> instead of <iframe>.
-                      <object> handles cross-origin PDFs better in Chrome/Edge/Firefox.
-                      The inner <div> is the fallback shown when PDF can't be embedded.
-                    */}
                     <object
                       data={pdfUrl}
                       type="application/pdf"
                       className="w-full"
                       style={{ height: '80vh' }}
                     >
-                      {/* Fallback for browsers that can't embed */}
                       <div className="flex flex-col items-center justify-center py-16 px-6 text-center gap-4">
                         <FaFilePdf className="text-5xl text-red-400" />
                         <p className="text-gray-600 font-medium">
@@ -323,16 +370,14 @@ const ArticleDetail = () => {
                   </div>
                 )}
 
-                {/* Description below PDF */}
                 {article.description && (
                   <p className="text-gray-600 leading-relaxed text-base whitespace-pre-wrap">
                     {article.description}
                   </p>
                 )}
 
-                {/* Paid PDF CTA */}
                 {pdfUrl && !isFree && (
-                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-8 text-center">
+                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-8 text-center no-print">
                     <h3 className="text-xl font-bold text-gray-900 mb-2">Get the Full Publication</h3>
                     <p className="text-gray-500 text-sm mb-6">
                       Contact us to access the complete version of this publication.
@@ -347,33 +392,41 @@ const ArticleDetail = () => {
                 )}
               </div>
             ) : (
-              // ── Article Type ──
-              <div className="prose prose-lg max-w-none
-                prose-headings:font-bold prose-headings:text-gray-900
-                prose-p:text-gray-700 prose-p:leading-relaxed
-                prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline
-                prose-strong:text-gray-900
-                prose-ul:text-gray-700 prose-ol:text-gray-700
-                prose-li:my-1
-                prose-blockquote:border-emerald-400 prose-blockquote:text-gray-600
-                prose-img:rounded-xl prose-img:shadow-md">
-                {article.content ? (
-                  <ReactMarkdown>{article.content}</ReactMarkdown>
-                ) : article.description ? (
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">
-                    {article.description}
+              <>
+                <div
+                  className="prose prose-lg max-w-none
+                  prose-headings:font-bold prose-headings:text-gray-900
+                  prose-p:text-gray-700 prose-p:leading-relaxed
+                  prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline
+                  prose-strong:text-gray-900
+                  prose-ul:text-gray-700 prose-ol:text-gray-700
+                  prose-li:my-1
+                  prose-blockquote:border-emerald-400 prose-blockquote:text-gray-600
+                  prose-img:rounded-xl prose-img:shadow-md print-markdown"
+                >
+                  {article.content ? (
+                    <ReactMarkdown>{article.content}</ReactMarkdown>
+                  ) : article.description ? (
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">
+                      {article.description}
+                    </p>
+                  ) : (
+                    <p className="text-gray-400 italic">No content available.</p>
+                  )}
+                </div>
+
+                <div className="mt-10 pt-6 border-t border-gray-200 text-sm text-gray-500 print-section">
+                  <p>
+                    Copyright © FaCT Ltd. All rights reserved.
                   </p>
-                ) : (
-                  <p className="text-gray-400 italic">No content available.</p>
-                )}
-              </div>
+                </div>
+              </>
             )}
           </div>
         </article>
 
-        {/* ── Related Articles ── */}
         {relatedArticles.length > 0 && (
-          <section className="py-16 px-4 bg-gray-50 border-t border-gray-200">
+          <section className="py-16 px-4 bg-gray-50 border-t border-gray-200 no-print">
             <div className="container mx-auto max-w-5xl">
               <h2 className="text-2xl font-bold mb-8 text-gray-900">Related Articles</h2>
               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -410,9 +463,6 @@ const ArticleDetail = () => {
             </div>
           </section>
         )}
-
-        {/* ── CTA Section ── */}
-
       </div>
     </>
   );
