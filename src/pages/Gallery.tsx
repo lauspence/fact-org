@@ -2,70 +2,59 @@ import { useEffect, useMemo, useState } from 'react';
 import { FaImage, FaSearch, FaTimes, FaVideo, FaPlay, FaChevronDown } from 'react-icons/fa';
 import { laravelApi, type GalleryVideo } from '../services/laravel';
 
-type PhotoCategory = 'Training and Events' | 'Workshops' | 'Field Visits' | 'Fact Limited Harvests';
+type GalleryCategory =
+  | 'Training and Events'
+  | 'Agribusiness and Enterprise Development'
+  | 'Field Visits'
+  | 'Agritourism'
+  | 'Youth in Agriculture'
+  | 'FaCT Ltd Harvests'
+  | 'Success Stories';
 
 interface Photo {
   id: number;
   title: string;
   description?: string | null;
-  image: string; // normalized by laravelApi to full URL if needed
-  category: PhotoCategory;
+  image: string;
+  category: GalleryCategory;
   event_date?: string | null;
   featured?: boolean;
 }
 
-type VideoCategory =
-  | 'Climate-Smart Agriculture'
-  | 'Training & Workshops'
-  | 'Smart Technology'
-  | 'Irrigation & Water'
-  | 'Value Addition';
-
 type Video = GalleryVideo & {
-  category: VideoCategory; // narrow it for UI dropdown
+  category: GalleryCategory;
 };
 
 const Gallery = () => {
   const [activeTab, setActiveTab] = useState<'photos' | 'videos'>('photos');
 
-  // Photos state
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loadingPhotos, setLoadingPhotos] = useState(true);
   const [errorPhotos, setErrorPhotos] = useState<string | null>(null);
 
-  // Videos state
   const [videos, setVideos] = useState<Video[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(false);
   const [errorVideos, setErrorVideos] = useState<string | null>(null);
 
-  // Filters
-  const [selectedCategory, setSelectedCategory] = useState<'All' | PhotoCategory>('All');
-  const [selectedVideoCategory, setSelectedVideoCategory] = useState<'All' | VideoCategory>('All');
+  const [selectedCategory, setSelectedCategory] = useState<'All' | GalleryCategory>('All');
+  const [selectedVideoCategory, setSelectedVideoCategory] = useState<'All' | GalleryCategory>('All');
   const [query, setQuery] = useState('');
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
 
-  // Lightboxes
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
   const [lightboxVideo, setLightboxVideo] = useState<Video | null>(null);
 
-  const photoCategories: Array<'All' | PhotoCategory> = [
+  const galleryCategories: Array<'All' | GalleryCategory> = [
     'All',
     'Training and Events',
-    'Fact Limited Harvests',
-    'Workshops',
+    'Agribusiness and Enterprise Development',
     'Field Visits',
+    'Agritourism',
+    'Youth in Agriculture',
+    'FaCT Ltd Harvests',
+    'Success Stories',
   ];
 
-  const videoCategories: Array<'All' | VideoCategory> = [
-    'All',
-    'Climate-Smart Agriculture',
-    'Training & Workshops',
-    'Smart Technology',
-    'Irrigation & Water',
-    'Value Addition',
-  ];
-
-  // Reset filters when switching tabs
   useEffect(() => {
     setQuery('');
     if (activeTab === 'photos') setSelectedCategory('All');
@@ -75,20 +64,16 @@ const Gallery = () => {
     setShowCategoryDropdown(false);
   }, [activeTab]);
 
-  // Fetch Photos
   useEffect(() => {
     if (activeTab === 'photos') {
       fetchPhotos();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, selectedCategory]);
 
-  // Fetch Videos
   useEffect(() => {
     if (activeTab === 'videos') {
       fetchVideos();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, selectedVideoCategory]);
 
   const fetchPhotos = async () => {
@@ -102,7 +87,7 @@ const Gallery = () => {
         category: categoryParam,
       });
 
-      setPhotos((data as unknown as Photo[]) || []);
+      setPhotos((data as Photo[]) || []);
     } catch (err) {
       console.error('Error fetching photos:', err);
       setErrorPhotos('Failed to load photos. Please check if the API is running.');
@@ -122,7 +107,7 @@ const Gallery = () => {
         category: categoryParam,
       });
 
-      setVideos((data as unknown as Video[]) || []);
+      setVideos((data as Video[]) || []);
     } catch (err) {
       console.error('Error fetching videos:', err);
       setErrorVideos('Failed to load videos. Please check if the API is running.');
@@ -151,12 +136,15 @@ const Gallery = () => {
     });
   }, [videos, query]);
 
-  const activeCategories = activeTab === 'photos' ? photoCategories : videoCategories;
+  const activeCategories = galleryCategories;
   const activeSelectedCategory = activeTab === 'photos' ? selectedCategory : selectedVideoCategory;
 
   const setActiveSelectedCategory = (cat: string) => {
-    if (activeTab === 'photos') setSelectedCategory(cat as 'All' | PhotoCategory);
-    else setSelectedVideoCategory(cat as 'All' | VideoCategory);
+    if (activeTab === 'photos') {
+      setSelectedCategory(cat as 'All' | GalleryCategory);
+    } else {
+      setSelectedVideoCategory(cat as 'All' | GalleryCategory);
+    }
     setShowCategoryDropdown(false);
   };
 
@@ -174,19 +162,13 @@ const Gallery = () => {
   };
 
   const getVideoThumb = (v: Video): string => {
-    // Prefer uploaded thumbnail image, then thumbnail URL, else fallback
-    return (
-      v.thumbnail_path ||
-      v.thumbnail ||
-      'https://via.placeholder.com/600x400?text=Video'
-    );
+    return v.thumbnail_path || v.thumbnail || 'https://via.placeholder.com/600x400?text=Video';
   };
 
   const canEmbed = (v: Video) => !!v.embed_url;
 
   return (
     <div className="bg-gray-50 min-h-screen pb-16">
-      {/* Header & Tabs */}
       <section className="bg-white border-b border-gray-200 pt-8 md:pt-12 pb-6 px-4">
         <div className="container mx-auto max-w-6xl">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 md:mb-3">Gallery</h1>
@@ -222,13 +204,10 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Filters & Search */}
       <section className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur-md border-b border-gray-200 py-3 md:py-4 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col gap-3 md:flex-row md:gap-4 md:justify-between md:items-center">
-            {/* Categories */}
             <div className="w-full md:w-auto">
-              {/* Mobile Dropdown */}
               <div className="md:hidden relative">
                 <button
                   onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
@@ -246,7 +225,6 @@ const Gallery = () => {
                 {showCategoryDropdown && (
                   <>
                     <div className="fixed inset-0 z-10" onClick={() => setShowCategoryDropdown(false)} />
-
                     <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-64 overflow-y-auto">
                       {activeCategories.map((category) => (
                         <button
@@ -266,7 +244,6 @@ const Gallery = () => {
                 )}
               </div>
 
-              {/* Desktop Pills */}
               <div className="hidden md:flex gap-2 flex-wrap">
                 {activeCategories.map((category) => (
                   <button
@@ -284,7 +261,6 @@ const Gallery = () => {
               </div>
             </div>
 
-            {/* Search */}
             <div className="relative w-full md:w-72 flex-shrink-0">
               <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
               <input
@@ -307,9 +283,7 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Content Area */}
       <section className="container mx-auto max-w-6xl px-4 mt-6 md:mt-8">
-        {/* Photos Tab */}
         {activeTab === 'photos' && (
           <>
             {loadingPhotos ? (
@@ -378,7 +352,6 @@ const Gallery = () => {
           </>
         )}
 
-        {/* Videos Tab */}
         {activeTab === 'videos' && (
           <>
             {loadingVideos ? (
@@ -457,7 +430,6 @@ const Gallery = () => {
         )}
       </section>
 
-      {/* Photo Lightbox */}
       {lightboxPhoto && (
         <div
           className="fixed inset-0 z-50 bg-black/90 flex flex-col"
@@ -509,7 +481,6 @@ const Gallery = () => {
         </div>
       )}
 
-      {/* Video Lightbox */}
       {lightboxVideo && (
         <div
           className="fixed inset-0 z-50 bg-black/90 flex flex-col"
@@ -548,9 +519,7 @@ const Gallery = () => {
                   </div>
                 ) : lightboxVideo.link ? (
                   <div className="p-6 bg-white">
-                    <p className="text-gray-700">
-                      This video cannot be embedded. Open it here:
-                    </p>
+                    <p className="text-gray-700">This video cannot be embedded. Open it here:</p>
                     <a
                       href={lightboxVideo.link}
                       target="_blank"
@@ -561,9 +530,7 @@ const Gallery = () => {
                     </a>
                   </div>
                 ) : (
-                  <div className="p-6 bg-white text-red-600">
-                    No playable source found for this video.
-                  </div>
+                  <div className="p-6 bg-white text-red-600">No playable source found for this video.</div>
                 )}
               </div>
 

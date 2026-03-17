@@ -5,39 +5,39 @@ const About = () => {
   const values = [
     {
       title: 'Honesty',
-      description: 'We uphold the truth at all times in all our dealings and communications.'
+      description: 'We uphold the truth at all times in all our dealings and communications.',
     },
     {
       title: 'Innovation',
-      description: "We look out for the most efficient ways to meet our clients' needs and drive agricultural transformation."
+      description: "We look out for the most efficient ways to meet our clients' needs and drive agricultural transformation.",
     },
     {
       title: 'Professionalism',
-      description: 'We conduct our work to expected professional standards, delivering excellence in every engagement.'
+      description: 'We conduct our work to expected professional standards, delivering excellence in every engagement.',
     },
     {
       title: 'Confidentiality',
-      description: 'We keep confidential any information entrusted to us by clients, ensuring trust and privacy.'
+      description: 'We keep confidential any information entrusted to us by clients, ensuring trust and privacy.',
     },
     {
       title: 'Fairness',
-      description: 'We are fair in dealing with our clients and practice equity in all our interactions.'
-    }
+      description: 'We are fair in dealing with our clients and practice equity in all our interactions.',
+    },
   ];
 
   const impactAreas = [
     {
       title: 'Small & Large Scale Producers',
-      description: 'Supporting agricultural producers of all scales with technical expertise.'
+      description: 'Supporting agricultural producers of all scales with technical expertise.',
     },
     {
       title: 'Farm Input Suppliers',
-      description: 'Empowering suppliers with knowledge and quality standards.'
+      description: 'Empowering suppliers with knowledge and quality standards.',
     },
     {
       title: 'Processors & Investors',
-      description: 'Guiding agribusiness investors and processors toward sustainable growth.'
-    }
+      description: 'Guiding agribusiness investors and processors toward sustainable growth.',
+    },
   ];
 
   const sdgContributions = [
@@ -49,7 +49,7 @@ const About = () => {
     { number: '9', text: 'Industry, Innovation and Infrastructure' },
     { number: '13', text: 'Climate Action' },
     { number: '14', text: 'Life Below Water' },
-    { number: '15', text: 'Life on Land' }
+    { number: '15', text: 'Life on Land' },
   ];
 
   return (
@@ -62,13 +62,18 @@ const About = () => {
 
       <div className="bg-white">
         <section className="relative text-white py-20 md:py-32 px-4 overflow-hidden bg-slate-900">
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
-            style={{
-              backgroundImage:
-                "url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1920&q=80')"
-            }}
-          />
+          <picture className="absolute inset-0 block">
+            <source media="(min-width: 1280px)" srcSet="/images/hero-bg-1920.webp" type="image/webp" />
+            <source media="(min-width: 768px)" srcSet="/images/hero-bg-1024.webp" type="image/webp" />
+            <source media="(max-width: 767px)" srcSet="/images/hero-bg-640.webp" type="image/webp" />
+            <img
+              src="/images/hero-bg.jpg"
+              alt=""
+              aria-hidden="true"
+              className="w-full h-full object-cover scale-105"
+            />
+          </picture>
+
           <div className="absolute inset-0 bg-gradient-to-br from-slate-950/75 via-slate-900/60 to-stone-900/55" />
 
           <div className="container mx-auto max-w-4xl relative z-10">

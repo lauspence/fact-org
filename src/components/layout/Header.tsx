@@ -53,7 +53,6 @@ const Header = () => {
 
   return (
     <>
-      {/* Top Bar */}
       <div className="bg-gradient-to-r from-gray-900 via-emerald-950 to-gray-900 text-gray-300 py-1.5 sm:py-2 px-4 border-b border-emerald-900/30">
         <div className="container mx-auto flex flex-col lg:flex-row justify-between items-center text-xs">
           <div className="flex space-x-3 sm:space-x-4 mb-2 lg:mb-0 order-2 lg:order-1">
@@ -90,7 +89,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Header */}
       <header
         className={`shadow-sm sticky top-0 z-50 border-b-2 transition-all duration-300 ${
           scrolled
@@ -100,7 +98,6 @@ const Header = () => {
       >
         <div className="container mx-auto px-4 lg:px-6">
           <div className="flex justify-between items-center py-3 sm:py-4 lg:py-5 h-16 sm:h-20 lg:h-24">
-            {/* LOGO */}
             <Link to="/" className="flex items-center group hover:opacity-90 transition-all duration-300">
               <div className="flex items-center space-x-3">
                 <img
@@ -110,33 +107,33 @@ const Header = () => {
                   loading="eager"
                   fetchPriority="high"
                 />
-                {/* ✅ REMOVED: FACT/LTD text next to logo */}
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-1">
               {navLinks.map((link) => (
-                <div key={link.path} className="relative group">
+                <div
+                  key={link.path}
+                  className="relative"
+                  onMouseEnter={() => link.dropdown && setActiveDropdown(link.path)}
+                  onMouseLeave={() => link.dropdown && setActiveDropdown(null)}
+                >
                   {link.dropdown ? (
                     <>
                       <button
+                        type="button"
                         className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg ${
                           scrolled
                             ? 'text-gray-700 hover:text-emerald-600 hover:bg-emerald-50'
                             : 'text-white hover:bg-white/20'
                         }`}
-                        onMouseEnter={() => setActiveDropdown(link.path)}
                       >
                         {link.label}
                         <FaChevronDown className="ml-1 text-xs" />
                       </button>
 
                       {activeDropdown === link.path && (
-                        <div
-                          className="absolute top-full left-0 mt-1 w-64 bg-white shadow-2xl rounded-xl overflow-hidden border"
-                          onMouseLeave={() => setActiveDropdown(null)}
-                        >
+                        <div className="absolute top-full left-0 mt-1 w-64 bg-white shadow-2xl rounded-xl overflow-hidden border z-50">
                           {link.dropdown.map((item) => (
                             <Link
                               key={item.path}
@@ -146,6 +143,7 @@ const Header = () => {
                                   ? 'bg-emerald-50 text-emerald-700 font-semibold'
                                   : 'text-gray-700 hover:bg-emerald-50'
                               }`}
+                              onClick={() => setActiveDropdown(null)}
                             >
                               {item.label}
                             </Link>
@@ -172,7 +170,6 @@ const Header = () => {
               ))}
             </nav>
 
-            {/* Mobile Menu Button */}
             <button
               className={`lg:hidden text-2xl p-2 rounded-lg ${scrolled ? 'text-gray-700' : 'text-white'}`}
               onClick={() => setIsOpen(!isOpen)}
@@ -181,7 +178,6 @@ const Header = () => {
             </button>
           </div>
 
-          {/* Mobile Navigation */}
           {isOpen && (
             <nav className="lg:hidden pb-6 space-y-1 border-t pt-4 bg-white rounded-b-xl shadow-xl">
               {navLinks.map((link) => (

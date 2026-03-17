@@ -16,8 +16,6 @@ const FINAL_API_BASE = API_BASE && API_BASE.length > 0 ? API_BASE : FALLBACK_API
 // Derive site origin for absolute asset URLs (storage, uploads, etc.)
 const SITE_ORIGIN = (() => {
   try {
-    // FINAL_API_BASE looks like: https://factfarm.africa/api
-    // origin becomes: https://factfarm.africa
     return new URL(FINAL_API_BASE).origin;
   } catch {
     return 'http://127.0.0.1:8000';
@@ -51,7 +49,6 @@ export type MarketProduct = {
   image?: string | null;
   images?: string[] | null;
 
-  // ✅ new field from backend accessor
   image_urls?: string[] | null;
 
   status?: 'draft' | 'published';
@@ -97,31 +94,33 @@ export type Publication = {
   updated_at?: string;
 };
 
-
 /*
 |--------------------------------------------------------------------------
-| Gallery Images
+| Gallery
 |--------------------------------------------------------------------------
 */
+
+export type GalleryCategory =
+  | 'Training and Events'
+  | 'Agribusiness and Enterprise Development'
+  | 'Field Visits'
+  | 'Agritourism'
+  | 'Youth in Agriculture'
+  | 'FaCT Ltd Harvests'
+  | 'Success Stories';
 
 export type GalleryImage = {
   id: number;
   title: string;
   description?: string | null;
   image: string;
-  category: 'Training and Events' | 'Workshops' | 'Field Visits' | 'Fact Limited Harvests';
+  category: GalleryCategory;
   event_date?: string | null;
   featured?: boolean;
   status?: 'draft' | 'published';
   created_at?: string;
   updated_at?: string;
 };
-
-/*
-|--------------------------------------------------------------------------
-| Gallery Videos
-|--------------------------------------------------------------------------
-*/
 
 export type GalleryVideo = {
   id: number;
@@ -135,7 +134,7 @@ export type GalleryVideo = {
   thumbnail?: string | null;
   thumbnail_path?: string | null;
 
-  category: string;
+  category: GalleryCategory;
   event_date?: string | null;
   featured?: boolean;
   status?: 'draft' | 'published';
@@ -173,7 +172,6 @@ export type TrainingCourse = {
 
   max_participants?: number | null;
 
-  // NEW
   booked_count?: number | null;
 
   start_date?: string | null;
@@ -185,6 +183,7 @@ export type TrainingCourse = {
   created_at?: string;
   updated_at?: string;
 };
+
 type LaravelPaginator<T> = {
   data: T[];
   links?: unknown;
@@ -198,7 +197,7 @@ type LaravelPaginator<T> = {
 */
 
 const api = axios.create({
-  baseURL: FINAL_API_BASE, // ✅ ends with /api
+  baseURL: FINAL_API_BASE,
   headers: {
     'Content-Type': 'application/json',
     ...(API_TOKEN ? { Authorization: `Bearer ${API_TOKEN}` } : {}),
@@ -211,11 +210,15 @@ const api = axios.create({
 |--------------------------------------------------------------------------
 */
 
-// Prefix relative /storage paths using SITE_ORIGIN (not API base)
 const withSiteOrigin = (url?: string | null): string | null => {
   if (!url) return null;
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   return `${SITE_ORIGIN}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
+const extractItems = <T>(payload: T[] | LaravelPaginator<T>): T[] => {
+  if (Array.isArray(payload)) return payload;
+  return Array.isArray(payload?.data) ? payload.data : [];
 };
 
 /*
@@ -226,13 +229,8 @@ const withSiteOrigin = (url?: string | null): string | null => {
 
 const normalizeProduct = (p: MarketProduct): MarketProduct => ({
   ...p,
-
-  // Prefer the backend-provided absolute URLs if present
   image_urls: Array.isArray(p.image_urls) ? p.image_urls : [],
-
-  // Keep legacy fields, but normalize them correctly for assets
   image: withSiteOrigin(p.image ?? null),
-
   images: Array.isArray(p.images)
     ? p.images.map((img) => withSiteOrigin(img) ?? img)
     : [],
@@ -277,7 +275,6 @@ export const laravelApi = {
   |--------------------------------------------------------------------------
   */
   health: async (): Promise<HealthResponse> => {
-    // ✅ baseURL already includes /api
     const response = await api.get<HealthResponse>('/health');
     return response.data;
   },
@@ -288,10 +285,9 @@ export const laravelApi = {
   |--------------------------------------------------------------------------
   */
   getProducts: async (category?: string | null): Promise<MarketProduct[]> => {
-    const response = await api.get<LaravelPaginator<MarketProduct>>(
-      '/market-products',
-      { params: { category } }
-    );
+    const response = await api.get<LaravelPaginator<MarketProduct>>('/market-products', {
+      params: { category },
+    });
 
     return response.data.data.map(normalizeProduct);
   },
@@ -311,10 +307,9 @@ export const laravelApi = {
     category?: string | null;
     per_page?: number;
   }): Promise<Publication[]> => {
-    const response = await api.get<LaravelPaginator<Publication>>(
-      '/publications',
-      { params }
-    );
+    const response = await api.get<LaravelPaginator<Publication>>('/publications', {
+      params,
+    });
 
     return response.data.data.map(normalizePublication);
   },
@@ -331,15 +326,14 @@ export const laravelApi = {
   */
   getGalleryImages: async (params?: {
     q?: string;
-    category?: GalleryImage['category'];
+    category?: GalleryCategory;
     per_page?: number;
   }): Promise<GalleryImage[]> => {
-    const response = await api.get<LaravelPaginator<GalleryImage>>(
-      '/gallery-images',
-      { params }
-    );
+    const response = await api.get<GalleryImage[] | LaravelPaginator<GalleryImage>>('/gallery-images', {
+      params,
+    });
 
-    return response.data.data.map(normalizeGalleryImage);
+    return extractItems(response.data).map(normalizeGalleryImage);
   },
 
   getGalleryImageById: async (id: string | number): Promise<GalleryImage> => {
@@ -354,15 +348,14 @@ export const laravelApi = {
   */
   getGalleryVideos: async (params?: {
     q?: string;
-    category?: string;
+    category?: GalleryCategory;
     per_page?: number;
   }): Promise<GalleryVideo[]> => {
-    const response = await api.get<LaravelPaginator<GalleryVideo>>(
-      '/gallery-videos',
-      { params }
-    );
+    const response = await api.get<GalleryVideo[] | LaravelPaginator<GalleryVideo>>('/gallery-videos', {
+      params,
+    });
 
-    return response.data.data.map(normalizeGalleryVideo);
+    return extractItems(response.data).map(normalizeGalleryVideo);
   },
 
   getGalleryVideoById: async (id: string | number): Promise<GalleryVideo> => {
@@ -382,10 +375,9 @@ export const laravelApi = {
     delivery_mode?: 'in_person' | 'online' | 'hybrid';
     per_page?: number;
   }): Promise<TrainingCourse[]> => {
-    const response = await api.get<LaravelPaginator<TrainingCourse>>(
-      '/training-courses',
-      { params }
-    );
+    const response = await api.get<LaravelPaginator<TrainingCourse>>('/training-courses', {
+      params,
+    });
 
     return response.data.data.map(normalizeTrainingCourse);
   },

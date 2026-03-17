@@ -6,6 +6,22 @@ import { laravelApi, type Publication } from '../services/laravel';
 
 type Article = Publication;
 
+/*
+|--------------------------------------------------------------------------
+| FIXED CATEGORY ORDER
+|--------------------------------------------------------------------------
+*/
+
+const ARTICLE_CATEGORY_ORDER = [
+  'Climate Smart Agriculture',
+  'Knowledge and Training',
+  'Agribusiness and Enterprise Development',
+  'Sustainable Agriculture and Development',
+  'Agritourism',
+  'Youth In Agriculture',
+  'Success Stories',
+];
+
 const Articles = () => {
   const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,6 +49,12 @@ const Articles = () => {
     }
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | FILTER ARTICLES
+  |--------------------------------------------------------------------------
+  */
+
   const filtered = useMemo(() => {
     return allArticles
       .filter((a) => selectedCategory === 'all' || a.category === selectedCategory)
@@ -50,13 +72,29 @@ const Articles = () => {
       });
   }, [allArticles, selectedCategory, selectedType, searchQuery]);
 
-  const categories = useMemo(() => {
-    const unique = Array.from(
-      new Set(allArticles.map((a) => a.category).filter((c): c is string => Boolean(c)))
-    ).sort((a, b) => a.localeCompare(b));
+  /*
+  |--------------------------------------------------------------------------
+  | CATEGORY ORDER FIX
+  |--------------------------------------------------------------------------
+  */
 
-    return ['all', ...unique];
+  const categories = useMemo(() => {
+    const available = new Set(
+      allArticles
+        .map((a) => a.category)
+        .filter((c): c is string => Boolean(c))
+    );
+
+    const ordered = ARTICLE_CATEGORY_ORDER.filter((c) => available.has(c));
+
+    return ['all', ...ordered];
   }, [allArticles]);
+
+  /*
+  |--------------------------------------------------------------------------
+  | HELPERS
+  |--------------------------------------------------------------------------
+  */
 
   const formatDate = (p: Article) => {
     const dateString = p.published_at ?? p.published_date ?? p.created_at ?? undefined;
@@ -72,6 +110,12 @@ const Articles = () => {
   const isFree = (p: Article) =>
     p.is_free === true || (p.is_free as unknown as number) === 1;
 
+  /*
+  |--------------------------------------------------------------------------
+  | LOADING STATE
+  |--------------------------------------------------------------------------
+  */
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -82,6 +126,12 @@ const Articles = () => {
       </div>
     );
   }
+
+  /*
+  |--------------------------------------------------------------------------
+  | ERROR STATE
+  |--------------------------------------------------------------------------
+  */
 
   if (error) {
     return (
@@ -110,8 +160,11 @@ const Articles = () => {
       />
 
       <div className="bg-white min-h-screen">
+
+        {/* HEADER */}
         <section className="bg-white border-b border-gray-100 py-16 px-4">
           <div className="container mx-auto max-w-3xl text-center">
+
             <div className="inline-block bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-4 border border-emerald-100">
               Knowledge Hub
             </div>
@@ -134,11 +187,15 @@ const Articles = () => {
                 className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-gray-50"
               />
             </div>
+
           </div>
         </section>
 
+        {/* FILTER BAR */}
         <section className="py-5 px-4 bg-gray-50 border-b border-gray-200 sticky top-0 z-10 shadow-sm">
           <div className="container mx-auto max-w-7xl flex flex-wrap items-center gap-4 justify-between">
+
+            {/* TYPE FILTER */}
             <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1">
               {(['all', 'article', 'pdf'] as const).map((type) => (
                 <button
@@ -157,6 +214,7 @@ const Articles = () => {
               ))}
             </div>
 
+            {/* CATEGORY FILTER */}
             {categories.length > 1 && (
               <div className="flex flex-wrap gap-2">
                 {categories.map((category) => (
@@ -179,13 +237,17 @@ const Articles = () => {
             <span className="text-xs text-gray-400 ml-auto">
               {filtered.length} {filtered.length === 1 ? 'result' : 'results'}
             </span>
+
           </div>
         </section>
+
+        {/* RESULTS GRID */}
 
         {filtered.length > 0 ? (
           <section className="py-12 px-4 bg-white">
             <div className="container mx-auto max-w-7xl">
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
                 {filtered.map((article) => {
                   const isPdf = (article.type ?? 'article') === 'pdf';
                   const free = isFree(article);
@@ -196,6 +258,7 @@ const Articles = () => {
                       to={`/articles/${article.slug || article.id}`}
                       className="group bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition-all border border-gray-100 hover:border-emerald-200 flex flex-col"
                     >
+
                       {article.cover_image ? (
                         <div className="h-48 overflow-hidden bg-gray-100">
                           <img
@@ -212,16 +275,16 @@ const Articles = () => {
                               : 'bg-gradient-to-br from-emerald-50 to-teal-100'
                           }`}
                         >
-                          {isPdf ? (
-                            <FaFilePdf className="text-5xl text-red-300" />
-                          ) : (
-                            <FaNewspaper className="text-5xl text-emerald-300" />
-                          )}
+                          {isPdf
+                            ? <FaFilePdf className="text-5xl text-red-300" />
+                            : <FaNewspaper className="text-5xl text-emerald-300" />}
                         </div>
                       )}
 
                       <div className="p-5 flex flex-col flex-1">
+
                         <div className="flex items-center gap-2 mb-3 flex-wrap">
+
                           {isPdf ? (
                             <span className="inline-flex items-center gap-1 text-[11px] font-bold bg-red-50 text-red-600 border border-red-100 px-2 py-0.5 rounded-full">
                               <FaFilePdf className="text-[9px]" /> PDF
@@ -247,6 +310,7 @@ const Articles = () => {
                               {article.category}
                             </span>
                           )}
+
                         </div>
 
                         <h3 className="text-base font-bold text-gray-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2 leading-snug">
@@ -270,14 +334,17 @@ const Articles = () => {
                             <FaCalendar className="text-[9px]" />
                             {formatDate(article)}
                           </span>
+
                           <span className="text-emerald-600 font-semibold text-xs group-hover:underline">
                             {isPdf ? 'View PDF →' : 'Read More →'}
                           </span>
                         </div>
+
                       </div>
                     </Link>
                   );
                 })}
+
               </div>
             </div>
           </section>
@@ -286,6 +353,7 @@ const Articles = () => {
             <div className="container mx-auto max-w-md text-center">
               <div className="text-6xl mb-4">🔍</div>
               <h2 className="text-xl font-bold text-gray-900 mb-2">No results found</h2>
+
               <p className="text-gray-500 text-sm mb-6">
                 {searchQuery
                   ? `No publications matching "${searchQuery}".`
@@ -293,6 +361,7 @@ const Articles = () => {
                   ? `No publications in the "${selectedCategory}" category.`
                   : 'No publications available yet. Check back soon.'}
               </p>
+
               <button
                 onClick={() => {
                   setSelectedCategory('all');
@@ -307,28 +376,6 @@ const Articles = () => {
           </section>
         )}
 
-        <section className="py-20 px-4 bg-gradient-to-br from-emerald-600 to-teal-700 text-white">
-          <div className="container mx-auto max-w-3xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Want to Learn More?</h2>
-            <p className="text-emerald-100 text-lg mb-8">
-              Explore our training programs and services to take your farming to the next level
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/knowledge-training"
-                className="inline-flex items-center justify-center bg-white text-emerald-700 px-8 py-3 rounded-xl font-bold hover:bg-emerald-50 transition-colors shadow-lg"
-              >
-                View Training Programs →
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-flex items-center justify-center bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-800 transition-colors border-2 border-white/30"
-              >
-                Contact Us
-              </Link>
-            </div>
-          </div>
-        </section>
       </div>
     </>
   );

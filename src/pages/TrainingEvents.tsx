@@ -36,6 +36,7 @@ type TrainingCourse = {
   booked_count?: number | null;
 
   start_date?: string | null;
+  end_date?: string | null;
   delivery_mode?: DeliveryMode | null;
   meeting_link?: string | null;
 
@@ -114,21 +115,28 @@ const TrainingEvents = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [when, deliveryMode, category]);
 
-  const formatDate = (value?: string | null) => {
+  const formatDate = (start?: string | null, end?: string | null) => {
 
-    if (!value) return 'TBA';
+    if (!start) return 'TBA';
 
-    const d = new Date(value);
+    const s = new Date(start);
+    const e = end ? new Date(end) : null;
 
-    if (Number.isNaN(d.getTime())) return value;
+    if (Number.isNaN(s.getTime())) return start;
 
-    return d.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
+    const format = (d: Date) =>
+      d.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+
+    if (!e || Number.isNaN(e.getTime())) {
+      return format(s);
+    }
+
+    return `${format(s)} – ${format(e)}`;
   };
-
   const modeLabel = (m?: DeliveryMode | null) => {
 
     if (!m) return 'In Person';
@@ -359,6 +367,7 @@ const TrainingEvents = () => {
                   const booked = t.booked_count ?? 0;
                   const max = t.max_participants ?? null;
                   const isFull = max !== null && booked >= max;
+                  const isAvailable = t.available === true;
 
                   return (
 
@@ -383,7 +392,7 @@ const TrainingEvents = () => {
 
                           <span className="flex items-center gap-2 px-3 py-1 bg-gray-50 border rounded-full">
                             <FaCalendarAlt />
-                            {formatDate(t.start_date)}
+                            {formatDate(t.start_date, t.end_date)}
                           </span>
 
                           <span className="flex items-center gap-2 px-3 py-1 bg-gray-50 border rounded-full">
@@ -406,7 +415,14 @@ const TrainingEvents = () => {
                             <div className="font-bold">{priceLabel(t.price)}</div>
                           </div>
 
-                          {isFull ? (
+                          {!isAvailable ? (
+                            <button
+                              disabled
+                              className="px-5 py-2 rounded-xl bg-gray-300 text-gray-600 font-semibold text-sm cursor-not-allowed"
+                            >
+                              Not Available Yet
+                            </button>
+                          ) : isFull ? (
                             <button
                               disabled
                               className="px-5 py-2 rounded-xl bg-gray-300 text-gray-600 font-semibold text-sm cursor-not-allowed"

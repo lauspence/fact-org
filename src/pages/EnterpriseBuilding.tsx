@@ -36,9 +36,10 @@ const EnterpriseBuilding = () => {
   ];
 
   const successMetrics = [
-    { number: "500+", label: "Agripreneurs" },
-    {number:"10", label:"Counties Reached"},
-    { number: "200+", label: "Jobs Created" },
+    { number: "300+", label: "Trainings delivered" },
+    {number:"15+", label:"Counties Reached"},
+    {number:"1000", label:" Agriprenuers empowered "},
+    { number: "500+", label: "Jobs Created" },
   ];
 
   return (
