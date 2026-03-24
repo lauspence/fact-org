@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
 
 import Layout from './components/layout/Layout';
+import ScrollToTop from './components/common/ScrollToTop';
 import Home from './pages/Home';
 import About from './pages/About';
 import KnowledgeTraining from './pages/KnowledgeTraining';
@@ -30,6 +31,8 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
+
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -37,9 +40,7 @@ function App() {
           <Route path="knowledge-training" element={<KnowledgeTraining />} />
           <Route path="training-events" element={<TrainingEvents />} />
           <Route path="/training/:id/book" element={<TrainingBooking />} />
-
           <Route path="youth-in-agriculture" element={<YouthInAgriculture />} />
-
           <Route path="agricultural-inputs" element={<AgriculturalInputs />} />
           <Route path="enterprise-building" element={<EnterpriseBuilding />} />
           <Route path="analytical-services" element={<AnalyticalServices />} />

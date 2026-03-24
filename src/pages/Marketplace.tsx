@@ -73,26 +73,23 @@ const resolveImageUrl = (raw: unknown): string | null => {
 
   let url = raw.trim();
 
-  // normalize any /api/storage to /storage (works for absolute and relative)
   url = url.replace(/\/api\/storage\//g, '/storage/');
 
-  // already absolute
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
 
-  // normalize "storage/..." to "/storage/..."
   if (url.startsWith('storage/')) {
     url = `/${url}`;
   }
 
-  // prefix "/storage/..." from public site root
   if (url.startsWith('/storage/')) {
     return `${PUBLIC_SITE_URL}${url}`;
   }
 
-  return null;
+  return `${PUBLIC_SITE_URL}/storage/${url.replace(/^\/+/, '')}`;
 };
+
 
 const Marketplace = () => {
   const [products, setProducts] = useState<Product[]>([]);

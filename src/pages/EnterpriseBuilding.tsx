@@ -103,7 +103,7 @@ const EnterpriseBuilding = () => {
                 </h2>
                 <p className="text-gray-600 text-lg leading-relaxed mb-6">
                   Transforming farming into an attractive and profitable career through innovative programs, 
-                  mentorship, and access to resources.
+                  mentorship, and access to resources. We equip youth with skills, networks, and opportunities to thrive in modern tech-driven farming.
                 </p>
                 <Link
                   to="/contact"

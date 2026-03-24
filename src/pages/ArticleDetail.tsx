@@ -262,7 +262,7 @@ const ArticleDetail = () => {
               </span>
 
               <div className="flex items-center gap-3 ml-auto no-print">
-                {!isPdf && (
+                {!isPdf && isFree && (
                   <button
                     onClick={handlePrint}
                     className="flex items-center gap-1.5 text-gray-500 hover:text-emerald-600 transition-colors text-sm font-medium"
@@ -308,7 +308,7 @@ const ArticleDetail = () => {
           <div className="container mx-auto max-w-4xl px-4 pb-16 print-article-shell">
             {isPdf ? (
               <div className="space-y-6">
-                {pdfUrl ? (
+                {pdfUrl && isFree ? (
                   <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden no-print">
                     <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-200 bg-white">
                       <div className="flex items-center gap-3">
@@ -350,37 +350,24 @@ const ArticleDetail = () => {
                           >
                             <FaExternalLinkAlt className="text-xs" /> Open PDF
                           </a>
-                          {isFree && (
-                            <a
-                              href={pdfUrl}
-                              download
-                              className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition-colors text-sm"
-                            >
-                              <FaDownload className="text-xs" /> Download
-                            </a>
-                          )}
+                          <a
+                            href={pdfUrl}
+                            download
+                            className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-lg font-semibold hover:bg-gray-50 transition-colors text-sm"
+                          >
+                            <FaDownload className="text-xs" /> Download
+                          </a>
                         </div>
                       </div>
                     </object>
                   </div>
                 ) : (
-                  <div className="text-center py-12 text-gray-500">
-                    <FaFilePdf className="text-4xl text-gray-300 mx-auto mb-3" />
-                    <p>PDF file not available.</p>
-                  </div>
-                )}
-
-                {article.description && (
-                  <p className="text-gray-600 leading-relaxed text-base whitespace-pre-wrap">
-                    {article.description}
-                  </p>
-                )}
-
-                {pdfUrl && !isFree && (
                   <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-8 text-center no-print">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Get the Full Publication</h3>
-                    <p className="text-gray-500 text-sm mb-6">
-                      Contact us to access the complete version of this publication.
+                    <FaFilePdf className="text-5xl text-emerald-500 mx-auto mb-4" />
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Premium Publication</h3>
+                    <p className="text-gray-500 text-sm mb-6 max-w-xl mx-auto">
+                      This PDF publication is not available for direct preview or download online.
+                      Contact us to request access or learn more.
                     </p>
                     <Link
                       to="/contact"
@@ -390,8 +377,14 @@ const ArticleDetail = () => {
                     </Link>
                   </div>
                 )}
+
+                {article.description && (
+                  <p className="text-gray-600 leading-relaxed text-base whitespace-pre-wrap">
+                    {article.description}
+                  </p>
+                )}
               </div>
-            ) : (
+            ) : isFree ? (
               <>
                 <div
                   className="prose prose-lg max-w-none
@@ -417,10 +410,38 @@ const ArticleDetail = () => {
 
                 <div className="mt-10 pt-6 border-t border-gray-200 text-sm text-gray-500 print-section">
                   <p>
-                    Copyright © FaCT Ltd. All rights reserved.
+                    © 2026 FaCT Ltd. All rights reserved. Articles, publications, images, and other website content may not be copied, reproduced, or redistributed without prior written permission, except where expressly stated.
                   </p>
                 </div>
               </>
+            ) : (
+              <div className="space-y-8">
+                {article.description && (
+                  <div className="text-gray-700 leading-relaxed text-base whitespace-pre-wrap">
+                    {article.description}
+                  </div>
+                )}
+
+                <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200 rounded-2xl p-8 text-center no-print">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Premium Article</h3>
+                  <p className="text-gray-500 text-sm mb-6 max-w-xl mx-auto">
+                    This article is part of our premium knowledge resources. Contact us to request access
+                    or learn more about obtaining the full publication.
+                  </p>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center gap-2 bg-emerald-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-colors"
+                  >
+                    Contact Us <FaArrowRight />
+                  </Link>
+                </div>
+
+                <div className="mt-10 pt-6 border-t border-gray-200 text-sm text-gray-500 print-section">
+                  <p>
+                    © 2026 FaCT Ltd. All rights reserved. Articles, publications, images, and other website content may not be copied, reproduced, or redistributed without prior written permission, except where expressly stated.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </article>

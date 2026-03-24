@@ -61,7 +61,7 @@ const About = () => {
       />
 
       <div className="bg-white">
-        <section className="relative text-white py-20 md:py-32 px-4 overflow-hidden bg-slate-900">
+        <section className="relative overflow-hidden bg-slate-900 px-4 py-20 text-white min-h-[460px] md:min-h-[560px] flex items-center">
           <picture className="absolute inset-0 block">
             <source media="(min-width: 1280px)" srcSet="/images/hero-bg-1920.webp" type="image/webp" />
             <source media="(min-width: 768px)" srcSet="/images/hero-bg-1024.webp" type="image/webp" />
@@ -70,15 +70,27 @@ const About = () => {
               src="/images/hero-bg.jpg"
               alt=""
               aria-hidden="true"
-              className="w-full h-full object-cover scale-105"
+              className="
+                h-full w-full object-cover
+                object-[64%_38%]
+                sm:object-[62%_36%]
+                md:object-[60%_35%]
+                lg:object-[58%_34%]
+                xl:object-[56%_34%]
+                scale-[1.02]
+              "
             />
           </picture>
 
           <div className="absolute inset-0 bg-gradient-to-br from-slate-950/75 via-slate-900/60 to-stone-900/55" />
 
           <div className="container mx-auto max-w-4xl relative z-10">
-            <p className="text-sm font-semibold text-amber-300 mb-3">Since 2007 • Transforming Agriculture</p>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">About FaCT Ltd</h1>
+            <p className="text-sm font-semibold text-amber-300 mb-3">
+              Since 2007 • Transforming Agriculture
+            </p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-5">
+              About FaCT Ltd
+            </h1>
             <p className="text-base md:text-lg text-slate-100 max-w-3xl leading-relaxed">
               Providing technical expertise and specialist knowledge to stakeholders in agriculture.
             </p>

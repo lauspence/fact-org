@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   FaBars,
   FaTimes,
@@ -18,6 +18,7 @@ const Header = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,9 +27,43 @@ const Header = () => {
       setScrolled(scrollPosition > scrollThreshold);
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const openDropdown = (path: string) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    setActiveDropdown(path);
+  };
+
+  const closeDropdownWithDelay = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+
+    closeTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 120);
+  };
+
+  const closeAllMenus = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    setIsOpen(false);
+    setActiveDropdown(null);
+  };
 
   const navLinks = [
     { path: '/about', label: 'About Us' },
@@ -40,7 +75,6 @@ const Header = () => {
         { path: '/agricultural-inputs', label: 'Agricultural Inputs' },
         { path: '/enterprise-building', label: 'Enterprise Building' },
         { path: '/analytical-services', label: 'Analytical Services' },
-        { path: '#', label: 'Agritourism' },
       ],
     },
     { path: '/marketplace', label: 'Marketplace', icon: FaShoppingCart },
@@ -50,6 +84,9 @@ const Header = () => {
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const isDropdownActive = (items: Array<{ path: string; label: string }>) =>
+    items.some((item) => location.pathname === item.path);
 
   return (
     <>
@@ -98,7 +135,11 @@ const Header = () => {
       >
         <div className="container mx-auto px-4 lg:px-6">
           <div className="flex justify-between items-center py-3 sm:py-4 lg:py-5 h-16 sm:h-20 lg:h-24">
-            <Link to="/" className="flex items-center group hover:opacity-90 transition-all duration-300">
+            <Link
+              to="/"
+              className="flex items-center group hover:opacity-90 transition-all duration-300"
+              onClick={closeAllMenus}
+            >
               <div className="flex items-center space-x-3">
                 <img
                   src="/fact-logo.png"
@@ -115,52 +156,71 @@ const Header = () => {
                 <div
                   key={link.path}
                   className="relative"
-                  onMouseEnter={() => link.dropdown && setActiveDropdown(link.path)}
-                  onMouseLeave={() => link.dropdown && setActiveDropdown(null)}
+                  onMouseEnter={() => link.dropdown && openDropdown(link.path)}
+                  onMouseLeave={() => link.dropdown && closeDropdownWithDelay()}
                 >
                   {link.dropdown ? (
                     <>
                       <button
                         type="button"
-                        className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg ${
-                          scrolled
+                        onClick={() =>
+                          setActiveDropdown((prev) => (prev === link.path ? null : link.path))
+                        }
+                        className={`flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                          isDropdownActive(link.dropdown)
+                            ? 'bg-emerald-600 text-white'
+                            : scrolled
                             ? 'text-gray-700 hover:text-emerald-600 hover:bg-emerald-50'
                             : 'text-white hover:bg-white/20'
                         }`}
+                        aria-haspopup="menu"
+                        aria-expanded={activeDropdown === link.path}
                       >
                         {link.label}
-                        <FaChevronDown className="ml-1 text-xs" />
+                        <FaChevronDown
+                          className={`ml-1 text-xs transition-transform ${
+                            activeDropdown === link.path ? 'rotate-180' : ''
+                          }`}
+                        />
                       </button>
 
                       {activeDropdown === link.path && (
-                        <div className="absolute top-full left-0 mt-1 w-64 bg-white shadow-2xl rounded-xl overflow-hidden border z-50">
-                          {link.dropdown.map((item) => (
-                            <Link
-                              key={item.path}
-                              to={item.path}
-                              className={`block px-4 py-3 text-sm ${
-                                isActive(item.path)
-                                  ? 'bg-emerald-50 text-emerald-700 font-semibold'
-                                  : 'text-gray-700 hover:bg-emerald-50'
-                              }`}
-                              onClick={() => setActiveDropdown(null)}
-                            >
-                              {item.label}
-                            </Link>
-                          ))}
-                        </div>
+                        <>
+                          <div className="absolute top-full left-0 h-3 w-64" />
+                          <div
+                            className="absolute top-full left-0 w-64 bg-white shadow-2xl rounded-xl overflow-hidden border z-50"
+                            onMouseEnter={() => openDropdown(link.path)}
+                            onMouseLeave={closeDropdownWithDelay}
+                          >
+                            {link.dropdown.map((item) => (
+                              <Link
+                                key={item.path}
+                                to={item.path}
+                                className={`block px-4 py-3 text-sm transition-colors ${
+                                  isActive(item.path)
+                                    ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                                    : 'text-gray-700 hover:bg-emerald-50'
+                                }`}
+                                onClick={closeAllMenus}
+                              >
+                                {item.label}
+                              </Link>
+                            ))}
+                          </div>
+                        </>
                       )}
                     </>
                   ) : (
                     <Link
                       to={link.path}
-                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg ${
+                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                         isActive(link.path)
                           ? 'bg-emerald-600 text-white'
                           : scrolled
                           ? 'text-gray-700 hover:bg-emerald-50'
                           : 'text-white hover:bg-white/20'
                       }`}
+                      onClick={closeAllMenus}
                     >
                       {link.icon && <link.icon />}
                       {link.label}
@@ -172,7 +232,8 @@ const Header = () => {
 
             <button
               className={`lg:hidden text-2xl p-2 rounded-lg ${scrolled ? 'text-gray-700' : 'text-white'}`}
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => setIsOpen((prev) => !prev)}
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
               {isOpen ? <FaTimes /> : <FaBars />}
             </button>
@@ -191,8 +252,12 @@ const Header = () => {
                         <Link
                           key={item.path}
                           to={item.path}
-                          className="block py-3 pl-8 pr-6 text-sm text-gray-700 hover:bg-emerald-50 rounded-lg mx-2"
-                          onClick={() => setIsOpen(false)}
+                          className={`block py-3 pl-8 pr-6 text-sm rounded-lg mx-2 transition-colors ${
+                            isActive(item.path)
+                              ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                              : 'text-gray-700 hover:bg-emerald-50'
+                          }`}
+                          onClick={closeAllMenus}
                         >
                           {item.label}
                         </Link>
@@ -201,8 +266,12 @@ const Header = () => {
                   ) : (
                     <Link
                       to={link.path}
-                      className="flex items-center gap-2 py-3 px-4 text-sm text-gray-700 hover:bg-emerald-50 rounded-lg mx-2"
-                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center gap-2 py-3 px-4 text-sm rounded-lg mx-2 transition-colors ${
+                        isActive(link.path)
+                          ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                          : 'text-gray-700 hover:bg-emerald-50'
+                      }`}
+                      onClick={closeAllMenus}
                     >
                       {link.icon && <link.icon />}
                       {link.label}

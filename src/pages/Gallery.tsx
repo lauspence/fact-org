@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FaImage, FaSearch, FaTimes, FaVideo, FaPlay, FaChevronDown } from 'react-icons/fa';
+import {
+  FaImage,
+  FaSearch,
+  FaTimes,
+  FaVideo,
+  FaPlay,
+  FaChevronDown,
+  FaChevronUp,
+} from 'react-icons/fa';
 import { laravelApi, type GalleryVideo } from '../services/laravel';
 
 type GalleryCategory =
@@ -44,6 +52,13 @@ const Gallery = () => {
   const [lightboxPhoto, setLightboxPhoto] = useState<Photo | null>(null);
   const [lightboxVideo, setLightboxVideo] = useState<Video | null>(null);
 
+  const [expandedPhotos, setExpandedPhotos] = useState<Record<number, boolean>>({});
+  const [expandedVideos, setExpandedVideos] = useState<Record<number, boolean>>({});
+
+  const [brokenPhotos, setBrokenPhotos] = useState<Record<number, boolean>>({});
+  const [brokenVideoThumbs, setBrokenVideoThumbs] = useState<Record<number, boolean>>({});
+  const [brokenLightboxPhoto, setBrokenLightboxPhoto] = useState(false);
+
   const galleryCategories: Array<'All' | GalleryCategory> = [
     'All',
     'Training and Events',
@@ -75,6 +90,10 @@ const Gallery = () => {
       fetchVideos();
     }
   }, [activeTab, selectedVideoCategory]);
+
+  useEffect(() => {
+    setBrokenLightboxPhoto(false);
+  }, [lightboxPhoto]);
 
   const fetchPhotos = async () => {
     try {
@@ -161,11 +180,28 @@ const Gallery = () => {
     }
   };
 
-  const getVideoThumb = (v: Video): string => {
-    return v.thumbnail_path || v.thumbnail || 'https://via.placeholder.com/600x400?text=Video';
+  const getVideoThumb = (v: Video): string | null => {
+    return v.thumbnail_path || v.thumbnail || null;
   };
 
-  const canEmbed = (v: Video) => !!v.embed_url;
+  const shouldShowReadMore = (text?: string | null) => {
+    if (!text) return false;
+    return text.trim().length > 140;
+  };
+
+  const togglePhotoDescription = (id: number) => {
+    setExpandedPhotos((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
+  const toggleVideoDescription = (id: number) => {
+    setExpandedVideos((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   return (
     <div className="bg-gray-50 min-h-screen pb-16">
@@ -308,45 +344,108 @@ const Gallery = () => {
                 <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search query.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {filteredPhotos.map((photo) => (
-                  <div
-                    key={photo.id}
-                    onClick={() => setLightboxPhoto(photo)}
-                    className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                  >
-                    <div className="aspect-video bg-gray-100 relative">
-                      <img
-                        src={photo.image}
-                        alt={photo.title}
-                        className="w-full h-full object-cover"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://via.placeholder.com/600x400?text=No+Image';
-                        }}
-                      />
-                    </div>
-                    <div className="p-4">
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
-                          {photo.category}
-                        </span>
-                        {photo.featured && (
-                          <span className="text-xs font-semibold text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
-                            Featured
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-start">
+                {filteredPhotos.map((photo) => {
+                  const isExpanded = !!expandedPhotos[photo.id];
+                  const hasLongDescription = shouldShowReadMore(photo.description);
+                  const descriptionId = `photo-description-${photo.id}`;
+                  const isBroken = !!brokenPhotos[photo.id];
+
+                  return (
+                    <div
+                      key={photo.id}
+                      className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                    >
+                      <div
+                        onClick={() => setLightboxPhoto(photo)}
+                        className="cursor-pointer"
+                      >
+                        <div className="aspect-video bg-gray-100 relative">
+                          {!isBroken ? (
+                            <img
+                              src={photo.image}
+                              alt={photo.title}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                              onError={() => {
+                                setBrokenPhotos((prev) => ({
+                                  ...prev,
+                                  [photo.id]: true,
+                                }));
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400">
+                              <div className="text-center">
+                                <FaImage className="mx-auto text-4xl mb-2" />
+                                <p className="text-sm font-medium">Image unavailable</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="p-4">
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
+                            {photo.category}
                           </span>
+                          {photo.featured && (
+                            <span className="text-xs font-semibold text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
+                              Featured
+                            </span>
+                          )}
+                        </div>
+
+                        <h3
+                          className="font-semibold text-gray-900 mb-2 text-sm md:text-base cursor-pointer"
+                          onClick={() => setLightboxPhoto(photo)}
+                        >
+                          {photo.title}
+                        </h3>
+
+                        {photo.description && (
+                          <div>
+                            <p
+                              id={descriptionId}
+                              className={`text-xs md:text-sm text-gray-600 whitespace-pre-line leading-6 ${
+                                !isExpanded && hasLongDescription ? 'line-clamp-3' : ''
+                              }`}
+                            >
+                              {photo.description}
+                            </p>
+
+                            {hasLongDescription && (
+                              <button
+                                type="button"
+                                onClick={() => togglePhotoDescription(photo.id)}
+                                aria-expanded={isExpanded}
+                                aria-controls={descriptionId}
+                                className="mt-2 inline-flex items-center gap-1.5 text-xs md:text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+                              >
+                                {isExpanded ? (
+                                  <>
+                                    Show less
+                                    <FaChevronUp className="text-[10px]" />
+                                  </>
+                                ) : (
+                                  <>
+                                    Read more
+                                    <FaChevronDown className="text-[10px]" />
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
+                        )}
+
+                        {photo.event_date && (
+                          <p className="text-xs text-gray-400 mt-3">{formatEventDate(photo.event_date)}</p>
                         )}
                       </div>
-                      <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">{photo.title}</h3>
-                      {photo.description && (
-                        <p className="text-xs md:text-sm text-gray-600 line-clamp-2">{photo.description}</p>
-                      )}
-                      {photo.event_date && (
-                        <p className="text-xs text-gray-400 mt-3">{formatEventDate(photo.event_date)}</p>
-                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>
@@ -376,54 +475,115 @@ const Gallery = () => {
                 <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search query.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {filteredVideos.map((video) => (
-                  <button
-                    key={video.id}
-                    type="button"
-                    onClick={() => setLightboxVideo(video)}
-                    className="text-left bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow block group"
-                  >
-                    <div className="aspect-video bg-gray-900 relative flex items-center justify-center">
-                      <img
-                        src={getVideoThumb(video)}
-                        alt={video.title}
-                        className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                        loading="lazy"
-                      />
-                      <div className="absolute flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white rounded-full shadow-lg group-hover:scale-110 transition-transform">
-                        <FaPlay className="text-emerald-600 ml-1 text-sm md:text-base" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 items-start">
+                {filteredVideos.map((video) => {
+                  const isExpanded = !!expandedVideos[video.id];
+                  const hasLongDescription = shouldShowReadMore(video.description);
+                  const descriptionId = `video-description-${video.id}`;
+                  const thumb = getVideoThumb(video);
+                  const isThumbBroken = !!brokenVideoThumbs[video.id];
+
+                  return (
+                    <div
+                      key={video.id}
+                      className="text-left bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow block group"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setLightboxVideo(video)}
+                        className="block w-full text-left"
+                      >
+                        <div className="aspect-video bg-gray-900 relative flex items-center justify-center">
+                          {thumb && !isThumbBroken ? (
+                            <img
+                              src={thumb}
+                              alt={video.title}
+                              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                              loading="lazy"
+                              onError={() => {
+                                setBrokenVideoThumbs((prev) => ({
+                                  ...prev,
+                                  [video.id]: true,
+                                }));
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white/70">
+                              <div className="text-center">
+                                <FaVideo className="mx-auto text-4xl mb-2" />
+                                <p className="text-sm font-medium">No thumbnail</p>
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="absolute flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-white rounded-full shadow-lg group-hover:scale-110 transition-transform">
+                            <FaPlay className="text-emerald-600 ml-1 text-sm md:text-base" />
+                          </div>
+                        </div>
+                      </button>
+
+                      <div className="p-4">
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
+                            {video.category}
+                          </span>
+                          {video.featured && (
+                            <span className="text-xs font-semibold text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
+                              Featured
+                            </span>
+                          )}
+                          {video.event_date && (
+                            <span className="text-xs text-gray-500 px-2 py-1">
+                              {formatEventDate(video.event_date)}
+                            </span>
+                          )}
+                        </div>
+
+                        <h3
+                          className="font-semibold text-gray-900 mb-2 text-sm md:text-base cursor-pointer"
+                          onClick={() => setLightboxVideo(video)}
+                        >
+                          {video.title}
+                        </h3>
+
+                        {video.description && (
+                          <div>
+                            <p
+                              id={descriptionId}
+                              className={`text-xs md:text-sm text-gray-600 whitespace-pre-line leading-6 ${
+                                !isExpanded && hasLongDescription ? 'line-clamp-3' : ''
+                              }`}
+                            >
+                              {video.description}
+                            </p>
+
+                            {hasLongDescription && (
+                              <button
+                                type="button"
+                                onClick={() => toggleVideoDescription(video.id)}
+                                aria-expanded={isExpanded}
+                                aria-controls={descriptionId}
+                                className="mt-2 inline-flex items-center gap-1.5 text-xs md:text-sm font-semibold text-emerald-700 hover:text-emerald-800"
+                              >
+                                {isExpanded ? (
+                                  <>
+                                    Show less
+                                    <FaChevronUp className="text-[10px]" />
+                                  </>
+                                ) : (
+                                  <>
+                                    Read more
+                                    <FaChevronDown className="text-[10px]" />
+                                  </>
+                                )}
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
-
-                    <div className="p-4">
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
-                          {video.category}
-                        </span>
-                        {video.featured && (
-                          <span className="text-xs font-semibold text-yellow-800 bg-yellow-100 px-2 py-1 rounded">
-                            Featured
-                          </span>
-                        )}
-                        {video.event_date && (
-                          <span className="text-xs text-gray-500 px-2 py-1">
-                            {formatEventDate(video.event_date)}
-                          </span>
-                        )}
-                      </div>
-
-                      <h3 className="font-semibold text-gray-900 mb-1 text-sm md:text-base">{video.title}</h3>
-                      {video.description && (
-                        <p className="text-xs md:text-sm text-gray-600 line-clamp-2">{video.description}</p>
-                      )}
-
-                      <p className="text-xs text-gray-400 mt-3">
-                        {video.video_path ? 'Uploaded video' : canEmbed(video) ? 'Embedded link' : 'External link'}
-                      </p>
-                    </div>
-                  </button>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>
@@ -450,11 +610,22 @@ const Gallery = () => {
               className="max-w-5xl w-full bg-white rounded-lg overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
-                src={lightboxPhoto.image}
-                alt={lightboxPhoto.title}
-                className="w-full max-h-[60vh] md:max-h-[70vh] object-contain bg-gray-100"
-              />
+              {!brokenLightboxPhoto ? (
+                <img
+                  src={lightboxPhoto.image}
+                  alt={lightboxPhoto.title}
+                  className="w-full max-h-[60vh] md:max-h-[70vh] object-contain bg-gray-100"
+                  onError={() => setBrokenLightboxPhoto(true)}
+                />
+              ) : (
+                <div className="w-full h-[320px] md:h-[420px] flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400">
+                  <div className="text-center">
+                    <FaImage className="mx-auto text-5xl mb-3" />
+                    <p className="text-base font-medium">Image unavailable</p>
+                  </div>
+                </div>
+              )}
+
               <div className="p-4 md:p-6">
                 <div className="flex flex-wrap gap-2 mb-3">
                   <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded">
@@ -471,9 +642,15 @@ const Gallery = () => {
                     </span>
                   )}
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{lightboxPhoto.title}</h3>
+
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+                  {lightboxPhoto.title}
+                </h3>
+
                 {lightboxPhoto.description && (
-                  <p className="text-sm md:text-base text-gray-600">{lightboxPhoto.description}</p>
+                  <p className="text-sm md:text-base text-gray-600 whitespace-pre-line leading-7">
+                    {lightboxPhoto.description}
+                  </p>
                 )}
               </div>
             </div>
@@ -551,10 +728,14 @@ const Gallery = () => {
                   )}
                 </div>
 
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{lightboxVideo.title}</h3>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+                  {lightboxVideo.title}
+                </h3>
 
                 {lightboxVideo.description && (
-                  <p className="text-sm md:text-base text-gray-600">{lightboxVideo.description}</p>
+                  <p className="text-sm md:text-base text-gray-600 whitespace-pre-line leading-7">
+                    {lightboxVideo.description}
+                  </p>
                 )}
               </div>
             </div>

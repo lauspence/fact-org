@@ -72,6 +72,7 @@ export type Publication = {
   content?: string | null;
 
   type?: 'article' | 'pdf';
+  section?: 'article' | 'insight';
 
   cover_image?: string | null;
   pdf_path?: string | null;
@@ -216,6 +217,26 @@ const withSiteOrigin = (url?: string | null): string | null => {
   return `${SITE_ORIGIN}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
+const withPublicStorageOrigin = (path?: string | null): string | null => {
+  if (!path) return null;
+
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+
+  const cleanPath = path.replace(/^\/+/, '');
+
+  if (
+    cleanPath.startsWith('storage/') ||
+    cleanPath.startsWith('uploads/') ||
+    cleanPath.startsWith('images/')
+  ) {
+    return `${SITE_ORIGIN}/${cleanPath}`;
+  }
+
+  return `${SITE_ORIGIN}/storage/${cleanPath}`;
+};
+
 const extractItems = <T>(payload: T[] | LaravelPaginator<T>): T[] => {
   if (Array.isArray(payload)) return payload;
   return Array.isArray(payload?.data) ? payload.data : [];
@@ -229,7 +250,9 @@ const extractItems = <T>(payload: T[] | LaravelPaginator<T>): T[] => {
 
 const normalizeProduct = (p: MarketProduct): MarketProduct => ({
   ...p,
-  image_urls: Array.isArray(p.image_urls) ? p.image_urls : [],
+  image_urls: Array.isArray(p.image_urls)
+    ? p.image_urls.map((img) => withSiteOrigin(img) ?? img)
+    : [],
   image: withSiteOrigin(p.image ?? null),
   images: Array.isArray(p.images)
     ? p.images.map((img) => withSiteOrigin(img) ?? img)
@@ -238,22 +261,23 @@ const normalizeProduct = (p: MarketProduct): MarketProduct => ({
 
 const normalizeGalleryImage = (g: GalleryImage): GalleryImage => ({
   ...g,
-  image: withSiteOrigin(g.image) ?? g.image,
+  image: withPublicStorageOrigin(g.image) ?? g.image,
 });
+
 
 const normalizeGalleryVideo = (v: GalleryVideo): GalleryVideo => ({
   ...v,
-  video_path: withSiteOrigin(v.video_path ?? null) ?? v.video_path ?? null,
-  thumbnail_path: withSiteOrigin(v.thumbnail_path ?? null) ?? v.thumbnail_path ?? null,
-  thumbnail: withSiteOrigin(v.thumbnail ?? null) ?? v.thumbnail ?? null,
+  video_path: withPublicStorageOrigin(v.video_path ?? null) ?? v.video_path ?? null,
+  thumbnail_path: withPublicStorageOrigin(v.thumbnail_path ?? null) ?? v.thumbnail_path ?? null,
+  thumbnail: withPublicStorageOrigin(v.thumbnail ?? null) ?? v.thumbnail ?? null,
 });
 
 const normalizePublication = (p: Publication): Publication => ({
   ...p,
-  cover_image: withSiteOrigin(p.cover_image ?? null) ?? p.cover_image ?? null,
-  pdf_path: withSiteOrigin(p.pdf_path ?? null) ?? p.pdf_path ?? null,
+  cover_image: withPublicStorageOrigin(p.cover_image ?? null) ?? p.cover_image ?? null,
+  pdf_path: withPublicStorageOrigin(p.pdf_path ?? null) ?? p.pdf_path ?? null,
   files: Array.isArray(p.files)
-    ? p.files.map((f) => withSiteOrigin(f) ?? f)
+    ? p.files.map((f) => withPublicStorageOrigin(f) ?? f)
     : [],
 });
 
